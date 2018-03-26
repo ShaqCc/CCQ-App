@@ -3,10 +3,13 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/CCQ-App.iml" filepath="$PROJECT_DIR$/CCQ-App.iml" />
+      <module fileurl="file://C:\CCQ-workspace\CCQ-App\CCQ-App.iml" filepath="C:\CCQ-workspace\CCQ-App\CCQ-App.iml" />
       <module fileurl="file://D:\AndroidStudioProjects\pppppptj\CCQ-App\CcqApp.iml" filepath="D:\AndroidStudioProjects\pppppptj\CCQ-App\CcqApp.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://D:\AndroidStudioProjects\pppppptj\CCQ-App\app\app.iml" filepath="D:\AndroidStudioProjects\pppppptj\CCQ-App\app\app.iml" />
+      <module fileurl="file://C:\CCQ-workspace\CCQ-App\app\app.iml" filepath="C:\CCQ-workspace\CCQ-App\app\app.iml" />
       <module fileurl="file://$PROJECT_DIR$/bottombar-lib/bottombar-lib.iml" filepath="$PROJECT_DIR$/bottombar-lib/bottombar-lib.iml" />
+      <module fileurl="file://C:\CCQ-workspace\CCQ-App\bottombar-lib\bottombar-lib.iml" filepath="C:\CCQ-workspace\CCQ-App\bottombar-lib\bottombar-lib.iml" />
     </modules>
   </component>
 </project>

@@ -90,6 +90,7 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
     protected void onDestroy() {
         super.onDestroy();
         mActivityList.remove(this);
-        mPresenter.detachView();
+        if (mPresenter != null)
+            mPresenter.detachView();
     }
 }

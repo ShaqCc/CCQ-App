@@ -33,4 +33,10 @@ dependencies {
     //butter knife
     compile 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    //网络
+    compile 'com.squareup.retrofit2:retrofit:2.3.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.2.0'
+    //log
+    compile 'com.squareup.okhttp3:logging-interceptor:3.8.1'
+
 }

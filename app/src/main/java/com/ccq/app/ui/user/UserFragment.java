@@ -1,4 +1,4 @@
-package com.ccq.app.ui.main;
+package com.ccq.app.ui.user;
 
 import android.view.View;
 
@@ -7,15 +7,15 @@ import com.ccq.app.base.BaseFragment;
 import com.ccq.app.base.BasePresenter;
 
 /****************************************
- * 功能说明:  发布
+ * 功能说明:  我的
  *
  * Author: Created by bayin on 2018/3/26.
  ****************************************/
 
-public class PublishFragment extends BaseFragment {
+public class UserFragment extends BaseFragment {
     @Override
     protected int inflateContentView() {
-        return R.layout.fragment_publish;
+        return R.layout.fragment_user;
     }
 
     @Override

@@ -1,9 +1,8 @@
-package com.ccq.app.ui.main;
+package com.ccq.app.ui.home;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.view.ViewGroup;
 
 import com.ccq.app.base.BaseFragment;
 
