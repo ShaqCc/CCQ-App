@@ -17,6 +17,7 @@ import android.widget.FrameLayout;
 
 
 import com.ccq.app.R;
+import com.yan.inflaterauto.AutoUtils;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -78,6 +79,13 @@ public class MultiStateView extends FrameLayout {
     public MultiStateView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init(attrs);
+    }
+
+    @Override
+    public LayoutParams generateLayoutParams(AttributeSet attrs) {
+        ViewGroup.LayoutParams vlp = super.generateLayoutParams(attrs);
+        AutoUtils.autoLayout(vlp,getContext(),attrs);
+        return super.generateLayoutParams(attrs);
     }
 
     private void init(AttributeSet attrs) {

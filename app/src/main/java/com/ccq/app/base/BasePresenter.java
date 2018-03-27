@@ -1,5 +1,8 @@
 package com.ccq.app.base;
 
+import com.ccq.app.http.ApiService;
+import com.ccq.app.http.RetrofitClient;
+
 /****************************************
  * 功能说明:  控制器基类
  *
@@ -7,9 +10,11 @@ package com.ccq.app.base;
  ****************************************/
 
 public class BasePresenter<V> {
-    private V mView;
+    public V mView;
+    public ApiService apiService;
 
     public BasePresenter(V view) {
+        apiService = RetrofitClient.getInstance().getApiService();
         mView = view;
     }
 

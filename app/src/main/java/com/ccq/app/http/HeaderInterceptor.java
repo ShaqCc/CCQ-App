@@ -25,7 +25,7 @@ public class HeaderInterceptor implements Interceptor {
 
         builder.addHeader("user", "web");
         builder.addHeader("pass", "web");
-        String stemp = String.valueOf(SystemClock.currentThreadTimeMillis());
+        String stemp = String.valueOf(System.currentTimeMillis());
         builder.addHeader("time", stemp);
         builder.addHeader("auth", getMd5("webweb" + stemp));
 

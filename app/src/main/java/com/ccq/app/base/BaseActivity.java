@@ -1,9 +1,12 @@
 package com.ccq.app.base;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+
+import com.yan.inflaterauto.InflaterAuto;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -92,5 +95,10 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
         mActivityList.remove(this);
         if (mPresenter != null)
             mPresenter.detachView();
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(InflaterAuto.wrap(base));
     }
 }

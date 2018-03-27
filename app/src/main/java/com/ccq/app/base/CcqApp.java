@@ -1,6 +1,7 @@
 package com.ccq.app.base;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.ccq.app.adjust.InfAutoInflaterConvert;
 import com.yan.inflaterauto.AutoBaseOn;
@@ -24,5 +25,10 @@ public class CcqApp extends Application {
                 .inflaterConvert(new InfAutoInflaterConvert())
                 .build()
         );
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(InflaterAuto.wrap(base));
     }
 }

@@ -1,1 +1,1 @@
-include ':app', ':bottombar-lib'
+include ':app', ':bottombar-lib', ':banner-lib'

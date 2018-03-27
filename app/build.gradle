@@ -38,5 +38,5 @@ dependencies {
     compile 'com.squareup.retrofit2:converter-gson:2.2.0'
     //log
     compile 'com.squareup.okhttp3:logging-interceptor:3.8.1'
-
+    implementation project(':banner-lib')
 }

@@ -6,6 +6,7 @@ import com.ccq.app.R;
 import com.ccq.app.base.BaseFragment;
 import com.ccq.app.base.BasePresenter;
 import com.ccq.app.entity.Banner;
+import com.ccq.app.weidget.MultiStateView;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ import java.util.List;
  * Author: Created by bayin on 2018/3/26.
  ****************************************/
 
-public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeView{
+public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeView {
 
     @Override
     protected int inflateContentView() {
@@ -41,4 +42,5 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
     public void showBanner(List<Banner> banners) {
 
     }
+
 }

@@ -1,12 +1,16 @@
 package com.ccq.app.http;
 
-import com.ccq.app.base.BaseBean;
 import com.ccq.app.entity.Banner;
+import com.ccq.app.entity.Car;
 
 import java.util.List;
+import java.util.Map;
 
-import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.QueryMap;
 
 /**************************************************
  *
@@ -18,6 +22,16 @@ import retrofit2.http.GET;
  **************************************************/
 
 public interface ApiService {
+
+    /**
+     * 获取首页banner
+     *
+     * @return
+     */
     @GET("/car/banner")
-    retrofit2.Call<BaseBean<List<Banner>>> getBanner();
+    retrofit2.Call<List<Banner>> getBanner();
+
+
+    @POST("/car/list")
+    Call<List<Car>> getCarList(@QueryMap Map<String, String> carParams);
 }

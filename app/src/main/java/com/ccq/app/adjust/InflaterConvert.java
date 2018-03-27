@@ -10,6 +10,7 @@ import android.widget.ListView;
 import android.widget.ScrollView;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
+import com.ccq.app.weidget.MultiStateView;
 import com.yan.inflaterauto.AutoConvert;
 import com.yan.inflaterauto.annotation.Convert;
 
@@ -30,6 +31,7 @@ import java.util.HashMap;
         , CoordinatorLayout.class
         , ConstraintLayout.class
         , AHBottomNavigation.class
+        , MultiStateView.class
 })
 public class InflaterConvert implements AutoConvert {// 类名随便写
 

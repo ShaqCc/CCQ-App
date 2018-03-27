@@ -1,5 +1,6 @@
 package com.ccq.app.base;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.ccq.app.R;
+import com.ccq.app.ui.home.IHomeView;
 import com.ccq.app.weidget.MultiStateView;
 
 import butterknife.ButterKnife;
@@ -18,7 +20,7 @@ import butterknife.ButterKnife;
  * Author: Created by bayin on 2018/3/26.
  ****************************************/
 
-public abstract class BaseFragment<T extends BasePresenter> extends LazyLoadFragment {
+public abstract class BaseFragment<T extends BasePresenter> extends LazyLoadFragment implements IBaseView{
     public T mPresenter;
     private BaseActivity mHostActivity;
     private View mRootView;
@@ -74,6 +76,33 @@ public abstract class BaseFragment<T extends BasePresenter> extends LazyLoadFrag
     @Override
     protected void onFragmentFirstVisible() {
         initData();
+    }
+
+
+    @Override
+    public void loading() {
+        setViewState(MultiStateView.VIEW_STATE_LOADING);
+    }
+
+    @Override
+    public void loadingSuccess() {
+        setViewState(MultiStateView.VIEW_STATE_CONTENT);
+    }
+
+    @Override
+    public void loadingError() {
+        setViewState(MultiStateView.VIEW_STATE_ERROR);
+    }
+
+    @Override
+    public void loadingEmpty() {
+        setViewState(MultiStateView.VIEW_STATE_EMPTY);
+    }
+
+
+    @Override
+    public Activity get() {
+        return mHostActivity;
     }
 
     @Override
