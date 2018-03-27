@@ -1,5 +1,10 @@
 package com.ccq.app.http;
 
+import com.ccq.app.base.BaseBean;
+import com.ccq.app.entity.Banner;
+
+import java.util.List;
+
 import okhttp3.ResponseBody;
 import retrofit2.http.GET;
 
@@ -14,5 +19,5 @@ import retrofit2.http.GET;
 
 public interface ApiService {
     @GET("/car/banner")
-    retrofit2.Call<ResponseBody> getBanner();
+    retrofit2.Call<BaseBean<List<Banner>>> getBanner();
 }

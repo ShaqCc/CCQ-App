@@ -19,7 +19,7 @@ import butterknife.ButterKnife;
  ****************************************/
 
 public abstract class BaseFragment<T extends BasePresenter> extends LazyLoadFragment {
-    private T mPresenter;
+    public T mPresenter;
     private BaseActivity mHostActivity;
     private View mRootView;
     private MultiStateView mMulStateView;

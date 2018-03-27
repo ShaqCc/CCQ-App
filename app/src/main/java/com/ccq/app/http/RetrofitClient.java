@@ -28,8 +28,10 @@ public class RetrofitClient {
 
     public ApiService getApiService() {
         if (retrofit == null) {
+            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
             OkHttpClient client = new OkHttpClient.Builder()
-                    .addInterceptor(new HttpLoggingInterceptor())
+                    .addInterceptor(interceptor)
                     .addInterceptor(new HeaderInterceptor())
                     .build();
 

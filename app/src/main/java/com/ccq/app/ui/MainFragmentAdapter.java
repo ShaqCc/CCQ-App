@@ -1,4 +1,4 @@
-package com.ccq.app.ui.home;
+package com.ccq.app.ui;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

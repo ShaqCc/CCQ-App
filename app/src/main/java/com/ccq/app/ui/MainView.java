@@ -1,4 +1,4 @@
-package com.ccq.app.ui.home;
+package com.ccq.app.ui;
 
 /****************************************
  * 功能说明:  
