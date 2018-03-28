@@ -4,24 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/home_recyclerview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-
-        <com.youth.banner.view.BannerViewPager
-            android:id="@+id/home_banner"
-            android:layout_width="720px"
-            android:layout_height="320px" />
-
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/home_recyclerview"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-    </LinearLayout>
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
 
 </android.support.v4.widget.SwipeRefreshLayout>

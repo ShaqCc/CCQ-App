@@ -13,17 +13,19 @@ import java.util.Map;
  **************************************************/
 
 public class ApiParams {
-//    public static String BASEURL = "http://apicheck.chanchequan.com";//测试环境
+    //    public static String BASEURL = "http://apicheck.chanchequan.com";//测试环境
     public static String BASEURL = "https://api.chanchequan.com";//正式环境
 
 
-    private static Map<String, String> carMap = new HashMap<>();
+    private static Map<String, String> carMap;
 
     public static Map<String, String> getCarMap() {
+        if (carMap == null) initCarMap();
         return carMap;
     }
 
     public static Map<String, String> initCarMap() {
+        carMap = new HashMap<>();
         carMap.put("page", "1");
         carMap.put("size", "20");
         return carMap;

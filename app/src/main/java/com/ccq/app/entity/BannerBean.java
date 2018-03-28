@@ -8,7 +8,7 @@ import com.ccq.app.base.BaseBean;
  * Author: Created by bayin on 2018/3/27.
  ****************************************/
 
-public class Banner extends BaseBean<Banner> {
+public class BannerBean extends BaseBean<BannerBean> {
 
     /**
      * href : www.chanchequan.com

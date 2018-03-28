@@ -1,13 +1,12 @@
 package com.ccq.app.http;
 
-import com.ccq.app.entity.Banner;
+import com.ccq.app.entity.BannerBean;
 import com.ccq.app.entity.Car;
 
 import java.util.List;
 import java.util.Map;
 
 import retrofit2.Call;
-import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.QueryMap;
@@ -29,7 +28,7 @@ public interface ApiService {
      * @return
      */
     @GET("/car/banner")
-    retrofit2.Call<List<Banner>> getBanner();
+    retrofit2.Call<List<BannerBean>> getBanner();
 
 
     @POST("/car/list")

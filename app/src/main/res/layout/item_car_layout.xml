@@ -56,7 +56,7 @@
                 tools:text="10万" />
         </LinearLayout>
 
-        <com.ccq.share.MyGridView
+        <com.ccq.app.weidget.MyGridView
             android:id="@+id/item_car_gridview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

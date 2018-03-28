@@ -8,10 +8,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.ccq.app.R;
+import com.ccq.app.entity.BannerBean;
 import com.ccq.app.entity.Car;
+import com.ccq.app.utils.GlideImageLoader;
 import com.ccq.app.weidget.MyGridView;
+import com.youth.banner.Banner;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -28,10 +34,12 @@ import butterknife.ButterKnife;
 
 public class HomeAdapter extends RecyclerView.Adapter {
 
+    private final int ITEM_BANNER = 0;
     private final int ITEM_COMMON = 1;
     private final int ITEM_FOOTER = 2;
 
     private List<Car> carList;
+    private List<BannerBean> bannerList;
     private Context context;
 
 
@@ -50,6 +58,11 @@ public class HomeAdapter extends RecyclerView.Adapter {
         notifyDataSetChanged();
     }
 
+    public void setBanner(List<BannerBean> banner) {
+        bannerList = banner;
+        notifyItemChanged(0);
+    }
+
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -58,6 +71,9 @@ public class HomeAdapter extends RecyclerView.Adapter {
         if (viewType == ITEM_FOOTER) {
             View inflate = inflater.inflate(R.layout.loadmore_layout, null, false);
             return new FooterHolder(inflate);
+        } else if (viewType == ITEM_BANNER) {
+            View inflate = inflater.inflate(R.layout.item_banner, null, false);
+            return new BannerHolder(inflate);
         } else {
             View inflate = inflater.inflate(R.layout.item_car_layout, null, false);
             return new CarHolder(inflate);
@@ -66,41 +82,84 @@ public class HomeAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        switch (getItemViewType(position)) {
+            case ITEM_BANNER:
+                BannerHolder bannerHolder = (BannerHolder) holder;
+                //设置轮播图
+                //设置图片加载器
+                bannerHolder.banner.setImageLoader(new GlideImageLoader());
+                //设置图片集合
+                bannerHolder.banner.setImages(getImages());
+                //banner设置方法全部调用完毕时最后调用
+                bannerHolder.banner.start();
+                break;
+            case ITEM_COMMON:
+                CarHolder carHolder = (CarHolder) holder;
+                Car carBean = carList.get(position-1);
+                Glide.with(context).load(carBean.getUserInfo().getHeadimgurl()+"!50auto")
+                        .placeholder(R.mipmap.ic_default_thumb).into(carHolder.itemIvHeader);
+                carHolder.itemTvUserName.setText(carBean.getUserInfo().getNickname());
+                carHolder.itemTvCarPrice.setText(carBean.getPrice());
+                break;
+        }
+    }
 
+    private List<String> getImages(){
+        ArrayList<String> strings = new ArrayList<>();
+        if (bannerList!=null && bannerList.size()>0){
+            for (BannerBean bean : bannerList) {
+                strings.add(bean.getImage()+"!auto");
+            }
+        }
+        return strings;
     }
 
     @Override
     public int getItemCount() {
-        if (carList != null && carList.size() > 0) return carList.size() + 1;
+        if (carList != null && carList.size() > 0) return carList.size() + 2;
         return 0;
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (position == getItemCount() - 1)
+        if (position == 0)
+            return ITEM_BANNER;
+
+        else if (position == getItemCount() - 1)
             return ITEM_FOOTER;
 
         else return ITEM_COMMON;
     }
 
 
+    static class BannerHolder extends RecyclerView.ViewHolder {
+
+        private final Banner banner;
+
+        public BannerHolder(View itemView) {
+            super(itemView);
+            banner = itemView.findViewById(R.id.banner);
+        }
+    }
+
+
     static class CarHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.item_car_iv_header)
-        ImageView itemCarIvHeader;
+        ImageView itemIvHeader;
         @BindView(R.id.item_car_tv_user_name)
-        TextView itemCarTvUserName;
+        TextView itemTvUserName;
         @BindView(R.id.item_car_tv_car_name)
-        TextView itemCarTvCarName;
+        TextView itemTvCarName;
         @BindView(R.id.item_car_tv_car_price)
-        TextView itemCarTvCarPrice;
+        TextView itemTvCarPrice;
         @BindView(R.id.item_car_gridview)
-        MyGridView itemCarGridview;
+        MyGridView itemGridview;
         @BindView(R.id.item_car_tv_car_info)
-        TextView itemCarTvCarInfo;
+        TextView itemTvCarInfo;
         @BindView(R.id.item_car_tv_car_location)
-        TextView itemCarTvCarLocation;
+        TextView itemTvCarLocation;
         @BindView(R.id.item_car_tv_publish_time)
-        TextView itemCarTvPublishTime;
+        TextView itemTvPublishTime;
         @BindView(R.id.item_tv_call)
         TextView itemTvCall;
         @BindView(R.id.item_tv_message)

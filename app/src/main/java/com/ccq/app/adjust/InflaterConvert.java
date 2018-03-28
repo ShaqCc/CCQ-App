@@ -1,6 +1,5 @@
 package com.ccq.app.adjust;
 
-import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.RecyclerView;
@@ -10,7 +9,6 @@ import android.widget.ListView;
 import android.widget.ScrollView;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
-import com.ccq.app.weidget.MultiStateView;
 import com.yan.inflaterauto.AutoConvert;
 import com.yan.inflaterauto.annotation.Convert;
 
@@ -29,9 +27,7 @@ import java.util.HashMap;
         , ListView.class
         , ScrollView.class
         , CoordinatorLayout.class
-        , ConstraintLayout.class
         , AHBottomNavigation.class
-        , MultiStateView.class
 })
 public class InflaterConvert implements AutoConvert {// 类名随便写
 
