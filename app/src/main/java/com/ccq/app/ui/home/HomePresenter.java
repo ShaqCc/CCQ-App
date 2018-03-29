@@ -24,8 +24,9 @@ public class HomePresenter extends BasePresenter<IHomeView> {
         super(view);
     }
 
-    public void loadData() {
-        mView.loading();
+    public void loadData(boolean isinit) {
+        if (!isinit)
+            mView.loading();
         //获取banner
         apiService.getBanner().enqueue(new Callback<List<BannerBean>>() {
             @Override

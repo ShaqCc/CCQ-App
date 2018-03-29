@@ -4,4 +4,11 @@
     <string name="title_dashboard">发布</string>
     <string name="title_notifications">消息</string>
     <string name="title_user">我的</string>
+    <string name="country">全国</string>
+    <string name="brand">品牌</string>
+    <string name="ageLimit">年限</string>
+    <string name="carType">型号</string>
+    <string name="order">排序</string>
+    <string name="open_drawer">open</string>
+    <string name="close_drawer">close</string>
 </resources>

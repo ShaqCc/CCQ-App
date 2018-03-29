@@ -1,27 +1,36 @@
 package com.ccq.app.ui.home;
 
-import android.content.Context;
+import android.app.Activity;
+import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.ccq.app.R;
 import com.ccq.app.entity.BannerBean;
 import com.ccq.app.entity.Car;
+import com.ccq.app.ui.city.ProvinceActivity;
+import com.ccq.app.utils.DensityUtils;
 import com.ccq.app.utils.GlideImageLoader;
+import com.ccq.app.utils.Utils;
 import com.ccq.app.weidget.MyGridView;
+import com.previewlibrary.PhotoActivity;
 import com.youth.banner.Banner;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import me.drakeet.materialdialog.MaterialDialog;
 
 /**************************************************
  *
@@ -32,7 +41,7 @@ import butterknife.ButterKnife;
  *
  **************************************************/
 
-public class HomeAdapter extends RecyclerView.Adapter {
+public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickListener {
 
     private final int ITEM_BANNER = 0;
     private final int ITEM_COMMON = 1;
@@ -40,7 +49,7 @@ public class HomeAdapter extends RecyclerView.Adapter {
 
     private List<Car> carList;
     private List<BannerBean> bannerList;
-    private Context context;
+    private Activity context;
 
 
     public HomeAdapter(List<Car> list) {
@@ -66,7 +75,7 @@ public class HomeAdapter extends RecyclerView.Adapter {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        context = parent.getContext();
+        context = (Activity) parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         if (viewType == ITEM_FOOTER) {
             View inflate = inflater.inflate(R.layout.loadmore_layout, null, false);
@@ -89,26 +98,145 @@ public class HomeAdapter extends RecyclerView.Adapter {
                 //设置图片加载器
                 bannerHolder.banner.setImageLoader(new GlideImageLoader());
                 //设置图片集合
-                bannerHolder.banner.setImages(getImages());
+                bannerHolder.banner.setImages(getBannerImages());
                 //banner设置方法全部调用完毕时最后调用
                 bannerHolder.banner.start();
+                //点击事件
+                bannerHolder.mItemBannerRbCity.setOnClickListener(this);
+                bannerHolder.mItemBannerRbBrand.setOnClickListener(this);
+                bannerHolder.mItemBannerRbSize.setOnClickListener(this);
+                bannerHolder.mItemBannerRbAge.setOnClickListener(this);
+                bannerHolder.mItemBannerRbOrder.setOnClickListener(this);
                 break;
             case ITEM_COMMON:
-                CarHolder carHolder = (CarHolder) holder;
-                Car carBean = carList.get(position-1);
-                Glide.with(context).load(carBean.getUserInfo().getHeadimgurl()+"!50auto")
+                final CarHolder carHolder = (CarHolder) holder;
+                Car carBean = carList.get(position - 1);
+                //头像
+                Glide.with(context).load(carBean.getUserInfo().getHeadimgurl())
                         .placeholder(R.mipmap.ic_default_thumb).into(carHolder.itemIvHeader);
+                //用户昵称
                 carHolder.itemTvUserName.setText(carBean.getUserInfo().getNickname());
-                carHolder.itemTvCarPrice.setText(carBean.getPrice());
+                //车辆名称
+                carHolder.itemTvCarName.setText(String.format("%s  %s年", carBean.getName(), carBean.getYear()));
+                //车辆价格
+                try {
+                    String price = carBean.getPrice();
+                    if (Float.parseFloat(price) > 0) {
+                        carHolder.itemTvCarPrice.setText(String.format("%s万", price));
+                    } else {
+                        carHolder.itemTvCarPrice.setText("面议");
+                    }
+                } catch (Exception e) {
+                    carHolder.itemTvCarPrice.setText("面议");
+                }
+                //车辆介绍
+                if ((TextUtils.isEmpty(carBean.getContent()))) {
+                    carHolder.itemTvCarInfo.setVisibility(View.GONE);
+                } else {
+                    carHolder.itemTvCarInfo.setVisibility(View.VISIBLE);
+                    carHolder.itemTvCarInfo.setText(carBean.getContent());
+                }
+                //车辆地址
+                carHolder.itemTvCarLocation.setText(String.format("%s·%s", carBean.getProvinceName(), carBean.getCityName()));
+                //发布时间
+                carHolder.itemTvPublishTime.setText(carBean.getAddtime_format());
+                //图片
+                ViewGroup.LayoutParams layoutParams = carHolder.itemGridview.getLayoutParams();
+                layoutParams.width = DensityUtils.dp2px(context, 90 * 3 + 8);
+                carHolder.itemGridview.setLayoutParams(layoutParams);
+                if (carBean.getPic_img() == null || carBean.getPic_img().size() == 0) {
+                    carHolder.itemGridview.setVisibility(View.GONE);
+                } else {
+                    carHolder.itemGridview.setVisibility(View.VISIBLE);
+                    final PictureAdapter adapter = new PictureAdapter(carBean.getPic_img(), carBean.getPic_img_count());
+                    carHolder.itemGridview.setAdapter(adapter);
+                    //准备图片数据
+                    carHolder.itemGridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            computeBoundsBackward(carHolder.itemGridview);
+                            PhotoActivity.startActivity(context, adapter.getThumbList(), position);
+                        }
+                    });
+                }
+                //是否分享
+                if (carBean.getIsshare().equals("1")) {
+                    carHolder.ivMoments.setVisibility(View.VISIBLE);
+                } else {
+                    carHolder.ivMoments.setVisibility(View.GONE);
+                }
+                //点击事件
+                carHolder.itemTvMessage.setOnClickListener(this);
+                carHolder.itemTvMessage.setTag(carBean);
+                carHolder.itemTvCall.setOnClickListener(this);
+                carHolder.itemTvCall.setTag(carBean);
+                carHolder.ivMoments.setOnClickListener(this);
                 break;
         }
     }
 
-    private List<String> getImages(){
+    private String htmlInfo = "你可以添加分享号微信好友查看信息<br/><font color='red'>*注意<br/>请勿分享年限不实车辆<br/>请勿分享与二手装载机无关信息</font>";
+
+    @Override
+    public void onClick(View v) {
+        Car car = (Car) v.getTag();
+        switch (v.getId()) {
+            case R.id.item_tv_call:
+                if (car != null)
+                    Utils.call(context, car.getPhone());
+                break;
+            case R.id.item_tv_message:
+                //todo
+                break;
+            case R.id.item_car_iv_moments:
+                final MaterialDialog dialog = new MaterialDialog(context);
+                dialog.setTitle("此条信息分享号已经分享成功")
+                        .setMessage(Html.fromHtml(htmlInfo))
+                        .setPositiveButton("确定", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.dismiss();
+                            }
+                        });
+                dialog.show();
+                break;
+            case R.id.item_car_iv_tip:
+                //todo
+                break;
+            case R.id.item_banner_rb_city:
+                ProvinceActivity.launch(context,null);
+                break;
+            case R.id.item_banner_rb_brand:
+            case R.id.item_banner_rb_size:
+            case R.id.item_banner_rb_age:
+            case R.id.item_banner_rb_order:
+
+                break;
+        }
+    }
+
+    public interface OnFilterListener{
+        void onFilter();
+    }
+
+    private void computeBoundsBackward(MyGridView gridView) {
+        PictureAdapter adapter = (PictureAdapter) gridView.getAdapter();
+        for (int i = gridView.getFirstVisiblePosition(); i < adapter.getCount(); i++) {
+            View itemView = gridView.getChildAt(i);
+            Rect bounds = new Rect();
+            if (itemView != null) {
+                ImageView thumbView = (ImageView) itemView.findViewById(R.id.imageview);
+                thumbView.getGlobalVisibleRect(bounds);
+            }
+            adapter.getThumbList().get(i).setBounds(bounds);
+        }
+    }
+
+    private List<String> getBannerImages() {
         ArrayList<String> strings = new ArrayList<>();
-        if (bannerList!=null && bannerList.size()>0){
+        if (bannerList != null && bannerList.size() > 0) {
             for (BannerBean bean : bannerList) {
-                strings.add(bean.getImage()+"!auto");
+                strings.add(bean.getImage());
             }
         }
         return strings;
@@ -135,9 +263,25 @@ public class HomeAdapter extends RecyclerView.Adapter {
     static class BannerHolder extends RecyclerView.ViewHolder {
 
         private final Banner banner;
-
+        @BindView(R.id.home_action_tv_sort)
+        TextView mHomeActionTvSort;
+        @BindView(R.id.home_action_tv_bug)
+        TextView mHomeActionTvBug;
+        @BindView(R.id.home_action_tv_vip)
+        TextView mHomeActionTvVip;
+        @BindView(R.id.item_banner_rb_city)
+        RadioButton mItemBannerRbCity;
+        @BindView(R.id.item_banner_rb_brand)
+        RadioButton mItemBannerRbBrand;
+        @BindView(R.id.item_banner_rb_size)
+        RadioButton mItemBannerRbSize;
+        @BindView(R.id.item_banner_rb_age)
+        RadioButton mItemBannerRbAge;
+        @BindView(R.id.item_banner_rb_order)
+        RadioButton mItemBannerRbOrder;
         public BannerHolder(View itemView) {
             super(itemView);
+            ButterKnife.bind(this,itemView);
             banner = itemView.findViewById(R.id.banner);
         }
     }
@@ -164,6 +308,8 @@ public class HomeAdapter extends RecyclerView.Adapter {
         TextView itemTvCall;
         @BindView(R.id.item_tv_message)
         TextView itemTvMessage;
+        @BindView(R.id.item_car_iv_moments)
+        ImageView ivMoments;
 
         CarHolder(View itemView) {
             super(itemView);

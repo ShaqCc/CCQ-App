@@ -1,6 +1,7 @@
 package com.ccq.app.ui;
 
 import android.support.v4.view.ViewPager;
+import android.view.View;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationAdapter;
@@ -12,6 +13,7 @@ import com.ccq.app.ui.home.HomeFragment;
 import com.ccq.app.ui.message.MessageFragment;
 import com.ccq.app.ui.publish.PublishFragment;
 import com.ccq.app.ui.user.UserFragment;
+import com.ccq.app.utils.statusbar.StatusBarUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +43,9 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
     protected void initView() {
         initViewPager();
         initNavigation();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        getToolBar().setVisibility(View.GONE);
+        StatusBarUtils.setStatusBarColor(this,getResources().getColor(R.color.colorPrimary));
     }
 
     private void initViewPager() {

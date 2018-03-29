@@ -27,7 +27,16 @@ public class Car {
     private int type;
     private UserInfoBean userInfo;
     private int year;
+    private String isshare;
     private java.util.List<PicImgBean> pic_img;
+
+    public String getIsshare() {
+        return isshare;
+    }
+
+    public void setIsshare(String isshare) {
+        this.isshare = isshare;
+    }
 
     public String getAddress() {
         return address;

@@ -2,6 +2,7 @@ package com.ccq.app.http;
 
 import com.ccq.app.entity.BannerBean;
 import com.ccq.app.entity.Car;
+import com.ccq.app.entity.Province;
 
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,18 @@ public interface ApiService {
     retrofit2.Call<List<BannerBean>> getBanner();
 
 
+    /**
+     * 获取车辆列表
+     * @param carParams
+     * @return
+     */
     @POST("/car/list")
     Call<List<Car>> getCarList(@QueryMap Map<String, String> carParams);
+
+
+    /**
+     * @return 获取全国省份
+     */
+    @GET("/addr/province")
+    Call<List<Province>> getProvinceList();
 }

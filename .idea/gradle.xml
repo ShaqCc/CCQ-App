@@ -9,7 +9,9 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/banner-lib" />
             <option value="$PROJECT_DIR$/bottombar-lib" />
+            <option value="$PROJECT_DIR$/dialog-lib" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

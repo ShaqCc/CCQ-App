@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.view.View;
 
 import com.ccq.app.R;
 import com.ccq.app.base.BaseActivity;
@@ -45,6 +46,12 @@ public class SplashActivity extends BaseActivity {
     @Override
     protected BasePresenter createPresenter() {
         return null;
+    }
+
+    @Override
+    protected void initView() {
+        super.initView();
+        getToolBar().setVisibility(View.GONE);
     }
 
     @Override

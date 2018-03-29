@@ -1,7 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
 
-<com.youth.banner.Banner xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/banner"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.youth.banner.Banner
+            android:id="@+id/banner"
+            android:layout_width="720px"
+            android:layout_height="330px"/>
+
+        <include
+            layout="@layout/include_home_action_layout"
+            />
+    </FrameLayout>
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="80px"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin">
+
+        <RadioButton
+            android:id="@+id/item_banner_rb_city"
+            style="@style/rb_with_arrow_bt"
+            android:text="@string/country"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <RadioButton
+            android:id="@+id/item_banner_rb_brand"
+            style="@style/rb_with_arrow_bt"
+            android:text="@string/brand"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <RadioButton
+            android:id="@+id/item_banner_rb_size"
+            style="@style/rb_with_arrow_bt"
+            android:text="@string/carType"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <RadioButton
+            android:id="@+id/item_banner_rb_age"
+            style="@style/rb_with_arrow_bt"
+            android:text="@string/ageLimit"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <RadioButton
+            android:id="@+id/item_banner_rb_order"
+            android:drawableEnd="@drawable/selector_order"
+            style="@style/rb_with_arrow_bt"
+            android:text="@string/order"/>
+    </RadioGroup>
+
+    <View style="@style/tranversLine"/>
+</LinearLayout>

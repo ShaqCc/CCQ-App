@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin">
+
+    <TextView
+        android:id="@+id/home_action_tv_sort"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:drawableLeft="@drawable/ic_sort"
+        android:gravity="center_vertical"
+        android:text="分类"/>
+
+    <TextView
+        android:id="@+id/home_action_tv_bug"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="16dp"
+        android:layout_toRightOf="@+id/home_action_tv_sort"
+        android:gravity="center_vertical"
+        android:text="求购"/>
+
+
+    <TextView
+        android:id="@+id/home_action_tv_vip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="16dp"
+        android:drawableLeft="@drawable/selector_vip"
+        android:drawablePadding="10px"
+        android:gravity="center_vertical"
+        android:text="会员"/>
+</RelativeLayout>

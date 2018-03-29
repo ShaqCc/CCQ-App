@@ -21,7 +21,7 @@ public class GlideImageLoader extends ImageLoader {
     public void displayImage(Context context, Object path, ImageView imageView) {
 
         //Glide 加载图片简单用法
-        Glide.with(context).load(path).placeholder(R.mipmap.ic_default_thumb).into(imageView);
+        Glide.with(context).load(path).placeholder(R.mipmap.default_banner).into(imageView);
 
     }
 }

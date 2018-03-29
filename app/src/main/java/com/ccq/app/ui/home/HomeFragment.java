@@ -9,7 +9,9 @@ import com.ccq.app.R;
 import com.ccq.app.base.BaseFragment;
 import com.ccq.app.entity.BannerBean;
 import com.ccq.app.entity.Car;
+import com.ccq.app.http.ApiParams;
 import com.ccq.app.utils.ViewState;
+import com.youth.banner.WeakHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +35,10 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
     private final int ACTION_REFRESH = 0;
     private final int ACTION_LOADMORE = 1;
     private int ACTION_TYPE = ACTION_REFRESH;
+    private int pageIndex = 1;
+    private boolean isLoading;
+    private WeakHandler mHandler = new WeakHandler();
+    private boolean isInit = false;
 
     @Override
     protected int inflateContentView() {
@@ -46,14 +52,59 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
 
     @Override
     protected void initView(View rootView) {
-        homeRecyclerview.setLayoutManager(new LinearLayoutManager(getHostActivity()));
+        final LinearLayoutManager manager = new LinearLayoutManager(getHostActivity());
+        homeRecyclerview.setLayoutManager(manager);
         homeAdapter = new HomeAdapter(dataList);
         homeRecyclerview.setAdapter(homeAdapter);
+
+        homeSrl.setRefreshing(false);
+        //设置下拉刷新
+        homeSrl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                ACTION_TYPE = ACTION_REFRESH;
+                pageIndex = 1;
+                ApiParams.setPage(pageIndex);
+                initData();
+            }
+        });
+        //设置加载更多
+        homeRecyclerview.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int lastVisibleItemPosition = manager.findLastVisibleItemPosition();
+                if (lastVisibleItemPosition + 1 == homeAdapter.getItemCount()) {
+                    boolean isRefreshing = homeSrl.isRefreshing();
+                    if (isRefreshing) {
+                        homeAdapter.notifyItemRemoved(homeAdapter.getItemCount());
+                        return;
+                    }
+                    if (!isLoading) {
+                        isLoading = true;
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                loadMore();
+                                isLoading = false;
+                            }
+                        }, 1000);
+                    }
+                }
+            }
+        });
+    }
+
+    private void loadMore() {
+        pageIndex++;
+        ApiParams.setPage(pageIndex);
+        ACTION_TYPE = ACTION_LOADMORE;
+        mPresenter.filterCar(ApiParams.getCarMap());
     }
 
     @Override
     public void initData() {
-        mPresenter.loadData();
+        mPresenter.loadData(isInit);
     }
 
     @Override
@@ -63,16 +114,16 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
 
     @Override
     public void showCarList(List<Car> cars) {
+        isInit = true;
+        homeSrl.setRefreshing(false);
         if (ACTION_TYPE == ACTION_REFRESH) {
             dataList.clear();
         }
         dataList.addAll(cars);
-        if (dataList.size() > 0)
-        {
+        if (dataList.size() > 0) {
             setViewState(ViewState.STATE_CONTENT);
-            homeAdapter.refresh(cars);
-        }
-        else {
+            homeAdapter.refresh(dataList);
+        } else {
             setViewState(ViewState.STATE_EMPTY);
         }
     }

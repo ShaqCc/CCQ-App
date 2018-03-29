@@ -1,11 +1,16 @@
 package com.ccq.app.base;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 
+import com.ccq.app.R;
 import com.yan.inflaterauto.InflaterAuto;
 
 import java.lang.ref.WeakReference;
@@ -24,7 +29,11 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
 
     private WeakReference<BaseActivity> mCurrentActivity;
     private List<BaseActivity> mActivityList = new ArrayList<>();
-    private T mPresenter;
+    protected T mPresenter;
+    private FrameLayout mContainer;
+    private View mRootView;
+    private Toolbar mToolBar;
+    private TextView mToolBarTitle;
 
     /**
      * @return activity页面的xml布局
@@ -70,12 +79,31 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
             mActivityList.add(this);
         }
         mPresenter = createPresenter();
-        setContentView(inflateContentView());
-        ButterKnife.bind(this);
+        setContentView(R.layout.activity_base);
+        mContainer = findViewById(R.id.activity_base_container);
+        //init toolbar
+        mToolBar = findViewById(R.id.toolbar);
+        setSupportActionBar(mToolBar);
+        getSupportActionBar().setTitle("");
+        getSupportActionBar().setDisplayShowHomeEnabled(false);
+        getSupportActionBar().setDisplayUseLogoEnabled(false);
+        mToolBarTitle = findViewById(R.id.toolbar_title);
+        //add rootview
+        mRootView = LayoutInflater.from(this).inflate(inflateContentView(), null, false);
+        mContainer.addView(mRootView);
+
+        ButterKnife.bind(this, mRootView);
         initView();
         initData();
     }
 
+    public void setToolBarTitle(String title) {
+        mToolBarTitle.setText(title);
+    }
+
+    public Toolbar getToolBar() {
+        return mToolBar;
+    }
 
     @Override
     protected void onPause() {

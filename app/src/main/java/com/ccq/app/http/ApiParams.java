@@ -31,6 +31,10 @@ public class ApiParams {
         return carMap;
     }
 
+    public static void setPage(int page){
+        carMap.put("page",String.valueOf(page));
+    }
+
     public static void setOrder(String order) {
         carMap.put("order", order);
     }
