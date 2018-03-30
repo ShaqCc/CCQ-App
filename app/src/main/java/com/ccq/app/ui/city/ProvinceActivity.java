@@ -5,19 +5,26 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.ccq.app.R;
 import com.ccq.app.base.BaseActivity;
 import com.ccq.app.entity.Province;
+import com.ccq.app.utils.ItemDivideLine;
+import com.ccq.app.utils.OnListItemClickListener;
 import com.ccq.app.utils.RequestCode;
+import com.mcxtzhang.indexlib.IndexBar.widget.IndexBar;
+import com.mcxtzhang.indexlib.suspension.SuspensionDecoration;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /****************************************
  * 功能说明:  省份选择
@@ -35,6 +42,18 @@ public class ProvinceActivity extends BaseActivity<ProvincePresenter> implements
     LinearLayout mDrawlayoutRight;
     @BindView(R.id.province_drawerlayout)
     DrawerLayout mDrawerLayout;
+    @BindView(R.id.tvSideBarHint)
+    TextView mTvSideBarHint;
+    @BindView(R.id.province_indexbar)
+    IndexBar indexBar;
+
+
+    private LinearLayoutManager mMainManager;
+    private List<Province.CityBean> mProvinceData = new ArrayList<>();
+    private HeaderRecyclerAndFooterWrapperAdapter mHeaderAdapter;
+    private ProvinceAdapter mProviceAdapter;
+    private SuspensionDecoration mDecor;
+    private ActionBarDrawerToggle mDrawerToggle;
 
     public static void launch(Activity activity, Bundle bundle) {
         Intent intent = new Intent();
@@ -63,7 +82,40 @@ public class ProvinceActivity extends BaseActivity<ProvincePresenter> implements
         super.initView();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setToolBarTitle("选择城市");
-        ActionBarDrawerToggle drawerbar = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open_drawer, R.string.close_drawer) {
+
+        mMainManager = new LinearLayoutManager(this);
+        mMainRecyclerView.setLayoutManager(mMainManager);
+        mProviceAdapter = new ProvinceAdapter(mProvinceData);
+        mProviceAdapter.setOnItemClickListener(new OnListItemClickListener<Province.CityBean>() {
+            @Override
+            public void onItemClick(ViewGroup parent, View view, Province.CityBean o, int position) {
+
+                view.setEnabled(true);
+            }
+
+            @Override
+            public boolean onItemLongClick(ViewGroup parent, View view, Province.CityBean o, int position) {
+                return false;
+            }
+        });
+        mHeaderAdapter = new HeaderRecyclerAndFooterWrapperAdapter(mProviceAdapter) {
+            @Override
+            protected void onBindHeaderHolder(BaseHolder holder, int headerPos, int layoutId, Object o) {
+                holder.setText(R.id.item_city_text, (String) o);
+            }
+        };
+
+        mHeaderAdapter.setHeaderView(R.layout.item_city, "全国");
+        mMainRecyclerView.setAdapter(mHeaderAdapter);
+        mDecor = new SuspensionDecoration(this, mProvinceData).setHeaderViewCount(mHeaderAdapter.getHeaderViewCount());
+        mMainRecyclerView.addItemDecoration(mDecor);
+        mMainRecyclerView.addItemDecoration(new ItemDivideLine(this, ItemDivideLine.HORIZONTAL_LIST, R.drawable.shape_divide_line_1px));
+        //使用indexBar
+        indexBar.setmPressedShowTextView(mTvSideBarHint)//设置HintTextView
+                .setNeedRealIndex(true)//设置需要真实的索引
+                .setmLayoutManager(mMainManager);//设置RecyclerView的LayoutManager
+
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open_drawer, R.string.close_drawer) {
             //菜单打开
             @Override
             public void onDrawerOpened(View drawerView) {
@@ -76,12 +128,34 @@ public class ProvinceActivity extends BaseActivity<ProvincePresenter> implements
                 super.onDrawerClosed(drawerView);
             }
         };
-        mDrawerLayout.setDrawerListener(drawerbar);
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
 
     @Override
     public void setProvinceData(List<Province> list) {
+        List<Province.CityBean> provinces = generateData(list);
+        indexBar.setmSourceDatas(provinces)//设置数据
+//                .setHeaderViewCount(mHeaderAdapter.getHeaderViewCount())//设置HeaderView数量
+                .invalidate();
 
+        mProviceAdapter.refresh(provinces);
+        mHeaderAdapter.notifyDataSetChanged();
+        mDecor.setmDatas(provinces);
+    }
+
+    /**
+     * 调整接口返回的数据
+     *
+     * @param list
+     * @return
+     */
+    private List<Province.CityBean> generateData(List<Province> list) {
+        mProvinceData = new ArrayList<>();
+        for (int i = 0; i < list.size(); i++) {
+            List<Province.CityBean> city = list.get(i).getCity();
+            mProvinceData.addAll(city);
+        }
+        return mProvinceData;
     }
 
     @Override

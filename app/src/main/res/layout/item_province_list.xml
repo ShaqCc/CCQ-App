@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="720px"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/item_province_tv_sort"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ccc"
+        android:paddingBottom="10px"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingTop="10px"
+        android:text="A"
+        android:textSize="@dimen/textSize_common"
+        />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_city_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</LinearLayout>

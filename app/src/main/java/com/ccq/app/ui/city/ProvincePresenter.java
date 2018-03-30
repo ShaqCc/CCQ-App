@@ -24,7 +24,7 @@ public class ProvincePresenter extends BasePresenter<IProvinceView> {
         apiService.getProvinceList().enqueue(new Callback<List<Province>>() {
             @Override
             public void onResponse(Call<List<Province>> call, Response<List<Province>> response) {
-
+                mView.setProvinceData(response.body());
             }
 
             @Override

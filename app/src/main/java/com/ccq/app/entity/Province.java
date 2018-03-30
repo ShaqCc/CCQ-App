@@ -1,5 +1,8 @@
 package com.ccq.app.entity;
 
+import com.mcxtzhang.indexlib.IndexBar.bean.BaseIndexPinyinBean;
+import com.mcxtzhang.indexlib.suspension.ISuspensionInterface;
+
 import java.util.List;
 
 /****************************************
@@ -8,7 +11,7 @@ import java.util.List;
  * Author: Created by bayin on 2018/3/29.
  ****************************************/
 
-public class Province {
+public class Province{
 
     /**
      * city : [{"code":"ah","fashows":1,"id":13,"name":"安徽省","searchshows":1,"shows":1,"sort":"A"}]
@@ -34,7 +37,7 @@ public class Province {
         this.city = city;
     }
 
-    public static class CityBean {
+    public static class CityBean extends BaseIndexPinyinBean {
         /**
          * code : ah
          * fashows : 1
@@ -44,7 +47,7 @@ public class Province {
          * shows : 1
          * sort : A
          */
-
+        private boolean isTop;
         private String code;
         private int fashows;
         private int id;
@@ -107,6 +110,34 @@ public class Province {
 
         public void setSort(String sort) {
             this.sort = sort;
+        }
+
+        public boolean isTop() {
+            return isTop;
+        }
+
+        public CityBean setTop(boolean top) {
+            isTop = top;
+            return this;
+        }
+
+        @Override
+        public boolean isShowSuspension() {
+            return !isTop;
+        }
+
+//        @Override
+//        public String getSuspensionTag() {
+//            return sort;
+//        }
+
+        @Override
+        public String getTarget() {
+            return name;
+        }
+        @Override
+        public boolean isNeedToPinyin() {
+            return !isTop;
         }
     }
 }
