@@ -1,1 +1,1 @@
-include ':app', ':bottombar-lib', ':banner-lib', ':dialog-lib'
+include ':app', ':bottombar-lib', ':banner-lib', ':dialog-lib', ':index-lib'
