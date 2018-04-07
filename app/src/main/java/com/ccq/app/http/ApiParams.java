@@ -13,7 +13,7 @@ import java.util.Map;
  **************************************************/
 
 public class ApiParams {
-    //    public static String BASEURL = "http://apicheck.chanchequan.com";//测试环境
+//        public static String BASEURL = "http://apicheck.chanchequan.com";//测试环境
     public static String BASEURL = "https://api.chanchequan.com";//正式环境
 
 

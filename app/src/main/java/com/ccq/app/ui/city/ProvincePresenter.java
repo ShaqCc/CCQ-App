@@ -1,5 +1,7 @@
 package com.ccq.app.ui.city;
 
+import android.text.TextUtils;
+
 import com.ccq.app.base.BasePresenter;
 import com.ccq.app.entity.Province;
 
@@ -20,7 +22,7 @@ public class ProvincePresenter extends BasePresenter<IProvinceView> {
         super(view);
     }
 
-    void getProvince(){
+    void getProvince() {
         apiService.getProvinceList().enqueue(new Callback<List<Province>>() {
             @Override
             public void onResponse(Call<List<Province>> call, Response<List<Province>> response) {
@@ -29,6 +31,22 @@ public class ProvincePresenter extends BasePresenter<IProvinceView> {
 
             @Override
             public void onFailure(Call<List<Province>> call, Throwable t) {
+
+            }
+        });
+
+    }
+
+
+    void getCitys(String provinceId){
+        apiService.getCityList(provinceId).enqueue(new Callback<List<Province.CityBean>>() {
+            @Override
+            public void onResponse(Call<List<Province.CityBean>> call, Response<List<Province.CityBean>> response) {
+                mView.setCityData(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<List<Province.CityBean>> call, Throwable t) {
 
             }
         });

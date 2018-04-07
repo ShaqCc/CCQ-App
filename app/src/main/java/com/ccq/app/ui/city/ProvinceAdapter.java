@@ -30,12 +30,19 @@ public class ProvinceAdapter extends RecyclerView.Adapter<BaseHolder> {
         this.dataList = dataList;
     }
 
+    public void setCityItemSelected(boolean enable, int index) {
+        if (dataList.size() > index) {
+            dataList.get(index).setSelected(enable);
+            notifyDataSetChanged();
+        }
+    }
+
     public void refresh(List<Province.CityBean> dataList) {
         this.dataList = dataList;
     }
 
 
-    public void setOnItemClickListener(OnListItemClickListener l){
+    public void setOnItemClickListener(OnListItemClickListener l) {
         this.mListener = l;
     }
 
@@ -46,13 +53,14 @@ public class ProvinceAdapter extends RecyclerView.Adapter<BaseHolder> {
             mRv = parent;
         }
         View inflate = LayoutInflater.from(mContext).inflate(R.layout.item_city, parent, false);
-        return new BaseHolder(mContext,inflate);
+        return new BaseHolder(mContext, inflate);
     }
 
     @Override
     public void onBindViewHolder(BaseHolder holder, int position) {
-        holder.setText(R.id.item_city_text,dataList.get(position).getName());
-        setListener(position,holder);
+        holder.setText(R.id.item_city_text, dataList.get(position).getName());
+        holder.getView(R.id.item_city_text).setSelected(dataList.get(position).getSelected());
+        setListener(position, holder);
     }
 
     protected void setListener(final int position, final BaseHolder viewHolder) {

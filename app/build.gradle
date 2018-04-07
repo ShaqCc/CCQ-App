@@ -45,4 +45,6 @@ dependencies {
     implementation 'com.ycjiang:imgepreviewlibrary:1.0.1'
     implementation project(':dialog-lib')
     implementation project(':index-lib')
+    //微信登录，支付，分享，收藏，统计
+    implementation 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
 }

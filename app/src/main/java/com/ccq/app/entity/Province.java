@@ -55,6 +55,15 @@ public class Province{
         private int searchshows;
         private int shows;
         private String sort;
+        private boolean selected = false;
+
+        public boolean getSelected() {
+            return selected;
+        }
+
+        public void setSelected(boolean selected) {
+            this.selected = selected;
+        }
 
         public String getCode() {
             return code;

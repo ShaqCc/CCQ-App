@@ -9,8 +9,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.RadioButton;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -41,7 +43,7 @@ import me.drakeet.materialdialog.MaterialDialog;
  *
  **************************************************/
 
-public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickListener {
+public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     private final int ITEM_BANNER = 0;
     private final int ITEM_COMMON = 1;
@@ -78,15 +80,21 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
         context = (Activity) parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         if (viewType == ITEM_FOOTER) {
-            View inflate = inflater.inflate(R.layout.loadmore_layout, null, false);
+            View inflate = inflater.inflate(R.layout.loadmore_layout, parent, false);
             return new FooterHolder(inflate);
         } else if (viewType == ITEM_BANNER) {
-            View inflate = inflater.inflate(R.layout.item_banner, null, false);
+            View inflate = inflater.inflate(R.layout.item_banner, parent, false);
             return new BannerHolder(inflate);
         } else {
-            View inflate = inflater.inflate(R.layout.item_car_layout, null, false);
+            View inflate = inflater.inflate(R.layout.item_car_layout, parent, false);
             return new CarHolder(inflate);
         }
+    }
+
+    private BannerHolder bannerHolder;
+
+    private void setBannerHolder(BannerHolder holder) {
+        this.bannerHolder = holder;
     }
 
     @Override
@@ -94,6 +102,7 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
         switch (getItemViewType(position)) {
             case ITEM_BANNER:
                 BannerHolder bannerHolder = (BannerHolder) holder;
+                setBannerHolder((BannerHolder) holder);
                 //设置轮播图
                 //设置图片加载器
                 bannerHolder.banner.setImageLoader(new GlideImageLoader());
@@ -102,7 +111,7 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
                 //banner设置方法全部调用完毕时最后调用
                 bannerHolder.banner.start();
                 //点击事件
-                bannerHolder.mItemBannerRbCity.setOnClickListener(this);
+                bannerHolder.mItemBannerRbCity.setOnCheckedChangeListener(this);
                 bannerHolder.mItemBannerRbBrand.setOnClickListener(this);
                 bannerHolder.mItemBannerRbSize.setOnClickListener(this);
                 bannerHolder.mItemBannerRbAge.setOnClickListener(this);
@@ -203,19 +212,43 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
             case R.id.item_car_iv_tip:
                 //todo
                 break;
+        }
+    }
+
+    /**
+     * 首页条件筛选
+     *
+     * @param compoundButton
+     * @param b
+     */
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+        resetCheckBoxes();
+        switch (compoundButton.getId()) {
             case R.id.item_banner_rb_city:
-                ProvinceActivity.launch(context,null);
+                if (b)
+                    ProvinceActivity.launch(context, null);
                 break;
             case R.id.item_banner_rb_brand:
             case R.id.item_banner_rb_size:
             case R.id.item_banner_rb_age:
             case R.id.item_banner_rb_order:
-
                 break;
         }
     }
 
-    public interface OnFilterListener{
+    private void resetCheckBoxes() {
+        if (bannerHolder != null) {
+            bannerHolder.mItemBannerRbCity.setChecked(false);
+            bannerHolder.mItemBannerRbBrand.setChecked(false);
+            bannerHolder.mItemBannerRbOrder.setChecked(false);
+            bannerHolder.mItemBannerRbAge.setChecked(false);
+            bannerHolder.mItemBannerRbSize.setChecked(false);
+        }
+    }
+
+
+    public interface OnFilterListener {
         void onFilter();
     }
 
@@ -225,7 +258,7 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
             View itemView = gridView.getChildAt(i);
             Rect bounds = new Rect();
             if (itemView != null) {
-                ImageView thumbView = (ImageView) itemView.findViewById(R.id.imageview);
+                ImageView thumbView = itemView.findViewById(R.id.imageview);
                 thumbView.getGlobalVisibleRect(bounds);
             }
             adapter.getThumbList().get(i).setBounds(bounds);
@@ -265,23 +298,24 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
         private final Banner banner;
         @BindView(R.id.home_action_tv_sort)
         TextView mHomeActionTvSort;
-        @BindView(R.id.home_action_tv_bug)
-        TextView mHomeActionTvBug;
+        @BindView(R.id.home_action_tv_buy)
+        TextView mHomeActionTvBuy;
         @BindView(R.id.home_action_tv_vip)
         TextView mHomeActionTvVip;
         @BindView(R.id.item_banner_rb_city)
-        RadioButton mItemBannerRbCity;
+        CheckBox mItemBannerRbCity;
         @BindView(R.id.item_banner_rb_brand)
-        RadioButton mItemBannerRbBrand;
+        CheckBox mItemBannerRbBrand;
         @BindView(R.id.item_banner_rb_size)
-        RadioButton mItemBannerRbSize;
+        CheckBox mItemBannerRbSize;
         @BindView(R.id.item_banner_rb_age)
-        RadioButton mItemBannerRbAge;
+        CheckBox mItemBannerRbAge;
         @BindView(R.id.item_banner_rb_order)
-        RadioButton mItemBannerRbOrder;
+        CheckBox mItemBannerRbOrder;
+
         public BannerHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            ButterKnife.bind(this, itemView);
             banner = itemView.findViewById(R.id.banner);
         }
     }

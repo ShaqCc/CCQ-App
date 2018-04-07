@@ -1,11 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="我的"/>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/user_iv_banner"
+            android:layout_width="720px"
+            android:layout_height="240px"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/user_banner" />
+
+        <ImageView
+            android:id="@+id/user_iv_header"
+            android:layout_width="100px"
+            android:layout_height="100px"
+            android:layout_marginLeft="30px"
+            android:layout_marginTop="190px"
+            android:background="@color/white"
+            android:src="@mipmap/ic_no_login" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="140px"
+            android:layout_marginTop="200px"
+            android:text="请登录"
+            android:textColor="@color/white"
+            android:textSize="@dimen/textSize_common"
+            android:textStyle="bold" />
+
+    </FrameLayout>
+
 </LinearLayout>

@@ -31,8 +31,14 @@ public class CityNameAdapter extends RecyclerView.Adapter<CityNameAdapter.CityHo
     }
 
     @Override
-    public void onBindViewHolder(CityHolder holder, int position) {
+    public void onBindViewHolder(CityHolder holder, final int position) {
         holder.mCityName.setText(citys.get(position).getName());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (l != null) l.onCityClicked(citys.get(position));
+            }
+        });
     }
 
     @Override
@@ -49,5 +55,15 @@ public class CityNameAdapter extends RecyclerView.Adapter<CityNameAdapter.CityHo
             super(itemView);
             mCityName = itemView.findViewById(R.id.item_city_text);
         }
+    }
+
+    OnCityClickListener l;
+
+    public void setOnCityClickListener(OnCityClickListener listener) {
+        l = listener;
+    }
+
+    interface OnCityClickListener {
+        void onCityClicked(Province.CityBean city);
     }
 }

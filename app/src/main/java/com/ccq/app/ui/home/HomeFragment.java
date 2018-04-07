@@ -62,10 +62,7 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
         homeSrl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                ACTION_TYPE = ACTION_REFRESH;
-                pageIndex = 1;
-                ApiParams.setPage(pageIndex);
-                initData();
+                refresh();
             }
         });
         //设置加载更多
@@ -95,10 +92,26 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
         });
     }
 
+    private void refresh() {
+        pageIndex = 1;
+        ApiParams.setPage(pageIndex);
+        ACTION_TYPE = ACTION_REFRESH;
+        initData();
+    }
+
     private void loadMore() {
         pageIndex++;
         ApiParams.setPage(pageIndex);
         ACTION_TYPE = ACTION_LOADMORE;
+        mPresenter.filterCar(ApiParams.getCarMap());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        pageIndex = 1;
+        ApiParams.setPage(pageIndex);
+        ACTION_TYPE = ACTION_REFRESH;
         mPresenter.filterCar(ApiParams.getCarMap());
     }
 
