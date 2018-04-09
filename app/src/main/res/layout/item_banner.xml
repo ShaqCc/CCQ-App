@@ -75,4 +75,17 @@
     </LinearLayout>
 
     <View style="@style/tranversLine" />
+
+    <me.gujun.android.taggroup.TagGroup
+        android:id="@+id/tag_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:paddingBottom="5dp"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="5dp"
+        android:visibility="gone" />
+
+    <View style="@style/tranversLine" />
 </LinearLayout>

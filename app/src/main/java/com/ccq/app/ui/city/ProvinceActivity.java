@@ -192,6 +192,7 @@ public class ProvinceActivity extends BaseActivity<ProvincePresenter> implements
             public void onCityClicked(Province.CityBean city) {
                 //set result
                 ApiParams.setCityid(String.valueOf(city.getId()));
+                ApiParams.setCityName(city.getName());
                 finish();
             }
         });

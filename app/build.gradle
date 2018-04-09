@@ -1,6 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'chanchequan'
+            keyPassword 'chanchequan'
+            storeFile file('C:/CCQ-workspace/CCQ-App/chanchequan_android.jks')
+            storePassword 'chanchequan'
+        }
+    }
     compileSdkVersion 26
     defaultConfig {
         applicationId "com.ccq.app"
@@ -15,6 +23,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
         }
     }
     buildToolsVersion '26.0.2'
@@ -46,5 +55,6 @@ dependencies {
     implementation project(':dialog-lib')
     implementation project(':index-lib')
     //微信登录，支付，分享，收藏，统计
-    implementation 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
+    implementation 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:1.0.2'
+    implementation project(':tag-lib')
 }

@@ -14,4 +14,6 @@ public class Constants {
     public static String WX_APPSECRET = "9ab4beba012874e989a35cf2d79b54fa";
     public static String WX_STATE = "ccq_wx_login";
 
+    public static String KEY_UNIONID = "key_unionid";
+
 }

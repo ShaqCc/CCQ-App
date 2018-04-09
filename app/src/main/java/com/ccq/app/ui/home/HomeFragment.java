@@ -3,6 +3,7 @@ package com.ccq.app.ui.home;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 
 import com.ccq.app.R;
@@ -15,8 +16,10 @@ import com.youth.banner.WeakHandler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
+import me.gujun.android.taggroup.TagGroup;
 
 /****************************************
  * 功能说明:  首页
@@ -39,6 +42,7 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
     private boolean isLoading;
     private WeakHandler mHandler = new WeakHandler();
     private boolean isInit = false;
+    private View bannerLayout;
 
     @Override
     protected int inflateContentView() {
@@ -56,6 +60,7 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
         homeRecyclerview.setLayoutManager(manager);
         homeAdapter = new HomeAdapter(dataList);
         homeRecyclerview.setAdapter(homeAdapter);
+
 
         homeSrl.setRefreshing(false);
         //设置下拉刷新
@@ -113,6 +118,7 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
         ApiParams.setPage(pageIndex);
         ACTION_TYPE = ACTION_REFRESH;
         mPresenter.filterCar(ApiParams.getCarMap());
+        homeAdapter.updateTagGroup();
     }
 
     @Override
@@ -122,23 +128,30 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
 
     @Override
     public void showBanner(List<BannerBean> banners) {
-        homeAdapter.setBanner(banners);
+        if (banners != null && banners.size() > 0) {
+            homeAdapter.setBanner(banners);
+            bannerLayout = homeRecyclerview.getLayoutManager().findViewByPosition(0);
+        }
     }
 
     @Override
     public void showCarList(List<Car> cars) {
         isInit = true;
         homeSrl.setRefreshing(false);
-        if (ACTION_TYPE == ACTION_REFRESH) {
-            dataList.clear();
+
+        if (cars != null && cars.size() > 0) {
+            if (ACTION_TYPE == ACTION_REFRESH) {
+                dataList.clear();
+            }
+            dataList.addAll(cars);
         }
-        dataList.addAll(cars);
         if (dataList.size() > 0) {
             setViewState(ViewState.STATE_CONTENT);
             homeAdapter.refresh(dataList);
-        } else {
-            setViewState(ViewState.STATE_EMPTY);
         }
+//        else {
+//            setViewState(ViewState.STATE_EMPTY);
+//        }
     }
 
 

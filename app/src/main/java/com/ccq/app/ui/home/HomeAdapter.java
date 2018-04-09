@@ -19,6 +19,7 @@ import com.bumptech.glide.Glide;
 import com.ccq.app.R;
 import com.ccq.app.entity.BannerBean;
 import com.ccq.app.entity.Car;
+import com.ccq.app.http.ApiParams;
 import com.ccq.app.ui.city.ProvinceActivity;
 import com.ccq.app.utils.DensityUtils;
 import com.ccq.app.utils.GlideImageLoader;
@@ -29,10 +30,13 @@ import com.youth.banner.Banner;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.drakeet.materialdialog.MaterialDialog;
+import me.gujun.android.taggroup.TagGroup;
 
 /**************************************************
  *
@@ -116,6 +120,8 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
                 bannerHolder.mItemBannerRbSize.setOnClickListener(this);
                 bannerHolder.mItemBannerRbAge.setOnClickListener(this);
                 bannerHolder.mItemBannerRbOrder.setOnClickListener(this);
+                //tag view
+                updateTagGroup();
                 break;
             case ITEM_COMMON:
                 final CarHolder carHolder = (CarHolder) holder;
@@ -181,6 +187,14 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
                 carHolder.itemTvCall.setTag(carBean);
                 carHolder.ivMoments.setOnClickListener(this);
                 break;
+        }
+    }
+
+
+    public void updateTagGroup() {
+        if (!TextUtils.isEmpty(ApiParams.getCityName())){
+            bannerHolder.tagGroup.setVisibility(View.VISIBLE);
+            bannerHolder.tagGroup.setTags(ApiParams.getCityName());
         }
     }
 
@@ -312,6 +326,8 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
         CheckBox mItemBannerRbAge;
         @BindView(R.id.item_banner_rb_order)
         CheckBox mItemBannerRbOrder;
+        @BindView(R.id.tag_group)
+        TagGroup tagGroup;
 
         public BannerHolder(View itemView) {
             super(itemView);

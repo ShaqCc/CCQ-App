@@ -67,11 +67,61 @@ public class ApiParams {
         carMap.put("cityid", cityid);
     }
 
+    public static void setCityName(String cityName){
+        carMap.put("cityName",cityName);
+    }
+    public static String getCityName(){
+        return carMap.get("cityName");
+    }
+
     public static void setKeyword(String keyword) {
         carMap.put("keyword", keyword);
     }
 
     public static void setIspage(String ispage) {
         carMap.put("ispage", ispage);
+    }
+
+
+    public static String getPage(){return carMap.get("page");}
+
+    public static String getOrder() {
+        return carMap.get("order");
+    }
+
+    public static String getType() {
+        return carMap.get("type");
+    }
+
+    public static String getBrandid() {
+        return carMap.get("brandid");
+    }
+
+    public static String getTon() {
+        return carMap.get("tonnageid");
+    }
+
+    public static String getNumberid() {
+        return carMap.get("numberid");
+    }
+
+    public static String getYearid() {
+        return carMap.get("yearid");
+    }
+
+    public static String getProvinceid() {
+        return carMap.get("provinceid");
+    }
+
+    public static String getCityid() {
+        return carMap.get("cityid");
+    }
+
+    public static String getKeyword() {
+        return carMap.get("keyword");
+    }
+
+    public static String getIspage() {
+        return carMap.get("ispage");
     }
 }

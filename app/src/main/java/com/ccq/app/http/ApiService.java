@@ -3,6 +3,8 @@ package com.ccq.app.http;
 import com.ccq.app.entity.BannerBean;
 import com.ccq.app.entity.Car;
 import com.ccq.app.entity.Province;
+import com.ccq.app.entity.WxLoginResultBean;
+import com.ccq.app.entity.WxUserInfo;
 
 import java.util.List;
 import java.util.Map;
@@ -12,6 +14,7 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
+import retrofit2.http.Url;
 
 /**************************************************
  *
@@ -35,6 +38,7 @@ public interface ApiService {
 
     /**
      * 获取车辆列表
+     *
      * @param carParams
      * @return
      */
@@ -50,5 +54,32 @@ public interface ApiService {
 
 
     @GET("/addr/city")
-    Call<List<Province.CityBean>> getCityList(@Query("pid")String pid);
+    Call<List<Province.CityBean>> getCityList(@Query("pid") String pid);
+
+
+    @GET("/user/isbind")
+    Call<Object> getUserInfo(@Query("unionid") String unionid);
+
+
+    @GET("/mobile/code")//发送验证码
+    Call<Object> sendMobileCode(@Query("phone") String phone);
+
+    @GET("/mobile/check")//验证验证码
+    Call<Object> checkMobilCode(@Query("phone") String phone, @Query("code") String code);
+
+
+//    ------------------------------------微信登陆相关接口-----------------------------------------------
+
+    /**
+     * 获取微信登录的token
+     *
+     * @param url
+     * @return
+     */
+    @GET
+    Call<WxLoginResultBean> getAccessToken(@Url String url);
+
+    @GET
+//https://api.weixin.qq.com/sns/userinfo?access_token={0}&openid={1}&lang=zh_CN
+    Call<WxUserInfo> getWxUserInfo(@Url String url);
 }
