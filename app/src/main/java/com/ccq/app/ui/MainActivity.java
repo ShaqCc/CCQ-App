@@ -1,5 +1,6 @@
 package com.ccq.app.ui;
 
+import android.content.Intent;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 
@@ -100,4 +101,8 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
     }
 
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 }

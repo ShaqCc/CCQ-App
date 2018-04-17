@@ -2,6 +2,7 @@ package com.ccq.app.ui.home;
 
 import com.ccq.app.base.IBaseView;
 import com.ccq.app.entity.BannerBean;
+import com.ccq.app.entity.BrandBean;
 import com.ccq.app.entity.Car;
 
 import java.util.List;
@@ -15,4 +16,5 @@ import java.util.List;
 public interface IHomeView extends IBaseView{
     void showBanner(List<BannerBean> banners);
     void showCarList(List<Car> cars);
+    void showBrandList(List<BrandBean> list);
 }

@@ -7,5 +7,5 @@ package com.ccq.app.utils;
  ****************************************/
 
 public class RequestCode {
-    public static final int GET_PROVINCE = 0x1;//选择城市
+    public static final int SET_CITY = 1001;//选择城市
 }

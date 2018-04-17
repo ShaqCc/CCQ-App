@@ -23,10 +23,13 @@ import com.ccq.app.utils.RequestCode;
 import com.mcxtzhang.indexlib.IndexBar.widget.IndexBar;
 import com.mcxtzhang.indexlib.suspension.SuspensionDecoration;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 /****************************************
  * 功能说明:  省份选择
@@ -51,6 +54,15 @@ public class ProvinceActivity extends BaseActivity<ProvincePresenter> implements
     @BindView(R.id.drawlayout_right_title)
     TextView drawlayoutRightTitle;
 
+    @OnClick(R.id.choose_country)
+    public void chooseCountry(View view){
+        //set result
+        ApiParams.setCityid("");
+        ApiParams.setCityName("");
+        EventBus.getDefault().post(RequestCode.SET_CITY);
+        finish();
+    }
+
 
     private LinearLayoutManager mMainManager;
     private List<Province.CityBean> mProvinceData = new ArrayList<>();
@@ -59,11 +71,12 @@ public class ProvinceActivity extends BaseActivity<ProvincePresenter> implements
     private SuspensionDecoration mDecor;
     private ActionBarDrawerToggle mDrawerToggle;
     private int lastItemPosition = -1;
+    private int provinceID;
 
     public static void launch(Activity activity, Bundle bundle) {
         Intent intent = new Intent();
         intent.setClass(activity, ProvinceActivity.class);
-        activity.startActivityForResult(intent, RequestCode.GET_PROVINCE);
+        activity.startActivity(intent);
     }
 
     @Override
@@ -111,6 +124,7 @@ public class ProvinceActivity extends BaseActivity<ProvincePresenter> implements
                 lastItemPosition = position;
                 //请求数据
                 drawlayoutRightTitle.setText(o.getName());
+                provinceID = o.getId();
                 mPresenter.getCitys(String.valueOf(o.getId()));
             }
 
@@ -191,8 +205,10 @@ public class ProvinceActivity extends BaseActivity<ProvincePresenter> implements
             @Override
             public void onCityClicked(Province.CityBean city) {
                 //set result
-                ApiParams.setCityid(String.valueOf(city.getId()));
                 ApiParams.setCityName(city.getName());
+                ApiParams.setCityid(String.valueOf(city.getId()));
+                ApiParams.setProvinceid(String.valueOf(provinceID));
+                EventBus.getDefault().post(RequestCode.SET_CITY);
                 finish();
             }
         });

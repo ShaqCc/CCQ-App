@@ -3,6 +3,7 @@ package com.ccq.app.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.telephony.TelephonyManager;
+import android.view.WindowManager;
 
 import java.util.Locale;
 
@@ -71,5 +72,15 @@ public class SystemUtil {
             return tm.getDeviceId();
         }
         return null;
+    }
+
+    public static int getScreenWidth(Context context){
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        return  wm.getDefaultDisplay().getWidth();
+    }
+
+    public static int getScreenHeight(Context context){
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        return  wm.getDefaultDisplay().getHeight();
     }
 }

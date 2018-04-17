@@ -12,7 +12,6 @@ import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -30,8 +29,6 @@ import com.youth.banner.Banner;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,14 +44,12 @@ import me.gujun.android.taggroup.TagGroup;
  *
  **************************************************/
 
-public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickListener{
 
-    private final int ITEM_BANNER = 0;
     private final int ITEM_COMMON = 1;
     private final int ITEM_FOOTER = 2;
 
     private List<Car> carList;
-    private List<BannerBean> bannerList;
     private Activity context;
 
 
@@ -73,10 +68,6 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
         notifyDataSetChanged();
     }
 
-    public void setBanner(List<BannerBean> banner) {
-        bannerList = banner;
-        notifyItemChanged(0);
-    }
 
 
     @Override
@@ -86,46 +77,38 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
         if (viewType == ITEM_FOOTER) {
             View inflate = inflater.inflate(R.layout.loadmore_layout, parent, false);
             return new FooterHolder(inflate);
-        } else if (viewType == ITEM_BANNER) {
-            View inflate = inflater.inflate(R.layout.item_banner, parent, false);
-            return new BannerHolder(inflate);
         } else {
             View inflate = inflater.inflate(R.layout.item_car_layout, parent, false);
             return new CarHolder(inflate);
         }
     }
 
-    private BannerHolder bannerHolder;
-
-    private void setBannerHolder(BannerHolder holder) {
-        this.bannerHolder = holder;
-    }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         switch (getItemViewType(position)) {
-            case ITEM_BANNER:
-                BannerHolder bannerHolder = (BannerHolder) holder;
-                setBannerHolder((BannerHolder) holder);
-                //设置轮播图
-                //设置图片加载器
-                bannerHolder.banner.setImageLoader(new GlideImageLoader());
-                //设置图片集合
-                bannerHolder.banner.setImages(getBannerImages());
-                //banner设置方法全部调用完毕时最后调用
-                bannerHolder.banner.start();
-                //点击事件
-                bannerHolder.mItemBannerRbCity.setOnCheckedChangeListener(this);
-                bannerHolder.mItemBannerRbBrand.setOnClickListener(this);
-                bannerHolder.mItemBannerRbSize.setOnClickListener(this);
-                bannerHolder.mItemBannerRbAge.setOnClickListener(this);
-                bannerHolder.mItemBannerRbOrder.setOnClickListener(this);
-                //tag view
-                updateTagGroup();
-                break;
+//            case ITEM_BANNER:
+//                BannerHolder bannerHolder = (BannerHolder) holder;
+//                setBannerHolder((BannerHolder) holder);
+//                //设置轮播图
+//                //设置图片加载器
+//                bannerHolder.banner.setImageLoader(new GlideImageLoader());
+//                //设置图片集合
+//                bannerHolder.banner.setImages(getBannerImages());
+//                //banner设置方法全部调用完毕时最后调用
+//                bannerHolder.banner.start();
+//                //点击事件
+//                bannerHolder.mItemBannerRbCity.setOnCheckedChangeListener(this);
+//                bannerHolder.mItemBannerRbBrand.setOnClickListener(this);
+//                bannerHolder.mItemBannerRbSize.setOnClickListener(this);
+//                bannerHolder.mItemBannerRbAge.setOnClickListener(this);
+//                bannerHolder.mItemBannerRbOrder.setOnClickListener(this);
+//                //tag view
+//                updateTagGroup();
+//                break;
             case ITEM_COMMON:
                 final CarHolder carHolder = (CarHolder) holder;
-                Car carBean = carList.get(position - 1);
+                Car carBean = carList.get(position);
                 //头像
                 Glide.with(context).load(carBean.getUserInfo().getHeadimgurl())
                         .placeholder(R.mipmap.ic_default_thumb).into(carHolder.itemIvHeader);
@@ -191,13 +174,6 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
     }
 
 
-    public void updateTagGroup() {
-        if (!TextUtils.isEmpty(ApiParams.getCityName())){
-            bannerHolder.tagGroup.setVisibility(View.VISIBLE);
-            bannerHolder.tagGroup.setTags(ApiParams.getCityName());
-        }
-    }
-
     private String htmlInfo = "你可以添加分享号微信好友查看信息<br/><font color='red'>*注意<br/>请勿分享年限不实车辆<br/>请勿分享与二手装载机无关信息</font>";
 
     @Override
@@ -229,37 +205,6 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
         }
     }
 
-    /**
-     * 首页条件筛选
-     *
-     * @param compoundButton
-     * @param b
-     */
-    @Override
-    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-        resetCheckBoxes();
-        switch (compoundButton.getId()) {
-            case R.id.item_banner_rb_city:
-                if (b)
-                    ProvinceActivity.launch(context, null);
-                break;
-            case R.id.item_banner_rb_brand:
-            case R.id.item_banner_rb_size:
-            case R.id.item_banner_rb_age:
-            case R.id.item_banner_rb_order:
-                break;
-        }
-    }
-
-    private void resetCheckBoxes() {
-        if (bannerHolder != null) {
-            bannerHolder.mItemBannerRbCity.setChecked(false);
-            bannerHolder.mItemBannerRbBrand.setChecked(false);
-            bannerHolder.mItemBannerRbOrder.setChecked(false);
-            bannerHolder.mItemBannerRbAge.setChecked(false);
-            bannerHolder.mItemBannerRbSize.setChecked(false);
-        }
-    }
 
 
     public interface OnFilterListener {
@@ -279,61 +224,19 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
         }
     }
 
-    private List<String> getBannerImages() {
-        ArrayList<String> strings = new ArrayList<>();
-        if (bannerList != null && bannerList.size() > 0) {
-            for (BannerBean bean : bannerList) {
-                strings.add(bean.getImage());
-            }
-        }
-        return strings;
-    }
 
     @Override
     public int getItemCount() {
-        if (carList != null && carList.size() > 0) return carList.size() + 2;
+        if (carList != null && carList.size() > 0) return carList.size() + 1;
         return 0;
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (position == 0)
-            return ITEM_BANNER;
-
-        else if (position == getItemCount() - 1)
+        if (position == getItemCount())
             return ITEM_FOOTER;
 
         else return ITEM_COMMON;
-    }
-
-
-    static class BannerHolder extends RecyclerView.ViewHolder {
-
-        private final Banner banner;
-        @BindView(R.id.home_action_tv_sort)
-        TextView mHomeActionTvSort;
-        @BindView(R.id.home_action_tv_buy)
-        TextView mHomeActionTvBuy;
-        @BindView(R.id.home_action_tv_vip)
-        TextView mHomeActionTvVip;
-        @BindView(R.id.item_banner_rb_city)
-        CheckBox mItemBannerRbCity;
-        @BindView(R.id.item_banner_rb_brand)
-        CheckBox mItemBannerRbBrand;
-        @BindView(R.id.item_banner_rb_size)
-        CheckBox mItemBannerRbSize;
-        @BindView(R.id.item_banner_rb_age)
-        CheckBox mItemBannerRbAge;
-        @BindView(R.id.item_banner_rb_order)
-        CheckBox mItemBannerRbOrder;
-        @BindView(R.id.tag_group)
-        TagGroup tagGroup;
-
-        public BannerHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-            banner = itemView.findViewById(R.id.banner);
-        }
     }
 
 

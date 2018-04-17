@@ -1,6 +1,7 @@
 package com.ccq.app.http;
 
 import com.ccq.app.entity.BannerBean;
+import com.ccq.app.entity.BrandBean;
 import com.ccq.app.entity.Car;
 import com.ccq.app.entity.Province;
 import com.ccq.app.entity.WxLoginResultBean;
@@ -66,6 +67,9 @@ public interface ApiService {
 
     @GET("/mobile/check")//验证验证码
     Call<Object> checkMobilCode(@Query("phone") String phone, @Query("code") String code);
+
+    @GET("/car/brand")
+    Call<List<BrandBean>> getBrandList();
 
 
 //    ------------------------------------微信登陆相关接口-----------------------------------------------

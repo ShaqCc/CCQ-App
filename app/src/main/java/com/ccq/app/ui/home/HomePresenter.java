@@ -2,6 +2,7 @@ package com.ccq.app.ui.home;
 
 import com.ccq.app.base.BasePresenter;
 import com.ccq.app.entity.BannerBean;
+import com.ccq.app.entity.BrandBean;
 import com.ccq.app.entity.Car;
 import com.ccq.app.http.ApiParams;
 import com.ccq.app.utils.ToastUtils;
@@ -62,5 +63,21 @@ public class HomePresenter extends BasePresenter<IHomeView> {
                         ToastUtils.show(mView.get(), t.getMessage());
                     }
                 });
+    }
+
+    public void chooseBrand(){
+        apiService.getBrandList().enqueue(new Callback<List<BrandBean>>() {
+            @Override
+            public void onResponse(Call<List<BrandBean>> call, Response<List<BrandBean>> response) {
+                if (response!=null && response.body()!=null){
+                    mView.showBrandList(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<BrandBean>> call, Throwable t) {
+
+            }
+        });
     }
 }
