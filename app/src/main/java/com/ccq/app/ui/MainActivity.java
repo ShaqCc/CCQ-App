@@ -2,7 +2,11 @@ package com.ccq.app.ui;
 
 import android.content.Intent;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationAdapter;
@@ -20,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 
 public class MainActivity extends BaseActivity<MainPresenter> implements MainView {
@@ -44,10 +49,10 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
     protected void initView() {
         initViewPager();
         initNavigation();
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         getToolBar().setVisibility(View.GONE);
-        StatusBarUtils.setStatusBarColor(this,getResources().getColor(R.color.colorPrimary));
+//        StatusBarUtils.setStatusBarColor(this,getResources().getColor(R.color.secondary_text));
     }
+
 
     private void initViewPager() {
         mFragments.add(new HomeFragment());
@@ -89,6 +94,23 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
                 else {
                     mMainViewpager.setCurrentItem(position, false);
                     ((BaseFragment) mFragmentAdapter.getItem(position)).refreshUI();
+                    switch (position){
+                        case 0:
+                            setToolBarVisible(false);
+                            break;
+                        case 1:
+                            setToolBarVisible(true);
+                            setToolBarTitle("发布");
+                            break;
+                        case 2:
+                            setToolBarVisible(true);
+                            setToolBarTitle("消息");
+                            break;
+                        case 3:
+                            setToolBarVisible(true);
+                            setToolBarTitle("个人中心");
+                            break;
+                    }
                     return true;
                 }
             }

@@ -1,20 +1,24 @@
 package com.ccq.app.ui.home;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.PopupWindow;
 
 import com.ccq.app.R;
 import com.ccq.app.base.BaseFragment;
 import com.ccq.app.entity.BannerBean;
 import com.ccq.app.entity.BrandBean;
 import com.ccq.app.entity.Car;
+import com.ccq.app.entity.YearLimitBean;
 import com.ccq.app.http.ApiParams;
 import com.ccq.app.ui.city.ProvinceActivity;
+import com.ccq.app.ui.home.adapter.BrandAdapter;
+import com.ccq.app.ui.home.adapter.OrderAdapter;
+import com.ccq.app.ui.home.adapter.YearAdapter;
 import com.ccq.app.utils.DialogUtils;
 import com.ccq.app.utils.GlideImageLoader;
 import com.ccq.app.utils.RequestCode;
@@ -29,13 +33,12 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import me.gujun.android.taggroup.TagGroup;
-
-import static android.app.Activity.RESULT_OK;
 
 /****************************************
  * 功能说明:  首页
@@ -75,6 +78,13 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
     private boolean isLoading;
     private WeakHandler mHandler = new WeakHandler();
     private boolean isInit = false;
+    private PopupWindow.OnDismissListener dismissListener = new PopupWindow.OnDismissListener() {
+        @Override
+        public void onDismiss() {
+            resetCheckBoxState();
+        }
+    };
+    private OrderAdapter orderAdapter;
 
     @Override
     protected int inflateContentView() {
@@ -150,6 +160,9 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
     @Override
     public void initData() {
         mPresenter.loadData(isInit);
+        String[] stringArray = getResources().getStringArray(R.array.order_array);
+        List<String> list = Arrays.asList(stringArray);
+        orderAdapter = new OrderAdapter(list);
     }
 
     @Override
@@ -190,20 +203,38 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
 
     @Override
     public void showBrandList(List<BrandBean> list) {
-        if (list!=null && list.size()>0){
+        if (list != null && list.size() > 0) {
             DialogUtils.showListPopWindow(get(), homeHeader, new BrandAdapter(list),
                     new DialogUtils.OnPopItemClickListener<BrandBean>() {
                         @Override
-                        public void OnPopItemClick(BrandBean bean) {
-                            ToastUtils.show(get(),bean.getName());
+                        public void OnPopItemClick(BrandBean bean,int position) {
+                            ApiParams.setBrandid(bean.getId());
+                            mPresenter.filterCar(ApiParams.getCarMap());
                         }
-                    });
+                    }, dismissListener);
         }
     }
 
+    @Override
+    public void showTypeList(List<Object> list) {
+
+    }
+
+    @Override
+    public void showYearList(List<YearLimitBean> list) {
+        DialogUtils.showListPopWindow(get(), homeHeader, new YearAdapter(list), new DialogUtils.OnPopItemClickListener() {
+            @Override
+            public void OnPopItemClick(Object o, int position) {
+                YearLimitBean year = (YearLimitBean) o;
+                ApiParams.setYearid(year.getId());
+                mPresenter.filterCar(ApiParams.getCarMap());
+            }
+        },dismissListener);
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onCitySelected(Integer code){
-        if (code == RequestCode.SET_CITY){
+    public void onCitySelected(Integer code) {
+        if (code == RequestCode.SET_CITY) {
             pageIndex = 1;
             ApiParams.setPage(pageIndex);
             ACTION_TYPE = ACTION_REFRESH;
@@ -212,7 +243,7 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
     }
 
 
-    private void resetCheckBoxState(){
+    private void resetCheckBoxState() {
         bannerRbCity.setChecked(false);
         bannerRbAge.setChecked(false);
         bannerRbBrand.setChecked(false);
@@ -231,16 +262,29 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
                 break;
             case R.id.banner_rb_city:
                 resetCheckBoxState();
-                ProvinceActivity.launch(get(),new Bundle());
+                ProvinceActivity.launch(get(), new Bundle());
                 break;
             case R.id.banner_rb_brand:
+                resetCheckBoxState();
                 mPresenter.chooseBrand();
                 break;
             case R.id.banner_rb_size:
+                resetCheckBoxState();
+                mPresenter.chooseType();
                 break;
             case R.id.banner_rb_age:
+                resetCheckBoxState();
+                mPresenter.chooseYear();
                 break;
             case R.id.banner_rb_order:
+                resetCheckBoxState();
+                DialogUtils.showListPopWindow(get(), homeHeader, orderAdapter, new DialogUtils.OnPopItemClickListener() {
+                    @Override
+                    public void OnPopItemClick(Object o, int position) {
+                        ApiParams.setOrder(String.valueOf(position));
+                        mPresenter.filterCar(ApiParams.getCarMap());
+                    }
+                }, dismissListener);
                 break;
         }
     }

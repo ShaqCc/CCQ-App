@@ -98,8 +98,8 @@ public class ProvinceActivity extends BaseActivity<ProvincePresenter> implements
     @Override
     protected void initView() {
         super.initView();
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setToolBarTitle("选择城市");
+        setBackIconVisible(true);
 
         mMainManager = new LinearLayoutManager(this);
         mMainRecyclerView.setLayoutManager(mMainManager);

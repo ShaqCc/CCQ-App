@@ -6,6 +6,7 @@ import com.ccq.app.entity.Car;
 import com.ccq.app.entity.Province;
 import com.ccq.app.entity.WxLoginResultBean;
 import com.ccq.app.entity.WxUserInfo;
+import com.ccq.app.entity.YearLimitBean;
 
 import java.util.List;
 import java.util.Map;
@@ -70,6 +71,12 @@ public interface ApiService {
 
     @GET("/car/brand")
     Call<List<BrandBean>> getBrandList();
+
+    @GET("/car/number")
+    Call<List<Object>> getCarTypeList();
+
+    @GET("/car/year")
+    Call<List<YearLimitBean>> getCarYearList();
 
 
 //    ------------------------------------微信登陆相关接口-----------------------------------------------

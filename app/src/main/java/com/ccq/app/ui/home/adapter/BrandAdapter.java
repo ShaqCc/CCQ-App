@@ -1,4 +1,4 @@
-package com.ccq.app.ui.home;
+package com.ccq.app.ui.home.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;

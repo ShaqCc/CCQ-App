@@ -4,6 +4,7 @@ import com.ccq.app.base.BasePresenter;
 import com.ccq.app.entity.BannerBean;
 import com.ccq.app.entity.BrandBean;
 import com.ccq.app.entity.Car;
+import com.ccq.app.entity.YearLimitBean;
 import com.ccq.app.http.ApiParams;
 import com.ccq.app.utils.ToastUtils;
 
@@ -80,4 +81,37 @@ public class HomePresenter extends BasePresenter<IHomeView> {
             }
         });
     }
+
+    public void chooseType() {
+        apiService.getCarTypeList().enqueue(new Callback<List<Object>>() {
+            @Override
+            public void onResponse(Call<List<Object>> call, Response<List<Object>> response) {
+                if (response!=null && response.body()!=null){
+                    mView.showTypeList(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Object>> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void chooseYear(){
+        apiService.getCarYearList().enqueue(new Callback<List<YearLimitBean>>() {
+            @Override
+            public void onResponse(Call<List<YearLimitBean>> call, Response<List<YearLimitBean>> response) {
+                if (response!=null && response.body()!=null){
+                    mView.showYearList(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<YearLimitBean>> call, Throwable t) {
+
+            }
+        });
+    }
+
 }

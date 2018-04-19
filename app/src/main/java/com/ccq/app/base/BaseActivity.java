@@ -8,6 +8,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ccq.app.R;
@@ -32,8 +34,9 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
     protected T mPresenter;
     private FrameLayout mContainer;
     private View mRootView;
-    private Toolbar mToolBar;
+    private RelativeLayout mToolBar;
     private TextView mToolBarTitle;
+    private ImageView icFinish;
 
     /**
      * @return activity页面的xml布局
@@ -83,11 +86,15 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
         mContainer = findViewById(R.id.activity_base_container);
         //init toolbar
         mToolBar = findViewById(R.id.toolbar);
-        setSupportActionBar(mToolBar);
-        getSupportActionBar().setTitle("");
-        getSupportActionBar().setDisplayShowHomeEnabled(false);
-        getSupportActionBar().setDisplayUseLogoEnabled(false);
-        mToolBarTitle = findViewById(R.id.toolbar_title);
+        mToolBarTitle = findViewById(R.id.toobar_title);
+        icFinish = findViewById(R.id.ic_finish);
+        icFinish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+        icFinish.setVisibility(View.GONE);
         //add rootview
         mRootView = LayoutInflater.from(this).inflate(inflateContentView(), null, false);
         mContainer.addView(mRootView);
@@ -101,8 +108,22 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
         mToolBarTitle.setText(title);
     }
 
-    public Toolbar getToolBar() {
+    public RelativeLayout getToolBar() {
         return mToolBar;
+    }
+
+
+    public void setToolBarVisible(boolean visible) {
+        if (visible)
+            mToolBar.setVisibility(View.VISIBLE);
+        else mToolBar.setVisibility(View.GONE);
+    }
+
+
+    public void setBackIconVisible(boolean visible) {
+        if (visible)
+            icFinish.setVisibility(View.VISIBLE);
+        else icFinish.setVisibility(View.GONE);
     }
 
     @Override
