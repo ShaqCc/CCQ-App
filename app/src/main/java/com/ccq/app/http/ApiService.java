@@ -1,6 +1,7 @@
 package com.ccq.app.http;
 
 import com.ccq.app.entity.BannerBean;
+import com.ccq.app.entity.BaseBean;
 import com.ccq.app.entity.BrandBean;
 import com.ccq.app.entity.Car;
 import com.ccq.app.entity.Province;
@@ -62,9 +63,14 @@ public interface ApiService {
     @GET("/user/isbind")
     Call<Object> getUserInfo(@Query("unionid") String unionid);
 
+    @GET("/user/bind")
+    Call<Object> bindUserInfo(@Query("unionid") String unionid,@Query("mobile")String mobile,
+                              @Query("code")String code,@Query("headimg")String headimg,@Query("longitude")String longtitude,
+                              @Query("latitude")String latitude,@Query("nickname")String nickName);
+
 
     @GET("/mobile/code")//发送验证码
-    Call<Object> sendMobileCode(@Query("phone") String phone);
+    Call<BaseBean> sendMobileCode(@Query("phone") String phone);
 
     @GET("/mobile/check")//验证验证码
     Call<Object> checkMobilCode(@Query("phone") String phone, @Query("code") String code);

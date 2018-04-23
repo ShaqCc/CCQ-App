@@ -16,4 +16,8 @@ public class Constants {
 
     public static String KEY_UNIONID = "key_unionid";
 
+
+    //event bus
+    public static final int WX_LOGIN_SUCCESS = 20001;//微信登录成功事件码
+
 }

@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merger version="3"><dataSet config="main"><source path="/Users/bayin/CCQ-App/bottombar-lib/src/main/shaders"/></dataSet><dataSet config="debug"><source path="/Users/bayin/CCQ-App/bottombar-lib/src/debug/shaders"/></dataSet></merger>
+<merger version="3"><dataSet config="main"><source path="C:\CCQ-workspace\CCQ-App\bottombar-lib\src\main\shaders"/></dataSet><dataSet config="debug"><source path="C:\CCQ-workspace\CCQ-App\bottombar-lib\src\debug\shaders"/></dataSet></merger>
