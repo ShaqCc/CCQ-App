@@ -494,4 +494,37 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
+
+    <style name="labelLeft">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:layout_marginRight">@dimen/margin</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+
+    <style name="inputWidgetRight">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:gravity">right|center_vertical</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">@color/white</item>
+        <item name="android:scrollHorizontally">true</item>
+        <item name="android:paddingLeft">@dimen/padding</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="inputWidgetLeft">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:gravity">left|center_vertical</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">@color/white</item>
+        <item name="android:scrollHorizontally">true</item>
+        <item name="android:paddingLeft">@dimen/padding</item>
+        <item name="android:singleLine">true</item>
+    </style>
 </resources>

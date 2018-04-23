@@ -11,6 +11,8 @@
     <dimen name="hintTextSize">32sp</dimen>
     <dimen name="chooseTextSize">12sp</dimen>
     <dimen name="padding">20dp</dimen>
+    <dimen name="paddingSmall">12dp</dimen>
+    <dimen name="margin">10dp</dimen>
     <dimen name="radius">20dp</dimen>
     <dimen name="circleRadius">24dp</dimen>
 

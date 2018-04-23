@@ -1,11 +1,304 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical"
+      android:background="@color/white"
+    >
 
-    <TextView
-        android:layout_width="wrap_content"
+    <ScrollView
+        android:id="@+id/scrollView_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="发布"/>
+        android:orientation="vertical"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/paddingSmall"
+                    >
+
+                    <TextView
+                        style="@style/labelLeft"
+                        android:text="*"
+                        android:textColor="@color/red"
+                        />
+                    <TextView
+                        style="@style/labelLeft"
+                        android:text="品牌型号" />
+
+                    <Button
+                        android:id="@+id/btn_band_model"
+                        style="@style/inputWidgetRight"
+                        android:minHeight="0dp"
+                        android:drawableRight="@drawable/mm_submenu_normal"
+                        android:hint="请选择  " />
+
+                </LinearLayout>
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#E6E6E6"
+                    />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/paddingSmall"
+                    >
+
+                    <TextView
+                        style="@style/labelLeft"
+                        android:text="*"
+                        android:textColor="@color/red"
+                        />
+                    <TextView
+                        style="@style/labelLeft"
+                        android:text="车        龄" />
+
+                    <Button
+                        android:id="@+id/btn_car_age"
+                        style="@style/inputWidgetRight"
+                        android:minHeight="0dp"
+                        android:drawableRight="@drawable/mm_submenu_normal"
+                        android:hint="请选择  " />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#E6E6E6"
+                    />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/paddingSmall"
+                    >
+
+                    <TextView
+                        style="@style/labelLeft"
+                        android:text="*"
+                        android:textColor="@color/white"
+                        />
+                    <TextView
+                        style="@style/labelLeft"
+                        android:text="价        格" />
+
+                    <EditText
+                        android:id="@+id/et_travel_time"
+                        style="@style/inputWidgetLeft"
+                        android:hint="默认面议"
+                        android:inputType="number"
+                        android:maxLength="100"
+                        android:textSize="14sp"
+                        />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="万元"
+                        android:textColor="@color/colorPrimary"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/windowBackgroundColor"
+                    android:padding="@dimen/paddingSmall"
+                    >
+
+                    <TextView
+                        style="@style/labelLeft"
+                        android:text="上传图片(4-18张）" />
+
+                    <TextView
+                        android:id="@+id/tv_image_size"
+                        style="@style/inputWidgetRight"
+                        android:background="@color/windowBackgroundColor"
+                        android:text="0/18"
+                        />
+
+                </LinearLayout>
+
+                <!--<LinearLayout-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:orientation="horizontal"-->
+                    <!--android:padding="@dimen/paddingSmall"-->
+                    <!--&gt;-->
+
+                    <GridView
+                        android:id="@+id/gridview_photo_video"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:cacheColorHint="#00000000"
+                        android:listSelector="#00000000"
+                        android:numColumns="auto_fit"
+                        android:fadingEdgeLength="0dp"
+                        android:layout_margin="@dimen/paddingSmall"
+                        android:fadeScrollbars="false"
+                        />
+                 <!--</LinearLayout>-->
+
+
+                <TextView
+                    android:id="@+id/tv_more"
+                    style="@style/labelLeft"
+                    android:textColor="@color/steelblue"
+                    android:padding="@dimen/paddingSmall"
+                    android:text="更多"
+                    />
+
+                <!--                /////////////////////////////////                 -->
+
+                <LinearLayout
+                    android:id ="@+id/lin_addition"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/paddingSmall"
+                        >
+
+                        <TextView
+                            style="@style/labelLeft"
+                            android:text="*"
+                            android:textColor="@color/white"
+                            />
+                        <TextView
+                            style="@style/labelLeft"
+                            android:text="描        述" />
+
+                        <EditText
+                            android:id="@+id/et_description"
+                            style="@style/inputWidgetLeft"
+                            android:hint="描述（可不填）"
+                            android:textSize="14sp"
+                            />
+
+                    </LinearLayout>
+
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:background="#E6E6E6"
+                        />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/paddingSmall"
+                        >
+
+                        <TextView
+                            style="@style/labelLeft"
+                            android:text="*"
+                            android:textColor="@color/white"
+                            />
+                        <TextView
+                            style="@style/labelLeft"
+                            android:text="车辆位置" />
+
+                        <Button
+                            android:id="@+id/btn_car_location"
+                            style="@style/inputWidgetRight"
+                            android:minHeight="0dp"
+                            android:drawableRight="@drawable/mm_submenu_normal"
+                            android:hint="  " />
+
+                    </LinearLayout>
+
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:background="#E6E6E6"
+                        />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/paddingSmall"
+                        >
+
+                        <TextView
+                            style="@style/labelLeft"
+                            android:text="*"
+                            android:textColor="@color/red"
+                            />
+                        <TextView
+                            style="@style/labelLeft"
+                            android:text="手机号码" />
+
+                        <EditText
+                            android:id="@+id/et_user_phone"
+                            style="@style/inputWidgetLeft"
+                            android:hint=""
+                            android:inputType="number"
+                            android:maxLength="11"
+                            />
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:background="#E6E6E6"
+                        />
+
+                    <TextView
+                        android:id="@+id/tv_fold"
+                        style="@style/labelLeft"
+                        android:padding="@dimen/paddingSmall"
+                        android:textColor="@color/steelblue"
+                        android:text="收起" />
+
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btn_submit"
+                    android:background="@color/colorPrimary"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dip"
+                    android:textColor="@color/white"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="25dp"
+                    android:gravity="center"
+                    android:textSize="16sp"
+                    android:text="提交" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

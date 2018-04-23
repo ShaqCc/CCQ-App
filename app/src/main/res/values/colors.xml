@@ -21,4 +21,9 @@
     <color name="transparent">#00000000</color>
     <color name="navpage">#FFE1E8EB</color>
     <color name="black">#000000</color>
+
+    <color name="red">#FF0000</color>
+    <color name="steelblue">#4682B4</color>
+
+
 </resources>
