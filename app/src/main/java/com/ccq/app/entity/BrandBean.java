@@ -1,11 +1,13 @@
 package com.ccq.app.entity;
 
+import java.io.Serializable;
+
 /**
  * 作者： 巴银
  * 日期： 2018/4/17.
  * 描述：
  */
-public class BrandBean {
+public class BrandBean implements Serializable{
 
 
     /**

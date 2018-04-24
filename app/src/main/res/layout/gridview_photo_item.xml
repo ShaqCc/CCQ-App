@@ -1,13 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/gridviewimg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:scaleType="fitXY" />
+        <ImageView
+            android:id="@+id/gridviewimg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            />
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/left_tips_textview"
+            android:layout_width="54dp"
+            android:layout_height="54dp"
+            android:text="封"
+            android:padding="2dp"
+            android:textColor="@color/white"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:visibility="gone"
+            android:background="@drawable/shape_reverse_triangle"
+            />
+
+
+        <ImageView
+            android:id="@+id/delete_iv"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@drawable/icon_delete"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="8dp"
+            android:paddingTop="4dp"
+            />
+
+        <TextView
+            android:id="@+id/pakage_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="封"
+            android:textSize="@dimen/TitleTextSize"
+            android:textColor="@color/white"
+            android:background="@color/colorPrimary"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:paddingRight="4dp"
+            android:paddingLeft="4dp"
+            android:paddingBottom="4dp"
+            android:layout_marginRight="8dp"
+            />
+
+</RelativeLayout>
+

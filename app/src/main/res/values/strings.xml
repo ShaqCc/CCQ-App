@@ -44,4 +44,6 @@
         <item>年限从远到近</item>
         <item>只看有价</item>
     </string-array>
+    <string name="title_activity_double_list_dialog">DoubleListDialog</string>
+    <string name="title_activity_double_list_adapter">DoubleListAdapter</string>
 </resources>

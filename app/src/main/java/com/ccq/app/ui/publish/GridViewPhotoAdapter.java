@@ -3,6 +3,8 @@ package com.ccq.app.ui.publish;
 import java.util.List;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.ccq.app.R;
 
@@ -21,12 +25,18 @@ import com.ccq.app.R;
  */
 public class GridViewPhotoAdapter extends BaseAdapter {
 
-
 	private Context context;
 	private LayoutInflater inflater;
 	private List<String> paths;
     private int size;
 	private int width;
+
+	public void setDeleteItemClickListener(DeleteItemClickListener deleteItemClickListener) {
+		this.deleteItemClickListener = deleteItemClickListener;
+	}
+
+	private DeleteItemClickListener  deleteItemClickListener;
+
 	public GridViewPhotoAdapter(Context context, List<String> paths,int width) {
 		this.context = context;
 		this.paths = paths;
@@ -35,10 +45,9 @@ public class GridViewPhotoAdapter extends BaseAdapter {
 		this.width = width;
 	}
 
-
 	@Override
 	public int getCount() {
-		return  size==3?paths.size():(paths.size()+1);
+		return   (paths.size()+2);
 	}
 	@Override
 	public Object getItem(int position) {
@@ -55,30 +64,69 @@ public class GridViewPhotoAdapter extends BaseAdapter {
 		if (convertView == null) {
 			viewHolder = new ViewHolder();
 			convertView = inflater.inflate(R.layout.gridview_photo_item, null);
-			viewHolder.simpleDraweeView = (ImageView) convertView.findViewById(R.id.gridviewimg);
+			viewHolder.simpleDraweeView = convertView.findViewById(R.id.gridviewimg);
+			viewHolder.deleteImageView = convertView.findViewById(R.id.delete_iv);
+			viewHolder.packageTextView = convertView.findViewById(R.id.pakage_tv);
+			viewHolder.leftTipTextView = convertView.findViewById(R.id.left_tips_textview);
 			convertView.setTag(viewHolder);
 		} else {
 			viewHolder = (ViewHolder) convertView.getTag();
 		}
-		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(width/2,width/2);
+		RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) viewHolder.simpleDraweeView.getLayoutParams();
+		int paramWidth = (int)(width * 1.4);
+		params.width = paramWidth;
+		params.height = paramWidth;
+//				new RelativeLayout.LayoutParams(width,width);
 		viewHolder.simpleDraweeView.setLayoutParams(params);
-		if (getCount()>size&&position==size)
-		{
-			viewHolder.simpleDraweeView.setBackgroundResource(R.drawable.add_photo);
-		}else {
-			viewHolder.simpleDraweeView.setImageURI(Uri.parse("file://" + paths.get(position)));
+		if (position==size) {
+			viewHolder.simpleDraweeView.setBackgroundResource(R.drawable.icon_add_photo);
+			viewHolder.deleteImageView.setVisibility(View.GONE);
+			viewHolder.packageTextView.setVisibility(View.GONE);
+		}else if(position == size +1){
+			viewHolder.simpleDraweeView.setBackgroundResource(R.drawable.icon_add_video);
+			viewHolder.deleteImageView.setVisibility(View.GONE);
+			viewHolder.packageTextView.setVisibility(View.GONE);
+		} else {
+			String pathtemp = paths.get(position).toLowerCase();
+			if(pathtemp.contains(".jpg")||pathtemp.contains(".jpeg")||pathtemp.contains(".png")||pathtemp.contains(".bmp")){
+				viewHolder.simpleDraweeView.setImageURI(Uri.parse("file://" + paths.get(position)));
+			}else{
+				MediaMetadataRetriever media = new MediaMetadataRetriever();
+				media.setDataSource(paths.get(position));
+				Bitmap bitmap = media.getFrameAtTime();
+				viewHolder.simpleDraweeView.setImageBitmap(bitmap);
+			}
+
+			if(position == 0){
+				viewHolder.leftTipTextView.setVisibility(View.VISIBLE);
+				viewHolder.packageTextView.setBackground(context.getResources().getDrawable(R.color.colorPrimary));
+			}else{
+				viewHolder.leftTipTextView.setVisibility(View.GONE);
+				viewHolder.packageTextView.setBackground(context.getResources().getDrawable(R.color.lightransparent));
+			}
+
 		}
 
-		convertView.setOnClickListener(new View.OnClickListener() {
+		viewHolder.deleteImageView.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(View view) {
-
+			public void onClick(View v) {
+				deleteItemClickListener.onListItemClickListener(position);
 			}
 		});
+
+
 		return convertView;
 	}
 
 	class ViewHolder {
 		ImageView simpleDraweeView;
+		ImageView deleteImageView;
+		TextView packageTextView;
+		TextView leftTipTextView;
 	}
+
+	public interface  DeleteItemClickListener {
+		 void  onListItemClickListener(int position);
+	}
+
 }

@@ -30,7 +30,13 @@ android {
     configurations.all {
         resolutionStrategy.force 'com.android.support:support-v4:26.1.0'
         resolutionStrategy.force 'com.android.support:appcompat-v7:26.1.0'
-        resolutionStrategy.force 'com.android.support:recyclerview-v7:26.1.0'
+        resolutionStrategy.force 'com.android.support' +
+                ':recyclerview-v7:26.1.0'
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
     }
 }
 
@@ -40,6 +46,7 @@ dependencies {
     implementation project(':bottombar-lib')
     //UI适配
     implementation 'com.yan:inflaterauto:2.0.17'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
     annotationProcessor 'com.yan:inflaterauto-compiler:2.0.17'
     //butter knife
     implementation 'com.jakewharton:butterknife:8.8.1'
@@ -58,4 +65,8 @@ dependencies {
     implementation 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:1.0.2'
     implementation project(':tag-lib')
     implementation 'org.greenrobot:eventbus:3.1.1'
+    implementation files('libs/BaiduLBS_Android.jar')
+    compile 'com.lzy.widget:imagepicker:0.6.1'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+
 }

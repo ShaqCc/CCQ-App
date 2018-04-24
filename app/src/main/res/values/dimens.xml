@@ -28,5 +28,6 @@
     <dimen name="PreferenceItemHeight">42dp</dimen>
     <dimen name="ConversationItemHeight">58dp</dimen>
     <dimen name="LargeAvatarSize">56dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 
 </resources>

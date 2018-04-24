@@ -104,7 +104,7 @@
                         android:text="价        格" />
 
                     <EditText
-                        android:id="@+id/et_travel_time"
+                        android:id="@+id/et_car_price"
                         style="@style/inputWidgetLeft"
                         android:hint="默认面议"
                         android:inputType="number"
@@ -141,26 +141,23 @@
 
                 </LinearLayout>
 
-                <!--<LinearLayout-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:orientation="horizontal"-->
-                    <!--android:padding="@dimen/paddingSmall"-->
-                    <!--&gt;-->
+                <com.ccq.app.weidget.MyGridView
+                    android:id="@+id/gridview_photo_video"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:cacheColorHint="#00000000"
+                    android:listSelector="#00000000"
+                    android:numColumns="3"
+                    android:fadingEdgeLength="0dp"
+                    android:layout_margin="@dimen/paddingSmall"
+                    android:fadeScrollbars="false"
+                    />
 
-                    <GridView
-                        android:id="@+id/gridview_photo_video"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:cacheColorHint="#00000000"
-                        android:listSelector="#00000000"
-                        android:numColumns="auto_fit"
-                        android:fadingEdgeLength="0dp"
-                        android:layout_margin="@dimen/paddingSmall"
-                        android:fadeScrollbars="false"
-                        />
-                 <!--</LinearLayout>-->
-
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#E6E6E6"
+                    />
 
                 <TextView
                     android:id="@+id/tv_more"
@@ -261,6 +258,7 @@
                             android:id="@+id/et_user_phone"
                             style="@style/inputWidgetLeft"
                             android:hint=""
+                            android:textSize="14sp"
                             android:inputType="number"
                             android:maxLength="11"
                             />

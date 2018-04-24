@@ -1,8 +1,12 @@
 package com.ccq.app.http;
 
+import android.database.Observable;
+
 import com.ccq.app.entity.BannerBean;
 import com.ccq.app.entity.BrandBean;
+import com.ccq.app.entity.BrandModelBean;
 import com.ccq.app.entity.Car;
+import com.ccq.app.entity.CarInfo;
 import com.ccq.app.entity.Province;
 import com.ccq.app.entity.WxLoginResultBean;
 import com.ccq.app.entity.WxUserInfo;
@@ -11,9 +15,17 @@ import com.ccq.app.entity.YearLimitBean;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
+import retrofit2.http.PartMap;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 import retrofit2.http.Url;
@@ -77,6 +89,24 @@ public interface ApiService {
 
     @GET("/car/year")
     Call<List<YearLimitBean>> getCarYearList();
+
+
+    @GET("/car/number")
+    Call<List<BrandModelBean>> getBrandModelList(@Query("brandid") String brandid);
+
+
+    @Multipart
+    @POST("/uploadimage")
+    Call<Object> uploadImages(@Part MultipartBody.Part file);
+
+
+    @Multipart
+    @POST("/uploadvideo")
+    Call<Object> uploadVideos(@Part MultipartBody.Part file);
+
+    @POST("/car/addcar")
+    Call<Object> addCarInfo(@Body CarInfo user);
+
 
 
 //    ------------------------------------微信登陆相关接口-----------------------------------------------

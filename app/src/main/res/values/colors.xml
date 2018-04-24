@@ -24,6 +24,7 @@
 
     <color name="red">#FF0000</color>
     <color name="steelblue">#4682B4</color>
+    <color name="list_background_gray">#e3e3e3</color>
 
 
 </resources>

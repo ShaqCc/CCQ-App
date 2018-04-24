@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+	<RelativeLayout
+		android:id="@+id/titlebar"
+		android:layout_width="match_parent"
+		android:layout_height="@dimen/bottom_navigation_height"
+		android:background="@color/colorPrimary">
+
+		<ImageView
+			android:id="@+id/activity_map_titlebar_back"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentLeft="true"
+			android:layout_centerVertical="true"
+			android:layout_marginLeft="15dp"
+			android:background="@drawable/title_left_back" />
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_centerInParent="true"
+			android:layout_gravity="center"
+			android:text="位置"
+			android:textColor="@color/white"
+			android:textSize="@dimen/TitleTextSize" />
+
+		<TextView
+			android:id="@+id/activity_map_titlebar_btnRight"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentRight="true"
+			android:layout_centerVertical="true"
+			android:layout_marginRight="15dp"
+			android:textColor="@color/white"
+			android:textSize="@dimen/TitleTextSize"
+			android:text="完成"
+			android:gravity="center"
+ 			/>
+	</RelativeLayout>
+
+	<RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent" >
+            
+            <com.baidu.mapapi.map.MapView  
+			    android:id="@+id/bmapView"  
+			    android:layout_width="fill_parent"  
+			    android:layout_height="fill_parent"  
+			    android:clickable="true" />
+            <!---->
+           <!--<TextView-->
+            <!--android:id="@+id/zywzTextView"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_above="@+id/zywz"-->
+            <!--android:layout_centerHorizontal="true"-->
+            <!--android:background="@drawable/custom_info_bubble"-->
+            <!--android:gravity="center" />-->
+
+        <ImageView
+            android:id="@+id/zywz"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:gravity="top"
+            android:src="@drawable/icon_position"  />
+ 
+    </RelativeLayout>
+
+</LinearLayout>
