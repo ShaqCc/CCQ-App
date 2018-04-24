@@ -1,14 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
-//    signingConfigs {
-//        config {
-//            keyAlias 'chanchequan'
-//            keyPassword 'chanchequan'
-//            storeFile file('C:/CCQ-workspace/CCQ-App/chanchequan_android.jks')
-//            storePassword 'chanchequan'
-//        }
-//    }
+    signingConfigs {
+        config {
+            keyAlias 'chanchequan'
+            keyPassword 'chanchequan'
+            storeFile file('../chanchequan_android.jks')
+            storePassword 'chanchequan'
+        }
+    }
     compileSdkVersion 26
     defaultConfig {
         applicationId "com.ccq.app"
@@ -24,6 +24,9 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 //            signingConfig signingConfigs.config
+        }
+        debug {
+            signingConfig signingConfigs.config
         }
     }
     buildToolsVersion '26.0.2'

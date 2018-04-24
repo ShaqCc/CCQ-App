@@ -6,12 +6,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
 
-import com.ccq.app.R;
 import com.ccq.app.entity.WxLoginResultBean;
 import com.ccq.app.entity.WxUserInfo;
 import com.ccq.app.http.ApiService;
 import com.ccq.app.http.RetrofitClient;
-import com.ccq.app.ui.user.BindPhoneActivity;
+import com.ccq.app.ui.user.SetUserInfoActivity;
 import com.ccq.app.utils.Constants;
 import com.ccq.app.utils.KLog;
 
@@ -24,10 +23,11 @@ import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
+import org.greenrobot.eventbus.EventBus;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
 
 /**************************************************
  *
@@ -127,7 +127,8 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                     public void onResponse(Call<WxLoginResultBean> call, Response<WxLoginResultBean> response) {
                         //根据unid获取账户信息
                         if (response != null && response.body() != null) {
-                            SharedPreferencesUtils.setParam(WXEntryActivity.this, Constants.KEY_UNIONID, response.body().getUnionid());
+                            SharedPreferencesUtils.setParam(WXEntryActivity.this, Constants.KEY_UNIONID,
+                                    response.body().getUnionid());
                             final String access_token = response.body().getAccess_token();
                             final String openid = response.body().getOpenid();
                             apiService.getUserInfo(response.body().getUnionid())//获取系统内的用户信息
@@ -135,14 +136,14 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                                         @Override
                                         public void onResponse(Call<Object> call, Response<Object> response) {
                                             if (response == null || response.body() == null) {
+                                                //用户首次登陆
                                                 apiService.getWxUserInfo(String.format(wxUserUrl, access_token, openid))
                                                         .enqueue(new Callback<WxUserInfo>() {
                                                             @Override
                                                             public void onResponse(Call<WxUserInfo> call, Response<WxUserInfo> response) {
                                                                 //跳转到绑定手机页面
-                                                                Bundle bundle = new Bundle();
-                                                                bundle.putParcelable("wxuser",response.body());
-                                                                BindPhoneActivity.launch(WXEntryActivity.this,bundle);
+                                                                SetUserInfoActivity.launch(WXEntryActivity.this,response.body());
+                                                                finish();
                                                             }
 
                                                             @Override
@@ -150,6 +151,10 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                                                                 finish();
                                                             }
                                                         });
+                                            }else {
+                                                //用户非首次登陆
+                                                //todo 保存用户数据到缓存
+                                                EventBus.getDefault().post(Constants.WX_LOGIN_SUCCESS);
                                             }
                                         }
 

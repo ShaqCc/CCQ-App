@@ -16,6 +16,9 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 
     <application
         android:name=".base.CcqApp"
@@ -29,7 +32,8 @@
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"
-            android:process=":remote" />
+            android:process=":remote" >
+        </service>
 
         <!-- 百度定位key -->
         <meta-data
@@ -46,18 +50,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
-            android:name=".ui.MainActivity"
+            android:name="com.ccq.app.ui.MainActivity"
             android:label="@string/app_name"
-            android:launchMode="singleTask" />
-        <activity android:name=".ui.city.ProvinceActivity" />
-        <activity
-            android:name=".wxapi.WXEntryActivity"
-            android:exported="true"
-            android:label="@string/app_name" />
-        <activity android:name=".ui.user.BindPhoneActivity" />
+            android:launchMode="singleTask">
+
+        </activity>
+        <activity android:name=".ui.city.ProvinceActivity"/>
+        <activity android:name=".wxapi.WXEntryActivity"
+            android:label="@string/app_name"
+            android:exported="true"/>
+        <activity android:name=".ui.user.SetUserInfoActivity" />
+        <activity android:name=".ui.user.LoginActivity" />
         <activity android:name=".ui.publish.BaseMapActivity" />
         <activity android:name=".ui.publish.BrandModelSelectActivity" />
+
     </application>
 
 </manifest>

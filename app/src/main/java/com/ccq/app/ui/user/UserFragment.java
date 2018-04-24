@@ -1,5 +1,6 @@
 package com.ccq.app.ui.user;
 
+import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -7,13 +8,18 @@ import android.widget.Toast;
 import com.ccq.app.R;
 import com.ccq.app.base.BaseFragment;
 import com.ccq.app.base.BasePresenter;
+import com.ccq.app.utils.Constants;
+import com.ccq.app.utils.ToastUtils;
 import com.ccq.app.utils.Utils;
 import com.tencent.mm.opensdk.modelbase.BaseReq;
 import com.tencent.mm.opensdk.modelbase.BaseResp;
 import com.tencent.mm.opensdk.openapi.IWXAPIEventHandler;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import butterknife.BindView;
 import butterknife.OnClick;
+import retrofit2.http.PUT;
 
 /****************************************
  * 功能说明:  我的
@@ -21,14 +27,14 @@ import butterknife.OnClick;
  * Author: Created by bayin on 2018/3/26.
  ****************************************/
 
-public class UserFragment extends BaseFragment implements IWXAPIEventHandler{
+public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
 
     @BindView(R.id.user_iv_header)
     ImageView ivHeader;
 
     @OnClick(R.id.user_iv_header)
     public void login() {
-        Utils.login(getHostActivity());
+        startActivity(new Intent(get(), LoginActivity.class));
     }
 
     @Override
@@ -49,6 +55,13 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler{
     @Override
     public void initData() {
 
+    }
+
+    @Subscribe
+    public void onReceiveLoginSuccess(int eventId) {
+        if (eventId == Constants.WX_LOGIN_SUCCESS) {
+            ToastUtils.show(get(), "登录成功！设置页面数据！");
+        }
     }
 
     @Override

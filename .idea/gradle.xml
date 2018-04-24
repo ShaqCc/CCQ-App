@@ -12,6 +12,8 @@
             <option value="$PROJECT_DIR$/banner-lib" />
             <option value="$PROJECT_DIR$/bottombar-lib" />
             <option value="$PROJECT_DIR$/dialog-lib" />
+            <option value="$PROJECT_DIR$/index-lib" />
+            <option value="$PROJECT_DIR$/tag-lib" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
