@@ -9,6 +9,7 @@ import com.ccq.app.entity.BrandModelBean;
 import com.ccq.app.entity.Car;
 import com.ccq.app.entity.CarInfo;
 import com.ccq.app.entity.Province;
+import com.ccq.app.entity.UserBean;
 import com.ccq.app.entity.WxLoginResultBean;
 import com.ccq.app.entity.WxUserInfo;
 import com.ccq.app.entity.YearLimitBean;
@@ -73,7 +74,7 @@ public interface ApiService {
 
 
     @GET("/user/isbind")
-    Call<Object> getUserInfo(@Query("unionid") String unionid);
+    Call<UserBean> getUserInfo(@Query("unionid") String unionid);
 
     @GET("/user/bind")
     Call<Object> bindUserInfo(@Query("unionid") String unionid,@Query("mobile")String mobile,

@@ -3,14 +3,18 @@ package com.ccq.app.wxapi;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
 
+import com.ccq.app.entity.UserBean;
 import com.ccq.app.entity.WxLoginResultBean;
 import com.ccq.app.entity.WxUserInfo;
 import com.ccq.app.http.ApiService;
 import com.ccq.app.http.RetrofitClient;
-import com.ccq.app.ui.user.SetUserInfoActivity;
+import com.ccq.app.ui.MainActivity;
+import com.ccq.app.ui.user.BindPhoneActivity;
+import com.ccq.app.utils.AppCache;
 import com.ccq.app.utils.Constants;
 import com.ccq.app.utils.KLog;
 
@@ -127,39 +131,51 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                     public void onResponse(Call<WxLoginResultBean> call, Response<WxLoginResultBean> response) {
                         //根据unid获取账户信息
                         if (response != null && response.body() != null) {
+                            String unionid = response.body().getUnionid();
                             SharedPreferencesUtils.setParam(WXEntryActivity.this, Constants.KEY_UNIONID,
-                                    response.body().getUnionid());
+                                    unionid);
                             final String access_token = response.body().getAccess_token();
                             final String openid = response.body().getOpenid();
-                            apiService.getUserInfo(response.body().getUnionid())//获取系统内的用户信息
-                                    .enqueue(new Callback<Object>() {
+
+                            apiService.getUserInfo(unionid)//获取系统内的用户信息
+                                    .enqueue(new Callback<UserBean>() {
                                         @Override
-                                        public void onResponse(Call<Object> call, Response<Object> response) {
+                                        public void onResponse(Call<UserBean> call, Response<UserBean> response) {
                                             if (response == null || response.body() == null) {
-                                                //用户首次登陆
+
+                                                //用户首次登陆，获取用户微信里的昵称，头像等
                                                 apiService.getWxUserInfo(String.format(wxUserUrl, access_token, openid))
                                                         .enqueue(new Callback<WxUserInfo>() {
                                                             @Override
                                                             public void onResponse(Call<WxUserInfo> call, Response<WxUserInfo> response) {
                                                                 //跳转到绑定手机页面
-                                                                SetUserInfoActivity.launch(WXEntryActivity.this,response.body());
-                                                                finish();
+                                                                BindPhoneActivity.launch(WXEntryActivity.this, response.body());
+                                                                new Handler().postDelayed(new Runnable() {
+                                                                    @Override
+                                                                    public void run() {
+                                                                        finish();
+                                                                    }
+                                                                }, 1000);
                                                             }
 
                                                             @Override
                                                             public void onFailure(Call<WxUserInfo> call, Throwable t) {
+                                                                ToastUtils.show(WXEntryActivity.this, t.getMessage());
                                                                 finish();
                                                             }
                                                         });
-                                            }else {
+
+                                            } else {
                                                 //用户非首次登陆
-                                                //todo 保存用户数据到缓存
+                                                AppCache.setUserBean(response.body());
+                                                startActivity(new Intent(WXEntryActivity.this, MainActivity.class));
                                                 EventBus.getDefault().post(Constants.WX_LOGIN_SUCCESS);
                                             }
                                         }
 
                                         @Override
-                                        public void onFailure(Call<Object> call, Throwable t) {
+                                        public void onFailure(Call<UserBean> call, Throwable t) {
+                                            ToastUtils.show(WXEntryActivity.this, t.getMessage());
                                             finish();
                                         }
                                     });

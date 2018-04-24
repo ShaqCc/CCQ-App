@@ -3,25 +3,19 @@ package com.ccq.app.ui.user;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.ccq.app.R;
 import com.ccq.app.base.BaseActivity;
-import com.ccq.app.base.BasePresenter;
 import com.ccq.app.entity.BaseBean;
 import com.ccq.app.entity.WxUserInfo;
 import com.ccq.app.utils.ToastUtils;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**************************************************
@@ -33,7 +27,7 @@ import butterknife.OnClick;
  *
  **************************************************/
 
-public class SetUserInfoActivity extends BaseActivity<SetFilePresenter> implements IsetFileView {
+public class BindPhoneActivity extends BaseActivity<SetFilePresenter> implements IsetFileView {
 
     private static WxUserInfo wxUserInfo;
     @BindView(R.id.phone_number)
@@ -47,7 +41,7 @@ public class SetUserInfoActivity extends BaseActivity<SetFilePresenter> implemen
     public static void launch(Activity from, WxUserInfo info) {
         if (from != null) {
             Intent intent = new Intent();
-            intent.setClass(from, SetUserInfoActivity.class);
+            intent.setClass(from, BindPhoneActivity.class);
             wxUserInfo = info;
             from.startActivity(intent);
         }

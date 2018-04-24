@@ -1,13 +1,17 @@
 package com.ccq.app.ui.user;
 
 import android.content.Intent;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.ccq.app.R;
 import com.ccq.app.base.BaseFragment;
 import com.ccq.app.base.BasePresenter;
+import com.ccq.app.utils.AppCache;
 import com.ccq.app.utils.Constants;
 import com.ccq.app.utils.ToastUtils;
 import com.ccq.app.utils.Utils;
@@ -15,6 +19,7 @@ import com.tencent.mm.opensdk.modelbase.BaseReq;
 import com.tencent.mm.opensdk.modelbase.BaseResp;
 import com.tencent.mm.opensdk.openapi.IWXAPIEventHandler;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import butterknife.BindView;
@@ -31,6 +36,9 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
 
     @BindView(R.id.user_iv_header)
     ImageView ivHeader;
+
+    @BindView(R.id.tv_userName)
+    TextView tvName;
 
     @OnClick(R.id.user_iv_header)
     public void login() {
@@ -49,7 +57,7 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
 
     @Override
     protected void initView(View rootView) {
-
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -58,9 +66,11 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
     }
 
     @Subscribe
-    public void onReceiveLoginSuccess(int eventId) {
-        if (eventId == Constants.WX_LOGIN_SUCCESS) {
+    public void onReceiveLoginSuccess(Integer eventId) {
+        if (eventId.equals(Constants.WX_LOGIN_SUCCESS)) {
             ToastUtils.show(get(), "登录成功！设置页面数据！");
+            Glide.with(get()).load(AppCache.getUserBean().getHeadimgurl()).into(ivHeader);
+            tvName.setText(AppCache.getUserBean().getNickname());
         }
     }
 
