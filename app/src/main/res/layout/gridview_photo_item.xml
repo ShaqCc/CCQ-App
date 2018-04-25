@@ -2,14 +2,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
         <ImageView
             android:id="@+id/gridviewimg"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="fitXY"
             />
-
         <TextView
             android:id="@+id/left_tips_textview"
             android:layout_width="54dp"
@@ -22,8 +20,6 @@
             android:visibility="gone"
             android:background="@drawable/shape_reverse_triangle"
             />
-
-
         <ImageView
             android:id="@+id/delete_iv"
             android:layout_width="28dp"
@@ -34,7 +30,6 @@
             android:layout_marginRight="8dp"
             android:paddingTop="4dp"
             />
-
         <TextView
             android:id="@+id/pakage_tv"
             android:layout_width="wrap_content"
@@ -50,6 +45,5 @@
             android:paddingBottom="4dp"
             android:layout_marginRight="8dp"
             />
-
 </RelativeLayout>
 

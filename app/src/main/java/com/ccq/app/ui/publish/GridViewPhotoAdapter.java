@@ -1,7 +1,6 @@
 package com.ccq.app.ui.publish;
 
 import java.util.List;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
@@ -14,10 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.ccq.app.R;
-
-
 /** 
  * 图片显示时gridView适配器
  * @author mly
@@ -76,7 +72,6 @@ public class GridViewPhotoAdapter extends BaseAdapter {
 		int paramWidth = (int)(width * 1.4);
 		params.width = paramWidth;
 		params.height = paramWidth;
-//				new RelativeLayout.LayoutParams(width,width);
 		viewHolder.simpleDraweeView.setLayoutParams(params);
 		if (position==size) {
 			viewHolder.simpleDraweeView.setBackgroundResource(R.drawable.icon_add_photo);
@@ -96,7 +91,6 @@ public class GridViewPhotoAdapter extends BaseAdapter {
 				Bitmap bitmap = media.getFrameAtTime();
 				viewHolder.simpleDraweeView.setImageBitmap(bitmap);
 			}
-
 			if(position == 0){
 				viewHolder.leftTipTextView.setVisibility(View.VISIBLE);
 				viewHolder.packageTextView.setBackground(context.getResources().getDrawable(R.color.colorPrimary));
@@ -106,15 +100,12 @@ public class GridViewPhotoAdapter extends BaseAdapter {
 			}
 
 		}
-
 		viewHolder.deleteImageView.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				deleteItemClickListener.onListItemClickListener(position);
 			}
 		});
-
-
 		return convertView;
 	}
 
