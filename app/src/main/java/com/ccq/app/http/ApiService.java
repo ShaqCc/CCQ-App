@@ -4,6 +4,7 @@ import android.database.Observable;
 
 import com.ccq.app.entity.BannerBean;
 import com.ccq.app.entity.BaseBean;
+import com.ccq.app.entity.BindResultBaen;
 import com.ccq.app.entity.BrandBean;
 import com.ccq.app.entity.BrandModelBean;
 import com.ccq.app.entity.Car;
@@ -77,9 +78,12 @@ public interface ApiService {
     Call<UserBean> getUserInfo(@Query("unionid") String unionid);
 
     @GET("/user/bind")
-    Call<Object> bindUserInfo(@Query("unionid") String unionid,@Query("mobile")String mobile,
-                              @Query("code")String code,@Query("headimg")String headimg,@Query("longitude")String longtitude,
-                              @Query("latitude")String latitude,@Query("nickname")String nickName);
+    Call<BindResultBaen> bindUserInfo(@Query("unionid") String unionid, @Query("mobile")String mobile,
+                                      @Query("code")String code, @Query("headimg")String headimg, @Query("longitude")String longtitude,
+                                      @Query("latitude")String latitude, @Query("nickname")String nickName);
+
+    @GET("/user/info")
+    Call<UserBean> getUser(@Query("userid")String userid);
 
 
     @GET("/mobile/code")//发送验证码

@@ -15,6 +15,7 @@ import com.ccq.app.entity.BaseBean;
 
 public interface IsetFileView {
     Activity get();
-    void onReceiveBindResult();
+    void bindSuccess();
+    void bindFailuer();
     void sendCodeSuccess(BaseBean baseBean);
 }

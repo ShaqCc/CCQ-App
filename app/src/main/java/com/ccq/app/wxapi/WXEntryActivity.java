@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
 
@@ -16,6 +17,7 @@ import com.ccq.app.ui.MainActivity;
 import com.ccq.app.ui.user.BindPhoneActivity;
 import com.ccq.app.utils.AppCache;
 import com.ccq.app.utils.Constants;
+import com.ccq.app.utils.JmessageUtils;
 import com.ccq.app.utils.KLog;
 
 import com.ccq.app.utils.SharedPreferencesUtils;
@@ -29,6 +31,8 @@ import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 import org.greenrobot.eventbus.EventBus;
 
+import cn.jpush.im.android.api.model.UserInfo;
+import cn.jpush.im.android.api.options.RegisterOptionalUserInfo;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -128,9 +132,9 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
         apiService.getAccessToken(url)
                 .enqueue(new Callback<WxLoginResultBean>() {
                     @Override
-                    public void onResponse(Call<WxLoginResultBean> call, Response<WxLoginResultBean> response) {
+                    public void onResponse(@NonNull Call<WxLoginResultBean> call, @NonNull Response<WxLoginResultBean> response) {
                         //根据unid获取账户信息
-                        if (response != null && response.body() != null) {
+                        if (response.body() != null) {
                             String unionid = response.body().getUnionid();
                             SharedPreferencesUtils.setParam(WXEntryActivity.this, Constants.KEY_UNIONID,
                                     unionid);
@@ -141,7 +145,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                                     .enqueue(new Callback<UserBean>() {
                                         @Override
                                         public void onResponse(Call<UserBean> call, Response<UserBean> response) {
-                                            if (response == null || response.body() == null) {
+                                            if (response.body() == null) {
 
                                                 //用户首次登陆，获取用户微信里的昵称，头像等
                                                 apiService.getWxUserInfo(String.format(wxUserUrl, access_token, openid))
@@ -170,6 +174,13 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                                                 AppCache.setUserBean(response.body());
                                                 startActivity(new Intent(WXEntryActivity.this, MainActivity.class));
                                                 EventBus.getDefault().post(Constants.WX_LOGIN_SUCCESS);
+                                                RegisterOptionalUserInfo info = new RegisterOptionalUserInfo();
+                                                info.setAvatar(AppCache.getUserBean().getHeadimgurl());
+                                                info.setNickname(AppCache.getUserBean().getNickname());
+                                                info.setGender(UserInfo.Gender.male);
+                                                //自动登录极光
+                                                JmessageUtils.registerIM(WXEntryActivity.this,AppCache.getUserBean().getUserid(),
+                                                        AppCache.getUserBean().getUserid(),info);
                                             }
                                         }
 

@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide;
 import com.ccq.app.R;
 import com.ccq.app.base.BaseFragment;
 import com.ccq.app.base.BasePresenter;
+import com.ccq.app.entity.UserBean;
 import com.ccq.app.utils.AppCache;
 import com.ccq.app.utils.Constants;
 import com.ccq.app.utils.ToastUtils;
@@ -62,7 +63,11 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
 
     @Override
     public void initData() {
-
+        UserBean userBean = AppCache.getUserBean();
+        if (userBean!=null) {
+            Glide.with(get()).load(userBean.getHeadimgurl()).into(ivHeader);
+            tvName.setText(userBean.getNickname());
+        }
     }
 
     @Subscribe

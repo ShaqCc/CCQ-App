@@ -13,7 +13,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ccq.app.R;
-import com.yan.inflaterauto.InflaterAuto;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -146,8 +145,4 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
             mPresenter.detachView();
     }
 
-    @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(InflaterAuto.wrap(base));
-    }
 }

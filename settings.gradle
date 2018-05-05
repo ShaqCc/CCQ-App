@@ -1,1 +1,1 @@
-include ':app', ':bottombar-lib', ':banner-lib', ':dialog-lib', ':index-lib', ':tag-lib'
+include ':app', ':bottombar-lib', ':banner-lib', ':dialog-lib', ':index-lib', ':tag-lib', ':demo', ':chatinput', ':messagelist'

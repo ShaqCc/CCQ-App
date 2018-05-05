@@ -12,7 +12,10 @@ import android.widget.TextView;
 import com.ccq.app.R;
 import com.ccq.app.base.BaseActivity;
 import com.ccq.app.entity.BaseBean;
+import com.ccq.app.entity.UserBean;
 import com.ccq.app.entity.WxUserInfo;
+import com.ccq.app.utils.AppCache;
+import com.ccq.app.utils.JmessageUtils;
 import com.ccq.app.utils.ToastUtils;
 
 import butterknife.BindView;
@@ -102,7 +105,16 @@ public class BindPhoneActivity extends BaseActivity<SetFilePresenter> implements
     }
 
     @Override
-    public void onReceiveBindResult() {
+    public void bindSuccess() {
+        UserBean userBean = AppCache.getUserBean();
+        if (userBean != null) {
+            JmessageUtils.registerIM(userBean);
+        }
+        finish();
+    }
+
+    @Override
+    public void bindFailuer() {
 
     }
 
@@ -121,8 +133,11 @@ public class BindPhoneActivity extends BaseActivity<SetFilePresenter> implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        myTimer.cancel();
-        myTimer = null;
+        if (myTimer != null) {
+            myTimer.cancel();
+            myTimer = null;
+
+        }
     }
 
     class MyTimer extends CountDownTimer {

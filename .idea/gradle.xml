@@ -11,8 +11,11 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/banner-lib" />
             <option value="$PROJECT_DIR$/bottombar-lib" />
+            <option value="$PROJECT_DIR$/chatinput" />
+            <option value="$PROJECT_DIR$/demo" />
             <option value="$PROJECT_DIR$/dialog-lib" />
             <option value="$PROJECT_DIR$/index-lib" />
+            <option value="$PROJECT_DIR$/messagelist" />
             <option value="$PROJECT_DIR$/tag-lib" />
           </set>
         </option>

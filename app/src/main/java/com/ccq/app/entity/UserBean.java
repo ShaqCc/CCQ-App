@@ -72,7 +72,7 @@ public class UserBean {
     private int tjadmin;
     private String tjpower;
     private int type;
-    private int userid;
+    private String userid;
     private int vip;
     private int viptype;
     private int zhiding;
@@ -293,11 +293,11 @@ public class UserBean {
         this.type = type;
     }
 
-    public int getUserid() {
+    public String getUserid() {
         return userid;
     }
 
-    public void setUserid(int userid) {
+    public void setUserid(String userid) {
         this.userid = userid;
     }
 

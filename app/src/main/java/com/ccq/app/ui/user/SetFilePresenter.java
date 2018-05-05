@@ -1,7 +1,11 @@
 package com.ccq.app.ui.user;
 
 import com.ccq.app.base.BasePresenter;
+import com.ccq.app.base.CcqApp;
 import com.ccq.app.entity.BaseBean;
+import com.ccq.app.entity.BindResultBaen;
+import com.ccq.app.entity.UserBean;
+import com.ccq.app.utils.AppCache;
 import com.ccq.app.utils.ToastUtils;
 
 import retrofit2.Call;
@@ -47,16 +51,41 @@ public class SetFilePresenter extends BasePresenter<IsetFileView> {
     public void bindUserInfo(String unionid, String mobile, String code, String headimg, String longtitude,
                              String latitude, String nickName) {
         apiService.bindUserInfo(unionid, mobile, code, headimg, longtitude, latitude, nickName)
-                .enqueue(new Callback<Object>() {
+                .enqueue(new Callback<BindResultBaen>() {
                     @Override
-                    public void onResponse(Call<Object> call, Response<Object> response) {
-                        mView.onReceiveBindResult();
+                    public void onResponse(Call<BindResultBaen> call, Response<BindResultBaen> response) {
+                        if (response.body()!=null){
+                            if (response.body().getCode() == 0){
+                                ToastUtils.show(CcqApp.getAppContext(),"绑定成功！");
+                                //获取user信息
+                                getUser(response.body().getUserid());
+                            }
+                        }
                     }
 
                     @Override
-                    public void onFailure(Call<Object> call, Throwable t) {
-                        mView.onReceiveBindResult();
+                    public void onFailure(Call<BindResultBaen> call, Throwable t) {
+                        ToastUtils.show(CcqApp.getAppContext(),t.getMessage());
+                        mView.bindFailuer();
                     }
                 });
+    }
+
+    void getUser(String userid){
+        apiService.getUser(userid).enqueue(new Callback<UserBean>() {
+            @Override
+            public void onResponse(Call<UserBean> call, Response<UserBean> response) {
+                if (response.body()!=null){
+                    AppCache.setUserBean(response.body());
+                    mView.bindSuccess();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserBean> call, Throwable t) {
+                ToastUtils.show(CcqApp.getAppContext(),t.getMessage());
+                mView.bindFailuer();
+            }
+        });
     }
 }

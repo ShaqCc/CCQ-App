@@ -15,6 +15,8 @@ public class Constants {
     public static String WX_STATE = "ccq_wx_login";
 
     public static String KEY_UNIONID = "key_unionid";
+    public static String JIGUANG_APP_KEY = "eb9dced406535d33bd0f637e";
+    public static String JIGUANG_SECRET = "4678823d3cb258fd2539579a";
 
 
     //event bus

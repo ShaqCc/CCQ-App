@@ -407,8 +407,10 @@ public class PublishFragment extends BaseFragment {
 
     @Override
     public void onStop() {
-        locationService.unregisterListener(mListener); //注销掉监听
-        locationService.stop(); //停止定位服务
+        if(locationService!=null){
+            locationService.unregisterListener(mListener); //注销掉监听
+            locationService.stop(); //停止定位服务
+        }
         super.onStop();
     }
 
