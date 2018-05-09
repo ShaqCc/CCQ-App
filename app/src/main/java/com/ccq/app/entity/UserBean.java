@@ -94,8 +94,8 @@ public class UserBean {
     /**
      * 个人中心 （已shou数量，未售数量，简介,地区，经纬度）
      */
-    private int yishouCount;
-    private int zaishouCount;
+    private int yishou_count;
+    private int zaishou_count;
     private String content;
     private String provinceName;
     private String cityName;
@@ -134,20 +134,20 @@ public class UserBean {
         this.weidu = weidu;
     }
 
-    public int getYishouCount() {
-        return yishouCount;
+    public int getYishou_count() {
+        return yishou_count;
     }
 
-    public void setYishouCount(int yishouCount) {
-        this.yishouCount = yishouCount;
+    public void setYishou_count(int yishou_count) {
+        this.yishou_count = yishou_count;
     }
 
-    public int getZaishouCount() {
-        return zaishouCount;
+    public int getZaishou_count() {
+        return zaishou_count;
     }
 
-    public void setZaishouCount(int zaishouCount) {
-        this.zaishouCount = zaishouCount;
+    public void setZaishou_count(int zaishou_count) {
+        this.zaishou_count = zaishou_count;
     }
 
     public String getContent() {

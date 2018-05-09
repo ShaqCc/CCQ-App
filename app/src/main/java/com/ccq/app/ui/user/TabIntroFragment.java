@@ -84,8 +84,8 @@ public class TabIntroFragment extends BaseFragment {
                 tvMyinfoContent.setText(userBean.getContent());
             }
 
-            tvOnSaleCount.setText(String.valueOf(userBean.getZaishouCount()));
-            tvSaleOutCount.setText(String.valueOf(userBean.getYishouCount()));
+            tvOnSaleCount.setText(String.valueOf(userBean.getZaishou_count()));
+            tvSaleOutCount.setText(String.valueOf(userBean.getYishou_count()));
         }
 
     }
