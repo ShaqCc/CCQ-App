@@ -34,6 +34,7 @@
                     <TextView
                         style="@style/labelLeft"
                         android:text="*"
+                        android:textSize="14sp"
                         android:textColor="@color/red"
                         />
                     <TextView
@@ -282,13 +283,13 @@
 
                 <Button
                     android:id="@+id/btn_submit"
-                    android:background="@color/colorPrimary"
+                    android:background="@drawable/btn_style_one"
                     android:layout_weight="1"
                     android:layout_width="match_parent"
                     android:layout_height="40dip"
                     android:textColor="@color/white"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="@dimen/paddingSmall"
+                    android:layout_marginLeft="@dimen/paddingSmall"
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="25dp"
                     android:gravity="center"

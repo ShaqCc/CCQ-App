@@ -30,6 +30,16 @@ public class Car {
     private String isshare;
     private java.util.List<PicImgBean> pic_img;
 
+    private PicImgBean picfmid_img;
+
+    public PicImgBean getPicfmid_img() {
+        return picfmid_img;
+    }
+
+    public void setPicfmid_img(PicImgBean picfmid_img) {
+        this.picfmid_img = picfmid_img;
+    }
+
     public String getIsshare() {
         return isshare;
     }

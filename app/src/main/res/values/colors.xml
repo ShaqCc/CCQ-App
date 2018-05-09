@@ -26,6 +26,9 @@
     <color name="steelblue">#4682B4</color>
     <color name="list_background_gray">#e3e3e3</color>
 
+    <color name="tab_text">#898787</color>
+    <color name="orange">#FFA500</color>
+
 
     <color name="chat_title_bg">#427BED</color>
     <color name="google_red">#FFC93437</color>

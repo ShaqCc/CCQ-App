@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_marginLeft="@dimen/padding"
+    android:layout_marginRight="@dimen/padding"
+    >
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/item_info_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/add_photo"
+                    />
+
+                <TextView
+                    android:id="@+id/item_image_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/item_info_image"
+                    android:layout_alignRight="@id/item_info_image"
+                    android:text="4"
+                    android:padding="4dp"
+                    android:textColor="@color/white"
+                    />
+
+        </RelativeLayout>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginLeft="@dimen/margin"
+            android:layout_gravity="bottom"
+            >
+
+                <TextView
+                    android:id="@+id/item_brand_model_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="品牌型号名称"
+                    android:padding="2dp"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/LargeTextSize"
+                    android:textColor="@color/primary_text"
+                    />
+
+                <TextView
+                    android:id="@+id/item_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="地址"
+                    android:textColor="@color/secondary_text"
+                    android:paddingRight="4dp"
+                    android:paddingLeft="4dp"
+                    android:paddingBottom="4dp"
+                    android:textSize="@dimen/BasicTextSize"
+                    android:layout_marginRight="8dp"
+                    />
+
+                <TextView
+                    android:id="@+id/item_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="时间"
+                    android:textColor="@color/lightgrey"
+                    android:paddingRight="4dp"
+                    android:paddingLeft="4dp"
+                    android:paddingBottom="4dp"
+                    android:textSize="@dimen/SmallerTextSize"
+                    android:layout_marginRight="8dp"
+                    />
+
+                <TextView
+                    android:id="@+id/item_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="价格"
+                    android:textColor="@color/orange"
+                    android:padding="4dp"
+                    android:layout_gravity="bottom"
+                     />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/item_manage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="管理"
+            android:textSize="@dimen/BasicTextSize"
+            android:layout_gravity="bottom"
+            android:textColor="@color/steelblue"
+            android:padding="4dp"
+             />
+
+</LinearLayout>
+

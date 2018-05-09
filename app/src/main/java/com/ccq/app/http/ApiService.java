@@ -10,6 +10,7 @@ import com.ccq.app.entity.BrandModelBean;
 import com.ccq.app.entity.Car;
 import com.ccq.app.entity.CarInfo;
 import com.ccq.app.entity.Province;
+import com.ccq.app.entity.SubscribeUser;
 import com.ccq.app.entity.UserBean;
 import com.ccq.app.entity.WxLoginResultBean;
 import com.ccq.app.entity.WxUserInfo;
@@ -107,8 +108,13 @@ public interface ApiService {
     Call<List<BrandModelBean>> getBrandModelList(@Query("brandid") String brandid);
 
 
+    /**
+     * 车辆图片上传
+     * @param file
+     * @return
+     */
     @Multipart
-    @POST("/uploadimage")
+    @POST("/upload")
     Call<Object> uploadImages(@Part MultipartBody.Part file);
 
 
@@ -117,7 +123,97 @@ public interface ApiService {
     Call<Object> uploadVideos(@Part MultipartBody.Part file);
 
     @POST("/car/addcar")
-    Call<Object> addCarInfo(@Body CarInfo user);
+    Call<Object> addCarInfo(@QueryMap Map<String, Object> carParams);
+
+    /**
+     * 修改车辆信息
+     * @param user
+     * @return
+     */
+    @POST("/car/edit")
+    Call<Object> editCarInfo(@Body CarInfo user);
+
+    @GET("/car/nianfen")
+    Call<List<Object>> getCarNianFenList();
+
+    /**
+     * 获取车辆列表
+     *
+     * @param carParams
+     * @return
+     */
+    @POST("/user/carlist")
+    Call<List<Car>> getUserCarList(@QueryMap Map<String, String> carParams);
+
+    @POST("/user/subscribe/list")
+    Call<SubscribeUser> getUserSubscribe(@QueryMap Map<String, String> carParams);
+
+    @POST("/user/subscribe/fans")
+    Call<SubscribeUser> getUserFans(@QueryMap Map<String, String> carParams);
+
+    @POST("/user/subscribe/remind")
+    Call<Object> setUserSubRemind(@QueryMap Map<String, String> carParams);
+
+    @POST("/user/subscribe/add")
+    Call<Object> setUserSubAdd(@QueryMap Map<String, String> carParams);
+
+    @POST("/user/subscribe/remove")
+    Call<Object> setUserSubRemove(@QueryMap Map<String, String> carParams);
+
+
+
+    @POST("/user/subscribe/count")
+    Call<Object> getSubscribeCount(@Query("userid") String userid);
+
+    /**
+     * 发布信息前检测
+     * @param userid
+     * @return
+     */
+    @POST("/user/sendcheck")
+    Call<Object> sendCheck(@Query("userid") String userid);
+
+    /**
+     * 修改车辆状态
+     * @param userid
+     * @return
+     */
+    @POST("/car/status")
+    Call<Object> setCarStatus(@Query("userid") String userid,@Query("carid") String carid);
+
+    /**
+     * 删除车辆信息
+     * @param userid
+     * @return
+     */
+    @POST("/car/remove")
+    Call<Object> deleteCar(@Query("userid") String userid,@Query("carid") String carid);
+
+     /**
+     * 刷新车辆信息
+     * @param userid
+     * @return
+     */
+    @POST("/car/remove")
+    Call<Object> refreshCarInfo(@Query("userid") String userid,@Query("carid") String carid);
+
+
+    /**
+     * 修改个人简介
+     * @param userid
+     * @return
+     */
+    @POST("/user/info/setcontent")
+    Call<Object> editUserIntro(@Query("userid") String userid,@Query("content") String content);
+
+
+    /**
+     * 生成分享二维码
+     * @param userid
+     * @return
+     */
+    @POST("/user/qrcode")
+    Call<Object> getQrcode(@Query("userid") String userid);
 
     @GET
     Call<ResponseBody> downloadPic(@Url String url);
