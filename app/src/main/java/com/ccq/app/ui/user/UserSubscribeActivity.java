@@ -236,11 +236,9 @@ public class UserSubscribeActivity extends Activity {
             public void onResponse(Call<UserBean> call, Response<UserBean> response) {
                 if (response.body()!=null){
                     UserBean bean = response.body();
-                    user.setOnSaleCount(bean.getZaishouCount());
-                    user.setSaleOutCount(bean.getYishouCount());
-
+                    user.setOnSaleCount(bean.getZaishou_count());
+                    user.setSaleOutCount(bean.getYishou_count());
                     adapter.notifyDataSetChanged();
-
                 }
             }
 
