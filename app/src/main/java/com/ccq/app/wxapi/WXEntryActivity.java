@@ -23,7 +23,6 @@ import com.ccq.app.utils.KLog;
 
 import com.ccq.app.utils.SharedPreferencesUtils;
 import com.ccq.app.utils.ToastUtils;
-import com.ccq.app.utils.Utils;
 import com.tencent.mm.opensdk.modelbase.BaseReq;
 import com.tencent.mm.opensdk.modelbase.BaseResp;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
@@ -33,14 +32,9 @@ import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.io.File;
-
-import cn.jpush.im.android.api.model.UserInfo;
-import cn.jpush.im.android.api.options.RegisterOptionalUserInfo;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.http.Url;
 
 /**************************************************
  *
@@ -145,61 +139,80 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                                     unionid);
                             final String access_token = response.body().getAccess_token();
                             final String openid = response.body().getOpenid();
-
-                            apiService.getUserInfo(unionid)//获取系统内的用户信息
-                                    .enqueue(new Callback<UserBean>() {
-                                        @Override
-                                        public void onResponse(Call<UserBean> call, Response<UserBean> response) {
-                                            if (response.body() == null) {
-
-                                                //用户首次登陆，获取用户微信里的昵称，头像等
-                                                apiService.getWxUserInfo(String.format(wxUserUrl, access_token, openid))
-                                                        .enqueue(new Callback<WxUserInfo>() {
-                                                            @Override
-                                                            public void onResponse(Call<WxUserInfo> call, Response<WxUserInfo> response) {
-                                                                //下载用户头像
-                                                                HttpClient.getInstance(WXEntryActivity.this).download(apiService.downloadPic(response.body().getHeadimgurl()));
-                                                                //跳转到绑定手机页面
-                                                                BindPhoneActivity.launch(WXEntryActivity.this, response.body());
-                                                                new Handler().postDelayed(new Runnable() {
-                                                                    @Override
-                                                                    public void run() {
-                                                                        finish();
-                                                                    }
-                                                                }, 1000);
-                                                            }
-
-                                                            @Override
-                                                            public void onFailure(Call<WxUserInfo> call, Throwable t) {
-                                                                ToastUtils.show(WXEntryActivity.this, t.getMessage());
-                                                                finish();
-                                                            }
-                                                        });
-
-                                            } else {
-                                                SharedPreferencesUtils.setParam(WXEntryActivity.this,Constants.USER_ID,response.body().getUserid());
-                                                //用户非首次登陆
-                                                AppCache.setUserBean(response.body());
-                                                startActivity(new Intent(WXEntryActivity.this, MainActivity.class));
-                                                EventBus.getDefault().post(Constants.WX_LOGIN_SUCCESS);
-                                                //注册登录极光
-                                                JmessageUtils.registerIM(response.body());
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onFailure(Call<UserBean> call, Throwable t) {
-                                            ToastUtils.show(WXEntryActivity.this, t.getMessage());
-                                            finish();
-                                        }
-                                    });
+                            //获取系统内的用户信息
+                            getUserInfoByUnionid(unionid, access_token, openid, wxUserUrl);
                         }
-
                     }
-
                     @Override
                     public void onFailure(Call<WxLoginResultBean> call, Throwable t) {
                         ToastUtils.show(WXEntryActivity.this, "微信登陆失败，请重试");
+                        finish();
+                    }
+                });
+    }
+
+    /**
+     * 获取铲车圈系统内用户的信息
+     * @param unionid
+     * @param access_token
+     * @param openid
+     * @param wxUserUrl
+     */
+    private void getUserInfoByUnionid(String unionid, final String access_token, final String openid, final String wxUserUrl) {
+        apiService.loginWithWeixin(unionid)
+                .enqueue(new Callback<UserBean>() {
+                    @Override
+                    public void onResponse(Call<UserBean> call, Response<UserBean> response) {
+                        if (response.body() == null) {
+                            //用户首次登陆，获取用户微信里的昵称，头像等
+                            getWxUserInfo(wxUserUrl, access_token, openid);
+
+                        } else {
+                            SharedPreferencesUtils.setParam(WXEntryActivity.this, Constants.USER_ID,response.body().getUserid());
+                            //用户非首次登陆
+                            AppCache.setUserBean(response.body());
+                            startActivity(new Intent(WXEntryActivity.this, MainActivity.class));
+                            EventBus.getDefault().post(Constants.WX_LOGIN_SUCCESS);
+                            //注册登录极光
+                            JmessageUtils.registerIM(response.body());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<UserBean> call, Throwable t) {
+                        ToastUtils.show(WXEntryActivity.this, t.getMessage());
+                        finish();
+                    }
+                });
+    }
+
+    /**
+     * 获取微信用户信息
+     * @param wxUserUrl
+     * @param access_token
+     * @param openid
+     */
+    private void getWxUserInfo(String wxUserUrl, String access_token, String openid) {
+
+        apiService.getWxUserInfo(String.format(wxUserUrl, access_token, openid))
+                .enqueue(new Callback<WxUserInfo>() {
+                    @Override
+                    public void onResponse(Call<WxUserInfo> call, Response<WxUserInfo> response) {
+                        //下载用户头像
+                        HttpClient.getInstance(WXEntryActivity.this).download(apiService.downloadPic(response.body().getHeadimgurl()));
+                        //跳转到绑定手机页面
+                        BindPhoneActivity.launch(WXEntryActivity.this, response.body());
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                finish();
+                            }
+                        }, 1000);
+                    }
+
+                    @Override
+                    public void onFailure(Call<WxUserInfo> call, Throwable t) {
+                        ToastUtils.show(WXEntryActivity.this, t.getMessage());
                         finish();
                     }
                 });

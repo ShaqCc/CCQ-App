@@ -3,17 +3,23 @@ package com.ccq.app.base;
 import android.app.Application;
 import android.content.Context;
 import android.support.multidex.MultiDexApplication;
+import android.text.TextUtils;
 
 import com.baidu.mapapi.SDKInitializer;
 import com.ccq.app.entity.UserBean;
+import com.ccq.app.http.RetrofitClient;
 import com.ccq.app.service.LocationService;
 import com.ccq.app.utils.AppCache;
 import com.ccq.app.utils.Constants;
 import com.ccq.app.utils.JmessageUtils;
+import com.ccq.app.utils.SharedPreferencesUtils;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 import cn.jpush.im.android.api.JMessageClient;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 /****************************************
@@ -31,15 +37,6 @@ public class CcqApp extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         sContext = getApplicationContext();
-//        初始化屏幕适配设置
-//        InflaterAuto.init(new InflaterAuto.Builder()
-//                .width(720)
-//                .height(1280)
-//                .baseOnDirection(AutoBaseOn.Both)
-//                .inflaterConvert(new InfAutoInflaterConvert())
-//                .build()
-//        );
-
         //微信
         iwxapi = WXAPIFactory.createWXAPI(this, Constants.WX_APP_ID, true);
         iwxapi.registerApp(Constants.WX_APP_ID);
@@ -47,14 +44,29 @@ public class CcqApp extends MultiDexApplication {
          * 初始化定位sdk，建议在Application中创建
          */
         locationService = new LocationService(getApplicationContext());
-//        SDKInitializer.initialize(getApplicationContext());
+        SDKInitializer.initialize(getApplicationContext());
         //初始化极光IM
         JMessageClient.setDebugMode(true);
         JMessageClient.init(getApplicationContext(), true);
 
-        UserBean userBean = AppCache.getUserBean();
-        if (userBean !=null){
-            JmessageUtils.registerIM(userBean);
+        String userid = (String) SharedPreferencesUtils.getParam(this, Constants.USER_ID, "");
+        if (!TextUtils.isEmpty(userid)) {
+            RetrofitClient.getInstance().getApiService().getUser(userid)
+                    .enqueue(new Callback<UserBean>() {
+                        @Override
+                        public void onResponse(Call<UserBean> call, Response<UserBean> response) {
+                            if (response.isSuccessful() && response.body()!=null) {
+                                AppCache.setUserBean(response.body());
+                                //登录极光
+                                JmessageUtils.registerIM(response.body());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<UserBean> call, Throwable t) {
+
+                        }
+                    });
         }
 
     }
