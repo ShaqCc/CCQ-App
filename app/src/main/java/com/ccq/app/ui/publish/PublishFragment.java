@@ -412,7 +412,7 @@ public class PublishFragment extends BaseFragment {
         map.put("address",btnCarLocation.getText().toString());
         map.put("content",etDescription.getText().toString());
         map.put("imglist",imgids);
-        map.put("videolist",videoids);
+        map.put("videolist","");
         map.put("latitude",point.latitude);
         map.put("longitude",point.longitude);
         map.put("number",brandModelBean.getId());
@@ -436,7 +436,9 @@ public class PublishFragment extends BaseFragment {
 
             @Override
             public void onFailure(Call<Object> call, Throwable t) {
-
+                if(t!=null){
+                    Log.e("sssss====",t.getCause().toString());
+                }
             }
         });
 
@@ -545,12 +547,13 @@ public class PublishFragment extends BaseFragment {
         if (resultCode == ImagePicker.RESULT_CODE_ITEMS) {
             ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
             if(images!=null && images.size()>0){
-                String path = images.get(0).path;
-                mMultiSelectPath.add(path);
-                photoPath.add(path);
+                for (ImageItem item : images){
+                    String path = item.path;
+                    mMultiSelectPath.add(path);
+                    photoPath.add(path);
+                }
                 setGridViewAdapter();
             }
-
         }
 
         if (resultCode == RESULT_OK) {
