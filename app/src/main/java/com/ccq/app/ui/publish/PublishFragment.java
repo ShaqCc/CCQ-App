@@ -38,9 +38,13 @@ import com.ccq.app.entity.CarInfo;
 import com.ccq.app.http.ApiService;
 import com.ccq.app.http.RetrofitClient;
 import com.ccq.app.service.LocationService;
+import com.ccq.app.utils.AppCache;
 import com.ccq.app.utils.FileUtil;
+import com.ccq.app.utils.ToastUtils;
 import com.ccq.app.weidget.ListDialog;
 import com.ccq.app.weidget.MyGridView;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.loader.ImageLoader;
@@ -113,8 +117,7 @@ public class PublishFragment extends BaseFragment {
     private ArrayList<String>  mMultiSelectPath = new ArrayList<>();
     private ArrayList<String>  photoPath = new ArrayList<>();
     private ArrayList<String>  videoPath = new ArrayList<>();
-    private List<String> carAgeList;
-    private Activity thisActivity;
+    private List<String> carAgeList = new ArrayList<>();
     private AlertDialog alert;
     private CheckListAdapter checkListAdapter;
 
@@ -133,9 +136,9 @@ public class PublishFragment extends BaseFragment {
 
     private ApiService apiService;
 
-
     private String imgids;
     private String videoids;
+
 
     @Override
     protected int inflateContentView() {
@@ -151,6 +154,8 @@ public class PublishFragment extends BaseFragment {
     protected void initView(View rootView) {
         setImageSetting();
         setGridViewAdapter();
+        if(AppCache.getUserBean()!=null) etUserPhone.setText(AppCache.getUserBean().getMobile());
+
         gridviewPhotoVideo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -163,7 +168,7 @@ public class PublishFragment extends BaseFragment {
 //                    startActivityForResult(intentPic,
 //                            RESULT_LOAD_IMAGE);
 
-                    Intent intent = new Intent(thisActivity, ImageGridActivity.class);
+                    Intent intent = new Intent(get(), ImageGridActivity.class);
                     startActivityForResult(intent, RESULT_LOAD_IMAGE);
 
                 }else if(position == mMultiSelectPath.size() +1){
@@ -185,15 +190,19 @@ public class PublishFragment extends BaseFragment {
 
     @Override
     public void initData() {
-        thisActivity = getActivity();
-        getBDlocation();
-        carAgeList = new ArrayList<String>();
-        for(int a=2017 ;a>=2000 ; a--){
-            carAgeList.add( String.valueOf(a));
-        }
         apiService = RetrofitClient.getInstance().getApiService();
+        getBDlocation();
+        getNianFen();
+    }
+
+    public void initYearList(){
+//        carAgeList = new ArrayList<String>();
+//        for(int a=2017 ;a>=2000 ; a--){
+//            carAgeList.add( String.valueOf(a));
+//        }
         checkListAdapter = new CheckListAdapter(getActivity(), carAgeList);
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -231,9 +240,34 @@ public class PublishFragment extends BaseFragment {
                 tvFold.setVisibility(View.GONE);
                 break;
             case R.id.btn_submit:
-                uploadFile();
+                sendCheck();
                 break;
         }
+    }
+
+    private void sendCheck(){
+        if(AppCache.getUserBean()==null){
+            ToastUtils.show(get(),"请先登录");
+            return ;
+        }
+
+        apiService.sendCheck(AppCache.getUserBean().getUserid()).enqueue(new Callback<Object>() {
+            @Override
+            public void onResponse(Call<Object> call, Response<Object> response) {
+                Map<String,Object> map = (Map<String, Object>) response.body();
+                if(0.0== (Double)map.get("code")) {
+                    uploadFile();
+                }else{
+                    ToastUtils.show(get(), (String) map.get("message"));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Object> call, Throwable t) {
+
+            }
+        });
+
     }
 
     private void uploadFile(){
@@ -251,6 +285,31 @@ public class PublishFragment extends BaseFragment {
         }
 
 
+    }
+
+
+    private void getNianFen(){
+        apiService.getCarNianFenList().enqueue(new Callback<List<Object>>() {
+            @Override
+            public void onResponse(Call<List<Object>> call, Response<List<Object>> response) {
+                if(response!=null && response.body()!=null){
+                    List<Object> list = response.body();
+                    if(list.size()>0){
+                        for (Object obj : list){
+                            JsonObject returnData = new JsonParser().parse(obj.toString()).getAsJsonObject();
+                            String year = returnData.get("name").getAsString();
+                            carAgeList.add(year);
+                        }
+                        initYearList();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Object>> call, Throwable t) {
+
+            }
+        });
     }
 
     private void uploadImg(){
@@ -311,46 +370,67 @@ public class PublishFragment extends BaseFragment {
 
     private boolean validate(){
         if(brandModelBean==null){
+            ToastUtils.show(get(),"请选择品牌型号");
             return false;
         }
         if(TextUtils.isEmpty(btnCarAge.getText())){
+            ToastUtils.show(get(),"请选择车龄");
             return false;
         }
         if(TextUtils.isEmpty(etUserPhone.getText())){
+            ToastUtils.show(get(),"请输入手机号码");
             return false;
         }
-        if(mMultiSelectPath!=null && mMultiSelectPath.size()>3){
+        if(mMultiSelectPath == null || mMultiSelectPath.size()< 4 ||mMultiSelectPath.size()>18){
+            ToastUtils.show(get(),"请上传4-18张图片");
             return false;
         }
         return true;
     }
 
     private void submitData(){
-        CarInfo  car = new CarInfo();
-        car.setAddress(btnCarLocation.getText().toString());
-        car.setContent(etDescription.getText().toString());
-        car.setImglist(imgids);
-        car.setVideolist(videoids);
-        car.setLatitude(String.valueOf(point.latitude));
-        car.setLongitude(String.valueOf(point.longitude));
-        car.setNumber(Integer.parseInt(brandModelBean.getId()));
-        car.setPhone(etUserPhone.getText().toString());
-        car.setPinpai(Integer.parseInt(brandBean.getId()));
-        if(!TextUtils.isEmpty(etCarPrice.getText().toString())){
-            car.setPrice(Float.parseFloat(etCarPrice.getText().toString()));
-        }
-//        car.setUserid();
-        car.setYear(Integer.parseInt(btnCarAge.getText().toString()));
+//        CarInfo  car = new CarInfo();
+//        car.setAddress(btnCarLocation.getText().toString());
+//        car.setContent(etDescription.getText().toString());
+//        car.setImglist(imgids);
+//        car.setVideolist(videoids);
+//        car.setLatitude(String.valueOf(point.latitude));
+//        car.setLongitude(String.valueOf(point.longitude));
+//        car.setNumber(Integer.parseInt(brandModelBean.getId()));
+//        car.setPhone(etUserPhone.getText().toString());
+//        car.setPhoneCode("");
+//        car.setPinpai(Integer.parseInt(brandBean.getId()));
+//        if(!TextUtils.isEmpty(etCarPrice.getText().toString())){
+//            car.setPrice(Float.parseFloat(etCarPrice.getText().toString()));
+//        }
+//        if(AppCache.getUserBean()!=null){
+//            car.setUserid(Integer.valueOf(AppCache.getUserBean().getUserid()));
+//        }
+//        car.setYear(Integer.parseInt(btnCarAge.getText().toString()));
 
-        apiService.addCarInfo(car).enqueue(new Callback<Object>() {
+        HashMap<String,Object> map = new HashMap<>();
+        map.put("address",btnCarLocation.getText().toString());
+        map.put("content",etDescription.getText().toString());
+        map.put("imglist",imgids);
+        map.put("videolist",videoids);
+        map.put("latitude",point.latitude);
+        map.put("longitude",point.longitude);
+        map.put("number",brandModelBean.getId());
+        map.put("phone",etUserPhone.getText().toString());
+        map.put("pinpai",brandBean.getId());
+        map.put("price",etCarPrice.getText().toString());
+        map.put("userid",AppCache.getUserBean().getUserid());
+        map.put("year",btnCarAge.getText().toString());
+
+        apiService.addCarInfo(map).enqueue(new Callback<Object>() {
             @Override
             public void onResponse(Call<Object> call, Response<Object> response) {
                 Map<String,String> map = (Map<String, String>) response.body();
                 if("0.0".equals(map.get("code"))) {
-                    videoids = map.get("imageid");
-                    submitData();
+                    String message = map.get("message");
                 }else{
                     String message = map.get("message");
+                    ToastUtils.show(get(),message);
                 }
             }
 
@@ -389,7 +469,7 @@ public class PublishFragment extends BaseFragment {
     public void showBrandSelectDialog(){
 
         Intent intent = new Intent();
-        intent.setClass(thisActivity, BrandModelSelectActivity.class);
+        intent.setClass(get(), BrandModelSelectActivity.class);
         startActivityForResult(intent,REQUEST_BRAND_MODEL_CODE);
 
     }
@@ -434,7 +514,7 @@ public class PublishFragment extends BaseFragment {
 
     private void selectLocationAtMap(){
         Intent intent = new Intent();
-        intent.setClass(thisActivity, BaseMapActivity.class);
+        intent.setClass(get(), BaseMapActivity.class);
         if(point!=null){
             intent.putExtra("latlng",point);
         }
@@ -443,8 +523,8 @@ public class PublishFragment extends BaseFragment {
 
     private void showSelectDialog( ) {
         int selectPosition = carAgeList.indexOf(selectCarAge);
-        final ListDialog mdialog = new ListDialog(thisActivity);
-        alert = new AlertDialog.Builder(thisActivity).create();
+        final ListDialog mdialog = new ListDialog(get());
+        alert = new AlertDialog.Builder(get()).create();
         alert.setView(mdialog.getView(), -1, -1, -1, -1);
         checkListAdapter.setSelectItem(selectPosition);
         checkListAdapter.setListItemClickListener(new ListItemClickListener() {
@@ -494,15 +574,15 @@ public class PublishFragment extends BaseFragment {
                     }
 
                     Uri photoUri = data.getData();
-                    String filename = FileUtil.getFileName(thisActivity, photoUri);
-                    String filepathtemp = FileUtil.getPath(thisActivity, photoUri);
+                    String filename = FileUtil.getFileName(get(), photoUri);
+                    String filepathtemp = FileUtil.getPath(get(), photoUri);
                     mMultiSelectPath.add(filepathtemp.toString());
                     photoPath.add(filepathtemp.toString());
                     setGridViewAdapter();
                     break;
                 case RESULT_LOAD_VIDEO:
                     Uri videoUri = data.getData();
-                    String vPath = FileUtil.getPath(thisActivity, videoUri);
+                    String vPath = FileUtil.getPath(get(), videoUri);
                     mMultiSelectPath.add(vPath.toString());
                     videoPath.add(vPath.toString());
                     setGridViewAdapter();

@@ -43,6 +43,20 @@ public class UserBean {
      * vip : 0
      * viptype : 0
      * zhiding : 0
+     *
+     *
+     * "yishou_count":5,       发布的已售数量
+     "zaishou_count":188,    发布的在售数量
+     "about":"",
+     "content":""            简介
+
+     "province":1,                      省ID
+     "city":1,                          市 ID
+     "address":"",                      详细地址
+     "jingdu":"116.39564503788",       经度
+     "weidu":"39.92998577808",        纬度
+     "provinceName":"北京市",           省名称
+     "cityName":"北京市",                 市名称
      */
 
     private int addtime;
@@ -76,6 +90,73 @@ public class UserBean {
     private int vip;
     private int viptype;
     private int zhiding;
+
+    /**
+     * 个人中心 （已shou数量，未售数量，简介,地区，经纬度）
+     */
+    private int yishouCount;
+    private int zaishouCount;
+    private String content;
+    private String provinceName;
+    private String cityName;
+    private String jingdu;
+    private String weidu;
+
+    public String getProvinceName() {
+        return provinceName;
+    }
+
+    public void setProvinceName(String provinceName) {
+        this.provinceName = provinceName;
+    }
+
+    public String getCityName() {
+        return cityName;
+    }
+
+    public void setCityName(String cityName) {
+        this.cityName = cityName;
+    }
+
+    public String getJingdu() {
+        return jingdu;
+    }
+
+    public void setJingdu(String jingdu) {
+        this.jingdu = jingdu;
+    }
+
+    public String getWeidu() {
+        return weidu;
+    }
+
+    public void setWeidu(String weidu) {
+        this.weidu = weidu;
+    }
+
+    public int getYishouCount() {
+        return yishouCount;
+    }
+
+    public void setYishouCount(int yishouCount) {
+        this.yishouCount = yishouCount;
+    }
+
+    public int getZaishouCount() {
+        return zaishouCount;
+    }
+
+    public void setZaishouCount(int zaishouCount) {
+        this.zaishouCount = zaishouCount;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
 
     public int getAddtime() {
         return addtime;

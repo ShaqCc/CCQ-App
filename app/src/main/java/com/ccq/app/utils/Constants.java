@@ -22,4 +22,8 @@ public class Constants {
     //event bus
     public static final int WX_LOGIN_SUCCESS = 20001;//微信登录成功事件码
 
+    public static final int REFRESH_EVENT = 20002;//页面刷新事件
+
+
+
 }

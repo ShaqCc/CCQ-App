@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="64dp"
+    android:orientation="horizontal"
+    android:background="@color/white"
+    android:padding="4dp"
+    >
+
+    <ImageView
+        android:id="@+id/item_user_header_image"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:scaleType="fitXY"
+        android:layout_alignParentLeft="true"
+        android:src="@drawable/add_photo"
+        />
+
+    <RelativeLayout
+        android:id = "@+id/item_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentRight="true"
+        >
+
+        <ImageView
+            android:id="@+id/item_notice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_notice"
+            android:layout_alignParentTop="true"
+            />
+
+        <ImageView
+            android:id="@+id/item_opt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_three_line"
+            android:layout_alignParentBottom="true"
+            />
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_toLeftOf="@id/item_icon"
+        android:layout_toRightOf="@id/item_user_header_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin"
+        android:layout_marginRight="@dimen/margin"
+        >
+
+        <TextView
+            android:id="@+id/item_subscribe_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="名称"
+            android:padding="2dp"
+            android:textSize="16sp"
+            android:textColor="@color/primary_text"
+            android:layout_alignParentTop="true"
+
+            />
+
+        <TextView
+            android:id="@+id/item_publish_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="在售：0个，已售：0个"
+            android:textSize="15sp"
+            android:textColor="@color/secondary_text"
+            android:layout_alignParentBottom="true"
+            />
+
+    </RelativeLayout>
+
+
+
+</RelativeLayout>
