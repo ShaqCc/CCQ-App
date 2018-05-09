@@ -1,5 +1,6 @@
 package com.ccq.app.ui.user;
 
+import android.os.Handler;
 import android.view.View;
 
 import com.ccq.app.R;
@@ -31,6 +32,12 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 Utils.login(getCurrentActivity());
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        finish();
+                    }
+                },500);
             }
         });
     }

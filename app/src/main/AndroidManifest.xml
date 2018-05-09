@@ -76,6 +76,9 @@
         <activity android:name=".ui.user.LoginActivity" />
         <activity android:name=".ui.publish.BaseMapActivity" />
         <activity android:name=".ui.publish.BrandModelSelectActivity" />
+        <activity android:name=".ui.message.ChatActivity" />
+        <activity android:name=".ui.message.MessageListActivity" />
+        <activity android:name=".ui.message.BrowserImageActivity" />
 
         <!-- Required SDK 核心功能-->
         <!-- 可配置android:process参数将PushService放在其他进程中 -->

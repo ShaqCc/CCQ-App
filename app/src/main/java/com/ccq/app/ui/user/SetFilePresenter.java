@@ -66,7 +66,7 @@ public class SetFilePresenter extends BasePresenter<IsetFileView> {
                     @Override
                     public void onFailure(Call<BindResultBaen> call, Throwable t) {
                         ToastUtils.show(CcqApp.getAppContext(),t.getMessage());
-                        mView.bindFailuer();
+                        mView.bindFailure();
                     }
                 });
     }
@@ -84,7 +84,7 @@ public class SetFilePresenter extends BasePresenter<IsetFileView> {
             @Override
             public void onFailure(Call<UserBean> call, Throwable t) {
                 ToastUtils.show(CcqApp.getAppContext(),t.getMessage());
-                mView.bindFailuer();
+                mView.bindFailure();
             }
         });
     }

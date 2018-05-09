@@ -1,6 +1,7 @@
 package com.ccq.app.ui.home;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -20,6 +21,7 @@ import com.ccq.app.entity.BannerBean;
 import com.ccq.app.entity.Car;
 import com.ccq.app.http.ApiParams;
 import com.ccq.app.ui.city.ProvinceActivity;
+import com.ccq.app.ui.message.MessageListActivity;
 import com.ccq.app.utils.DensityUtils;
 import com.ccq.app.utils.GlideImageLoader;
 import com.ccq.app.utils.Utils;
@@ -185,7 +187,8 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
                     Utils.call(context, car.getPhone());
                 break;
             case R.id.item_tv_message:
-                //todo
+                Intent intent = new Intent(context, MessageListActivity.class);
+                context.startActivity(intent);
                 break;
             case R.id.item_car_iv_moments:
                 final MaterialDialog dialog = new MaterialDialog(context);

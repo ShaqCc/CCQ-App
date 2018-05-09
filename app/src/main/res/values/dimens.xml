@@ -3,9 +3,9 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
-    <dimen name="textSize_common">28px</dimen>
-    <dimen name="textSize_secondary">22px</dimen>
-    <dimen name="textSize_big">36px</dimen>
+    <dimen name="textSize_common">14sp</dimen>
+    <dimen name="textSize_secondary">12sp</dimen>
+    <dimen name="textSize_big">18sp</dimen>
 
     <dimen name="textSize">10sp</dimen>
     <dimen name="hintTextSize">32sp</dimen>

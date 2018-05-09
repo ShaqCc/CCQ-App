@@ -12,6 +12,7 @@ import com.ccq.app.entity.UserBean;
 import com.ccq.app.entity.WxLoginResultBean;
 import com.ccq.app.entity.WxUserInfo;
 import com.ccq.app.http.ApiService;
+import com.ccq.app.http.HttpClient;
 import com.ccq.app.http.RetrofitClient;
 import com.ccq.app.ui.MainActivity;
 import com.ccq.app.ui.user.BindPhoneActivity;
@@ -22,6 +23,7 @@ import com.ccq.app.utils.KLog;
 
 import com.ccq.app.utils.SharedPreferencesUtils;
 import com.ccq.app.utils.ToastUtils;
+import com.ccq.app.utils.Utils;
 import com.tencent.mm.opensdk.modelbase.BaseReq;
 import com.tencent.mm.opensdk.modelbase.BaseResp;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
@@ -31,11 +33,14 @@ import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.File;
+
 import cn.jpush.im.android.api.model.UserInfo;
 import cn.jpush.im.android.api.options.RegisterOptionalUserInfo;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.http.Url;
 
 /**************************************************
  *
@@ -152,6 +157,8 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                                                         .enqueue(new Callback<WxUserInfo>() {
                                                             @Override
                                                             public void onResponse(Call<WxUserInfo> call, Response<WxUserInfo> response) {
+                                                                //下载用户头像
+                                                                HttpClient.getInstance(WXEntryActivity.this).download(apiService.downloadPic(response.body().getHeadimgurl()));
                                                                 //跳转到绑定手机页面
                                                                 BindPhoneActivity.launch(WXEntryActivity.this, response.body());
                                                                 new Handler().postDelayed(new Runnable() {
@@ -170,17 +177,13 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                                                         });
 
                                             } else {
+                                                SharedPreferencesUtils.setParam(WXEntryActivity.this,Constants.USER_ID,response.body().getUserid());
                                                 //用户非首次登陆
                                                 AppCache.setUserBean(response.body());
                                                 startActivity(new Intent(WXEntryActivity.this, MainActivity.class));
                                                 EventBus.getDefault().post(Constants.WX_LOGIN_SUCCESS);
-                                                RegisterOptionalUserInfo info = new RegisterOptionalUserInfo();
-                                                info.setAvatar(AppCache.getUserBean().getHeadimgurl());
-                                                info.setNickname(AppCache.getUserBean().getNickname());
-                                                info.setGender(UserInfo.Gender.male);
-                                                //自动登录极光
-                                                JmessageUtils.registerIM(WXEntryActivity.this,AppCache.getUserBean().getUserid(),
-                                                        AppCache.getUserBean().getUserid(),info);
+                                                //注册登录极光
+                                                JmessageUtils.registerIM(response.body());
                                             }
                                         }
 

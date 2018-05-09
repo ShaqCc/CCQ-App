@@ -11,8 +11,8 @@
 
     <ImageView
         android:id="@+id/item_car_iv_header"
-        android:layout_width="90px"
-        android:layout_height="90px"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:background="#ccc"/>
 
     <LinearLayout
@@ -34,7 +34,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6px"
+            android:layout_marginTop="4dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -52,19 +52,19 @@
                 android:id="@+id/item_car_tv_car_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10px"
+                android:layout_marginLeft="5dp"
                 android:background="@drawable/shape_rect_corner_orange_bg"
-                android:paddingLeft="8px"
-                android:paddingRight="8px"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
                 android:textColor="@color/white"
                 android:textSize="@dimen/textSize_common"
                 tools:text="10万"/>
 
             <ImageView
                 android:id="@+id/item_car_iv_moments"
-                android:layout_width="32px"
-                android:layout_height="32px"
-                android:layout_marginLeft="10px"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginLeft="6dp"
                 android:src="@drawable/ic_moments"
                 />
         </LinearLayout>
@@ -73,15 +73,15 @@
             android:id="@+id/item_car_gridview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10px"
+            android:layout_marginTop="5dp"
             android:numColumns="3"
-            android:verticalSpacing="5px"/>
+            android:verticalSpacing="2dp"/>
 
         <TextView
             android:id="@+id/item_car_tv_car_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8px"
+            android:layout_marginTop="4dp"
             android:textColor="@color/secondary_text"
             android:textSize="@dimen/textSize_secondary"
             tools:text="徐工50G装在机械2013年徐工50G装在机械2013年徐工50G装在机械2013年徐工50G装在机械2013年"/>
@@ -90,7 +90,7 @@
             android:id="@+id/item_car_tv_car_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8px"
+            android:layout_marginTop="4dp"
             android:drawableLeft="@drawable/ic_location"
             android:gravity="center_vertical"
             android:text="上海·上海市"
@@ -100,7 +100,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8px"
+            android:layout_marginTop="4dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -116,7 +116,7 @@
                 android:id="@+id/item_tv_call"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20px"
+                android:layout_marginLeft="10dp"
                 android:background="@drawable/shape_green_corner_bg"
                 android:gravity="center"
                 android:paddingBottom="2dp"
@@ -144,7 +144,7 @@
             <ImageView
                 android:id="@+id/item_car_iv_tip"
                 android:layout_width="0dp"
-                android:layout_height="40px"
+                android:layout_height="20dp"
                 android:layout_weight="1"
                 android:scaleType="fitEnd"
                 android:src="@drawable/ic_message_32"
@@ -155,7 +155,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1px"
-            android:layout_marginTop="20px"
+            android:layout_marginTop="10dp"
             android:background="@color/divider"/>
     </LinearLayout>
 

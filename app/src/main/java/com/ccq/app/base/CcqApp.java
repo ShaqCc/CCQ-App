@@ -47,7 +47,7 @@ public class CcqApp extends MultiDexApplication {
          * 初始化定位sdk，建议在Application中创建
          */
         locationService = new LocationService(getApplicationContext());
-        SDKInitializer.initialize(getApplicationContext());
+//        SDKInitializer.initialize(getApplicationContext());
         //初始化极光IM
         JMessageClient.setDebugMode(true);
         JMessageClient.init(getApplicationContext(), true);

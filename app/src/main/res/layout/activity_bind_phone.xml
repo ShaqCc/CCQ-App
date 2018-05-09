@@ -14,8 +14,8 @@
         android:background="@drawable/shape_bottom_line_bg"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:paddingBottom="20px"
-        android:paddingTop="20px">
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp">
 
         <TextView
             style="@style/text_common_style"
@@ -47,8 +47,8 @@
         android:layout_height="wrap_content"
         android:background="@drawable/shape_bottom_line_bg"
         android:orientation="horizontal"
-        android:paddingBottom="20px"
-        android:paddingTop="20px">
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp">
 
         <TextView
             style="@style/text_common_style"
@@ -65,8 +65,8 @@
     <Button
         android:id="@+id/bt_bind"
         android:layout_width="match_parent"
-        android:layout_height="80px"
-        android:layout_marginTop="90px"
+        android:layout_height="40dp"
+        android:layout_marginTop="45dp"
         android:background="@drawable/shape_green_corner_bg"
         android:gravity="center"
         android:text="绑定手机号"

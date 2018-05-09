@@ -8,6 +8,7 @@ import android.widget.Toast;
 import com.ccq.app.base.CcqApp;
 import com.ccq.app.entity.UserBean;
 
+import java.io.File;
 import java.security.MessageDigest;
 
 import cn.jpush.im.android.api.JMessageClient;
@@ -30,7 +31,6 @@ public class JmessageUtils {
 
     public static void registerIM(UserBean userBean){
         RegisterOptionalUserInfo info = new RegisterOptionalUserInfo();
-        info.setAvatar(AppCache.getUserBean().getHeadimgurl());
         info.setNickname(AppCache.getUserBean().getNickname());
         info.setGender(UserInfo.Gender.male);
         registerIM(CcqApp.getAppContext(),userBean.getUserid(),userBean.getUserid(),info);
@@ -38,13 +38,15 @@ public class JmessageUtils {
 
     public static void registerIM(final Context context,final String userName,
                                   final String password,RegisterOptionalUserInfo registerOptionalUserInfo) {
-        JMessageClient.register(userName, MD5(password), registerOptionalUserInfo, new BasicCallback() {
+        JMessageClient.register("ccq_"+userName, MD5(password), new BasicCallback() {
             @Override
             public void gotResult(int responseCode, String registerDesc) {
                 if (responseCode == 0) {
                     Toast.makeText(context, "注册成功", Toast.LENGTH_SHORT).show();
                     Log.i(TAG, "JMessageClient.register " + ", responseCode = " + responseCode + " ; registerDesc = " + registerDesc);
                     loginIM(context,userName,password);
+                    //更新头像
+                    upateHeadImg();
                 } else {
                     Toast.makeText(context, "注册失败", Toast.LENGTH_SHORT).show();
                     Log.i(TAG, "JMessageClient.register " + ", responseCode = " + responseCode + " ; registerDesc = " + registerDesc);
@@ -54,11 +56,21 @@ public class JmessageUtils {
     }
 
 
+    public static void upateHeadImg(){
+        JMessageClient.updateUserAvatar(new File(Utils.getAvatarPath()), new BasicCallback() {
+            @Override
+            public void gotResult(int i, String s) {
+                ToastUtils.show(CcqApp.getAppContext(),"更新用户头像结果："+s);
+            }
+        });
+    }
+
+
     public static void loginIM(final Context context,String userName, String password) {
         String md5 = MD5(password);
         Log.d(TAG,"密码："+md5);
         /*=================     调用SDk登陆接口    =================*/
-        JMessageClient.login(userName, password, new BasicCallback() {
+        JMessageClient.login("ccq_"+userName, password, new BasicCallback() {
             @Override
             public void gotResult(int responseCode, String LoginDesc) {
                 if (responseCode == 0) {

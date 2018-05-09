@@ -18,6 +18,9 @@ public class Constants {
     public static String JIGUANG_APP_KEY = "eb9dced406535d33bd0f637e";
     public static String JIGUANG_SECRET = "4678823d3cb258fd2539579a";
 
+    public static String userAvatarFileName = "user_avatar.png";
+
+    public static String USER_ID = "user_id";
 
     //event bus
     public static final int WX_LOGIN_SUCCESS = 20001;//微信登录成功事件码

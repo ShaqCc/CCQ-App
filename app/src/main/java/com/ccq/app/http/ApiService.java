@@ -23,6 +23,7 @@ import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.Field;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
@@ -117,6 +118,13 @@ public interface ApiService {
 
     @POST("/car/addcar")
     Call<Object> addCarInfo(@Body CarInfo user);
+
+    @GET
+    Call<ResponseBody> downloadPic(@Url String url);
+
+    //极光上传用户图片
+    @POST
+    Call<Object> jIMUpload(@Url String url, @Field("type")String type,@Part MultipartBody.Part file);
 
 
 

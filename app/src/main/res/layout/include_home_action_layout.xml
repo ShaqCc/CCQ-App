@@ -34,8 +34,7 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="16dp"
-        android:drawableLeft="@drawable/selector_vip"
-        android:drawablePadding="10px"
+        android:drawablePadding="5dp"
         android:gravity="center_vertical"
         android:text="会员"/>
 </RelativeLayout>
