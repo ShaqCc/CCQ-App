@@ -1,6 +1,8 @@
 package com.ccq.app.ui.user.adapter;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +13,10 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.ccq.app.R;
 import com.ccq.app.entity.Car;
+import com.previewlibrary.PhotoActivity;
+import com.previewlibrary.ThumbViewInfo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -20,7 +25,7 @@ import butterknife.BindView;
  * Created by littlemax on 2018/5/2.
  */
 
-public class MyPublishListAdapter extends RecyclerView.Adapter<MyPublishListAdapter.ViewHolder> {
+public class  MyPublishListAdapter extends RecyclerView.Adapter<MyPublishListAdapter.ViewHolder> {
 
     List<Car> mCarList;
     Context context;
@@ -34,8 +39,8 @@ public class MyPublishListAdapter extends RecyclerView.Adapter<MyPublishListAdap
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
-        Car Car = mCarList.get(position);
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
+        final Car Car = mCarList.get(position);
         holder.itemImageCount.setText(String.valueOf(Car.getPic_img_count()));
 
         Glide.with(context)
@@ -50,7 +55,7 @@ public class MyPublishListAdapter extends RecyclerView.Adapter<MyPublishListAdap
         if(Car.getPrice().equals("0")){
             holder.itemPrice.setText("面议");
         }else{
-            holder.itemPrice.setText(Car.getPrice());
+            holder.itemPrice.setText(Car.getPrice() +"万元");
         }
 
         holder.itemManage.setOnClickListener(new View.OnClickListener() {
@@ -60,11 +65,41 @@ public class MyPublishListAdapter extends RecyclerView.Adapter<MyPublishListAdap
             }
         });
 
+        holder.itemLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                itemManageInterface.onMapShowClick(position);
+            }
+        });
+
+
+        holder.itemInfoImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                List<com.ccq.app.entity.Car.PicImgBean> imgBeans = Car.getPic_img();
+                Rect rect = computeBounds(holder.itemInfoImage);
+                ArrayList<ThumbViewInfo> mThumbList = new ArrayList<>();
+                for(com.ccq.app.entity.Car.PicImgBean bean : imgBeans){
+                    ThumbViewInfo viewInfo = new ThumbViewInfo(bean.getSavename()+ "!auto");
+                    viewInfo.setBounds(rect);
+                    mThumbList.add(viewInfo);
+                }
+                PhotoActivity.startActivity((Activity) context ,mThumbList, 0);
+            }
+        });
 
     }
 
     private String getImageUrl(String url) {
         return url + "!300auto";
+    }
+
+    private Rect computeBounds(ImageView imageView) {
+        Rect bounds = new Rect();
+        if (imageView != null) {
+            imageView.getGlobalVisibleRect(bounds);
+        }
+        return bounds;
     }
 
 
@@ -91,21 +126,23 @@ public class MyPublishListAdapter extends RecyclerView.Adapter<MyPublishListAdap
 
         public ViewHolder(View view) {
             super(view);
-            itemInfoImage = (ImageView) view.findViewById(R.id.item_info_image);
-            itemImageCount = (TextView) view.findViewById(R.id.item_image_count);
+            itemInfoImage = view.findViewById(R.id.item_info_image);
+            itemImageCount = view.findViewById(R.id.item_image_count);
 
-            itemBrandModelName = (TextView) view.findViewById(R.id.item_brand_model_name);
-            itemLocation = (TextView) view.findViewById(R.id.item_location);
-            itemTime = (TextView) view.findViewById(R.id.item_time);
-            itemPrice = (TextView) view.findViewById(R.id.item_price);
-            itemManage = (TextView) view.findViewById(R.id.item_manage);
+            itemBrandModelName = view.findViewById(R.id.item_brand_model_name);
+            itemLocation = view.findViewById(R.id.item_location);
+            itemTime = view.findViewById(R.id.item_time);
+            itemPrice = view.findViewById(R.id.item_price);
+            itemManage = view.findViewById(R.id.item_manage);
 
         }
     }
 
 
     public interface onItemManageInterface{
-        public void onManageClick(int position);
+         void onManageClick(int position);
+
+         void onMapShowClick(int position);
     }
 
 

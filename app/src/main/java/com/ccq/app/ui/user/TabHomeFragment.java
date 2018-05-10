@@ -2,10 +2,12 @@ package com.ccq.app.ui.user;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -16,8 +18,11 @@ import com.ccq.app.entity.Car;
 import com.ccq.app.entity.SubscribeUser;
 import com.ccq.app.http.ApiService;
 import com.ccq.app.http.RetrofitClient;
+import com.ccq.app.ui.publish.BaseMapActivity;
+import com.ccq.app.ui.publish.PublishFragment;
 import com.ccq.app.ui.user.adapter.MyPublishListAdapter;
 import com.ccq.app.utils.AppCache;
+import com.ccq.app.utils.ToastUtils;
 import com.ccq.app.utils.ViewState;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -28,6 +33,7 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -75,8 +81,42 @@ public class TabHomeFragment extends BaseFragment {
                 editCar  = carList.get(position);
                 showSelectDialog();
             }
+
+            @Override
+            public void onMapShowClick(int position) {
+                editCar  = carList.get(position);
+                getCarLocation();
+
+            }
         });
         myHomeRecycleview.setAdapter(adapter);
+    }
+
+    private void getCarLocation() {
+        apiService.getCarAddress(String.valueOf(editCar.getId())).enqueue(new Callback<Object>() {
+            @Override
+            public void onResponse(Call<Object> call, Response<Object> response) {
+                Map<String,Object> map = (Map<String, Object>) response.body();
+                if(0.0== (Double)map.get("code")) {
+                    editCar.setDetailAddress((String) map.get("address"));
+                    editCar.setLatitude( map.get("latitude").toString());
+                    editCar.setLongitude(map.get("longitude").toString());
+
+                    Intent i = new Intent(get(), BaseMapActivity.class);
+                    i.putExtra("showMap",true);
+                    i.putExtra("car",editCar);
+                    get().startActivity(i);
+
+                }else{
+                    ToastUtils.show(get(), (String) map.get("message"));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Object> call, Throwable t) {
+
+            }
+        });
     }
 
     private  void showSelectDialog(){
@@ -95,7 +135,7 @@ public class TabHomeFragment extends BaseFragment {
                         showComfirmDialog("确定要删除此条信息吗？",which);
                         break;
                     case 2:
-                        editCar(String.valueOf(editCar.getId()));
+                        showComfirmDialog("确定要刷新此信息吗？会员及经销商每天只能刷新5次！",which);
                         break;
                     case 3:
                         refreshCar(String.valueOf(editCar.getId()));
@@ -120,6 +160,23 @@ public class TabHomeFragment extends BaseFragment {
                         break;
                     case 1:
                         removeCar();
+                        break;
+                    case 2:
+                        if(AppCache.getUserBean().isBusiness() || AppCache.getUserBean().isMember()){
+                            editCar();
+                        }else{
+                            AlertDialog.Builder alertbuild = new AlertDialog.Builder(get());
+                            alertbuild.setTitle("");
+                            alertbuild.setCancelable(true);
+                            alertbuild.setMessage("你没有权限刷新，开通会员后可刷新");
+                            alertbuild.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                            alertbuild.show();
+                        }
                         break;
                 }
                 dialog.dismiss();
@@ -148,6 +205,8 @@ public class TabHomeFragment extends BaseFragment {
                 if (obj != null) {
                     JsonObject returnData = new JsonParser().parse(obj.toString()).getAsJsonObject();
                     String mesg = returnData.get("message").getAsString();
+                    ToastUtils.show(get(),mesg);
+
                 }
             }
 
@@ -170,6 +229,8 @@ public class TabHomeFragment extends BaseFragment {
                 if (obj != null) {
                     JsonObject returnData = new JsonParser().parse(obj.toString()).getAsJsonObject();
                     String mesg = returnData.get("message").getAsString();
+                    ToastUtils.show(get(),mesg);
+
                 }
             }
 
@@ -193,6 +254,7 @@ public class TabHomeFragment extends BaseFragment {
                 if (obj != null) {
                     JsonObject returnData = new JsonParser().parse(obj.toString()).getAsJsonObject();
                     String mesg = returnData.get("message").getAsString();
+                    ToastUtils.show(get(),mesg);
                 }
             }
 
@@ -205,10 +267,11 @@ public class TabHomeFragment extends BaseFragment {
 
     /**
      * 编辑信息
-     * @param carid
      */
-    private void editCar(String carid){
-
+    private void editCar(){
+        Intent i = new Intent(get(), EditPublishActivity.class);
+        i.putExtra("bean",editCar);
+        get().startActivity(i);
     }
 
 

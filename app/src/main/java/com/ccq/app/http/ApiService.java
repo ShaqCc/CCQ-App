@@ -194,7 +194,7 @@ public interface ApiService {
      * @param userid
      * @return
      */
-    @POST("/car/remove")
+    @POST("/car/ref")
     Call<Object> refreshCarInfo(@Query("userid") String userid,@Query("carid") String carid);
 
 
@@ -223,6 +223,9 @@ public interface ApiService {
     Call<Object> jIMUpload(@Url String url, @Field("type")String type,@Part MultipartBody.Part file);
 
 
+
+    @POST("/car/addr")
+    Call<Object> getCarAddress(@Query("carid") String carid);
 
 //    ------------------------------------微信登陆相关接口-----------------------------------------------
 
