@@ -27,6 +27,8 @@ import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.ccq.app.R;
+import com.ccq.app.entity.Car;
+import com.ccq.app.entity.CarInfo;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,6 +53,10 @@ public class BaseMapActivity extends Activity implements OnGetGeoCoderResultList
     MapView bmapView;
     @BindView(R.id.zywz)
     ImageView zywz;
+    @BindView(R.id.tv_poi_name)
+    TextView tvPoiName;
+    @BindView(R.id.tv_poi_address)
+    TextView tvPoiAddress;
 
 
     private BaiduMap mBaiduMap;
@@ -61,6 +67,9 @@ public class BaseMapActivity extends Activity implements OnGetGeoCoderResultList
     private String markContent;
     private GeoCoder mSearch = null;
     private Activity ac;
+    private boolean isOnlyShow = false;
+    private Car car;
+    private boolean isComfirm = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -83,28 +92,47 @@ public class BaseMapActivity extends Activity implements OnGetGeoCoderResultList
                 .setMyLocationConfigeration(new MyLocationConfiguration(
                         LocationMode.NORMAL, true, mCurrentMarker,
                         accuracyCircleFillColor, accuracyCircleStrokeColor));
-        initUI();
+
         initParam();
-        initListeners();
-        initGeoCoder();
+        if(isComfirm){
+            initListeners();
+            initGeoCoder();
+        }
     }
 
     private void initParam() {
         Intent intent = getIntent();
-        if (intent.hasExtra("latlng")) {
-            // 当用intent参数时，设置中心点为指定点
-            Bundle bundle = intent.getExtras();
-            LatLng poi = bundle.getParcelable("latlng");
-            markLatitude = poi.latitude;
-            markLongitude = poi.longitude;
-            String address = intent.getStringExtra("address");
-            if (!TextUtils.isEmpty(address)) {
-                markContent = address;
+        isOnlyShow = intent.getBooleanExtra("showMap",false);
+        if(isOnlyShow){
+            car = (Car) intent.getSerializableExtra("car");
+            if(!TextUtils.isEmpty(car.getLatitude()) && ! TextUtils.isEmpty(car.getLongitude())){
+                markLatitude =  Double.parseDouble(car.getLatitude());
+                markLongitude = Double.parseDouble(car.getLongitude());
+                tvPoiName.setText(car.getName());
+                tvPoiAddress.setText(car.getDetailAddress());
+                activityMapTitlebarBtnRight.setVisibility(View.GONE);
+                zywz.setVisibility(View.GONE);
+                updateView(new LatLng(markLatitude,markLongitude));
             }
+        }else {
+            if (intent.hasExtra("latlng")) {
+                // 当用intent参数时，设置中心点为指定点
+                Bundle bundle = intent.getExtras();
+                LatLng poi = bundle.getParcelable("latlng");
+                markLatitude = poi.latitude;
+                markLongitude = poi.longitude;
+                String address = intent.getStringExtra("address");
+                if (!TextUtils.isEmpty(address)) {
+                    markContent = address;
+                }
 
-            updateView(poi);
-        } else {//没有传过来数据 重新定位，改变视图
+                updateView(poi);
+                tvPoiName.setText(address);
+                tvPoiAddress.setVisibility(View.GONE);
 
+            } else {//没有传过来数据 重新定位，改变视图
+
+            }
         }
     }
 
@@ -123,9 +151,6 @@ public class BaseMapActivity extends Activity implements OnGetGeoCoderResultList
         }
     }
 
-    private void initUI() {
-
-    }
 
     private void initListeners() {
         mBaiduMap.setOnMapStatusChangeListener(new OnMapStatusChangeListener() {
@@ -142,7 +167,8 @@ public class BaseMapActivity extends Activity implements OnGetGeoCoderResultList
 
             @Override
             public void onMapStatusChangeFinish(MapStatus arg0) {
-
+                LatLng ptCenter = new LatLng(markLatitude, markLongitude);
+                mSearch.reverseGeoCode(new ReverseGeoCodeOption().location(ptCenter));
             }
 
             @Override
@@ -193,14 +219,20 @@ public class BaseMapActivity extends Activity implements OnGetGeoCoderResultList
             return;
         }
         if (!TextUtils.isEmpty(result.getAddress())) {
-            markContent = result.getAddress()+result.getSematicDescription();
+            markContent = result.getAddress() + result.getSematicDescription();
         }
-        Intent data = new Intent();
-        data.putExtra("longitude", markLongitude);
-        data.putExtra("latitude", markLatitude);
-        data.putExtra("address", markContent);
-        setResult(RESULT_OK, data);
-        BaseMapActivity.this.finish();
+
+        if(isComfirm){
+            Intent data = new Intent();
+            data.putExtra("longitude", markLongitude);
+            data.putExtra("latitude", markLatitude);
+            data.putExtra("address", markContent);
+            setResult(RESULT_OK, data);
+            BaseMapActivity.this.finish();
+        }else{
+            tvPoiName.setText(markContent);
+        }
+
     }
 
     @Override
@@ -215,8 +247,10 @@ public class BaseMapActivity extends Activity implements OnGetGeoCoderResultList
                 finish();
                 break;
             case R.id.activity_map_titlebar_btnRight:
+                isComfirm = true;
                 LatLng ptCenter = new LatLng(markLatitude, markLongitude);
                 mSearch.reverseGeoCode(new ReverseGeoCodeOption().location(ptCenter));
+
                 break;
             case R.id.bmapView:
                 break;

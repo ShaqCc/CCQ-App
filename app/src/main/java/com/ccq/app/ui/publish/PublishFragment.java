@@ -50,10 +50,15 @@ import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.loader.ImageLoader;
 import com.lzy.imagepicker.ui.ImageGridActivity;
 import com.lzy.imagepicker.view.CropImageView;
+import com.qiniu.android.jpush.utils.StringUtils;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
+
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -63,8 +68,18 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subjects.Subject;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
+import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -136,6 +151,8 @@ public class PublishFragment extends BaseFragment {
 
     private ApiService apiService;
 
+    private List<String> imgidList = new ArrayList<>();
+    private List<String> videoidList = new ArrayList<>();
     private String imgids;
     private String videoids;
 
@@ -196,10 +213,6 @@ public class PublishFragment extends BaseFragment {
     }
 
     public void initYearList(){
-//        carAgeList = new ArrayList<String>();
-//        for(int a=2017 ;a>=2000 ; a--){
-//            carAgeList.add( String.valueOf(a));
-//        }
         checkListAdapter = new CheckListAdapter(getActivity(), carAgeList);
     }
 
@@ -240,11 +253,15 @@ public class PublishFragment extends BaseFragment {
                 tvFold.setVisibility(View.GONE);
                 break;
             case R.id.btn_submit:
-                sendCheck();
+//                sendCheck();
+                uploadFile();
                 break;
         }
     }
 
+    /**
+     * 检查是否登录，和 今日是否可上报（最多五次）
+     */
     private void sendCheck(){
         if(AppCache.getUserBean()==null){
             ToastUtils.show(get(),"请先登录");
@@ -276,17 +293,84 @@ public class PublishFragment extends BaseFragment {
             return ;
         }
 
-        if(photoPath!=null && photoPath.size()>0){
-            uploadImg();
-            return;
-        }
-        if(videoPath!=null && videoPath.size() >0){
-            uploadVideo();
-        }
+        Observable.create(
+                new ObservableOnSubscribe<Boolean>() {
+                    @Override
+                    public void subscribe(final ObservableEmitter<Boolean> emitter) throws Exception {
+                        if (!emitter.isDisposed()){
+                            try{
+                                //访问网络操作
+                                if(photoPath!=null && photoPath.size()>0){
+                                    for (String path: photoPath){
+                                        uploadImg(path);
+                                    }
+                                }
 
+                                if(videoPath!=null && videoPath.size() >0){
+                                    for (String path: videoPath){
+                                        uploadVideo(path);
+                                    }
+                                }
+                                emitter.onNext(true);
+                                emitter.onComplete();
 
+                            }catch (IOException ioe){
+                                emitter.onError(ioe);
+                            }
+
+                        }
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Boolean>() {
+
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        if(d.isDisposed()){
+                            Log.e(" on subscribe -------" ,"===========");
+                        }
+                    }
+
+                    @Override
+                    public void onNext(Boolean boo) {
+                        Log.e(" on Next ------" ,"===========");
+
+                        if(boo){
+                            imgids = StringUtils.join(imgidList.toArray(new String[imgidList.size()]),",");
+                            videoids = StringUtils.join(videoidList.toArray(new String[videoidList.size()]),",");
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(" on Error ------" ,"===========");
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.e(" on Complete ------" ,"===========");
+                        submitData();
+                    }
+                });
+//
+//        if(photoPath!=null && photoPath.size()>0){
+//            for (String path: photoPath){
+//                uploadImg(path);
+//            }
+//        }
+//
+//        if(videoPath!=null && videoPath.size() >0){
+//            for (String path: videoPath){
+//                uploadVideo(path);
+//            }
+//        }
+//
+//        imgids = StringUtils.join(imgidList.toArray(new String[imgidList.size()]),",");
+//        videoids = StringUtils.join(videoidList.toArray(new String[videoidList.size()]),",");
+//
+//        submitData();
     }
-
 
     private void getNianFen(){
         apiService.getCarNianFenList().enqueue(new Callback<List<Object>>() {
@@ -312,60 +396,32 @@ public class PublishFragment extends BaseFragment {
         });
     }
 
-    private void uploadImg(){
-        MultipartBody.Part body = null;
-        for (String path: photoPath) {
-            File file = new File(path);
-            RequestBody requestFile =
-                    RequestBody.create(MediaType.parse("multipart/form-data"), file);
-            body = MultipartBody.Part.createFormData("filename", file.getName(), requestFile);
-        }
-        apiService.uploadImages(body).enqueue(new Callback<Object>() {
-            @Override
-            public void onResponse(Call<Object> call,
-                                   Response<Object> response) {
-                Map<String,Object> map = (Map<String, Object>) response.body();
-                if(0.0== (Double)map.get("code")) {
-                    imgids = String.valueOf(map.get("imageid"));
-                    if(videoPath!=null && videoPath.size() >0){
-                        uploadVideo();
-                    }else{
-                        submitData();
-                    }
-                }
+    private void uploadImg(String path) throws IOException {
+
+        File file = new File(path);
+        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        MultipartBody.Part body = MultipartBody.Part.createFormData("filename", file.getName(), requestFile);
+
+        Call<Object> result = apiService.uploadImages(body);
+            Response<Object> response = result.execute();
+            Map<String,Object> map = (Map<String, Object>) response.body();
+            if(0.0== (Double)map.get("code")) {
+                imgidList.add(String.valueOf(map.get("imageid")));
             }
-            @Override
-            public void onFailure(Call<Object> call, Throwable t) {
-                Log.e("Upload error:", t.getMessage());
-            }
-        });
 
     }
 
-    private void  uploadVideo(){
-        MultipartBody.Part body = null;
-        for (String path: videoPath) {
-            File file = new File(path);
-            RequestBody requestFile =
-                    RequestBody.create(MediaType.parse("multipart/form-data"), file);
-            body = MultipartBody.Part.createFormData("filename", file.getName(), requestFile);
-        }
-        apiService.uploadVideos(body).enqueue(new Callback<Object>() {
-            @Override
-            public void onResponse(Call<Object> call,
-                                   Response<Object> response) {
-                Map<String,String> map = (Map<String, String>) response.body();
-                if("0.0".equals(map.get("code"))) {
-                    videoids = map.get("imageid");
-                    submitData();
-                }
-            }
+    private void  uploadVideo(String path) throws IOException{
+        File file = new File(path);
+        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        MultipartBody.Part body  = MultipartBody.Part.createFormData("filename", file.getName(), requestFile);
 
-            @Override
-            public void onFailure(Call<Object> call, Throwable t) {
-                Log.e("Upload error:", t.getMessage());
+        Call<Object> result = apiService.uploadVideos(body);
+            Response<Object> response = result.execute();
+            Map<String,Object> map = (Map<String, Object>) response.body();
+            if(0.0== (Double)map.get("code")) {
+                videoidList.add(String.valueOf(map.get("imageid")));
             }
-        });
     }
 
     private boolean validate(){
@@ -411,8 +467,8 @@ public class PublishFragment extends BaseFragment {
         HashMap<String,Object> map = new HashMap<>();
         map.put("address",btnCarLocation.getText().toString());
         map.put("content",etDescription.getText().toString());
-        map.put("imglist",imgids);
-        map.put("videolist","");
+        map.put("imglist",TextUtils.isEmpty(imgids)?"":imgids);
+        map.put("videolist",TextUtils.isEmpty(videoids)?"":videoids);
         map.put("latitude",point.latitude);
         map.put("longitude",point.longitude);
         map.put("number",brandModelBean.getId());
@@ -426,12 +482,11 @@ public class PublishFragment extends BaseFragment {
             @Override
             public void onResponse(Call<Object> call, Response<Object> response) {
                 Map<String,String> map = (Map<String, String>) response.body();
-                if("0.0".equals(map.get("code"))) {
-                    String message = map.get("message");
-                }else{
-                    String message = map.get("message");
-                    ToastUtils.show(get(),message);
+                String message = map.get("message");
+                if("0.0".equals(map.get("code"))||"0".equals(map.get("code"))) {
+                    message = "发布成功";
                 }
+                ToastUtils.show(get(),message);
             }
 
             @Override
@@ -455,13 +510,14 @@ public class PublishFragment extends BaseFragment {
             @Override
             public void onListItemClickListener(int position) {
                 //删除图片
-                mMultiSelectPath.remove(position);
-                if(photoPath.size()>0){
-                    photoPath.remove(position);
+                String deletePath = mMultiSelectPath.get(position);
+                if(photoPath.size()>0 && photoPath.contains(deletePath)){
+                    photoPath.remove(deletePath);
                 }
-                if(videoPath.size()>0){
-                    videoPath.remove(position);
+                if(videoPath.size()>0 && videoPath.contains(deletePath)){
+                    videoPath.remove(deletePath);
                 }
+                mMultiSelectPath.remove(deletePath);
                 setGridViewAdapter();
             }
         });
@@ -519,6 +575,7 @@ public class PublishFragment extends BaseFragment {
         intent.setClass(get(), BaseMapActivity.class);
         if(point!=null){
             intent.putExtra("latlng",point);
+            intent.putExtra("address",locAddress);
         }
         startActivityForResult(intent,REQUEST_MAP_LOCATE_CODE);
     }

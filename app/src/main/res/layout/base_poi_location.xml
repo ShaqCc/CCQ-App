@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:layout_height="match_parent"  >
 
 	<RelativeLayout
 		android:id="@+id/titlebar"
 		android:layout_width="match_parent"
 		android:layout_height="@dimen/bottom_navigation_height"
-		android:background="@color/colorPrimary">
+		android:background="@color/colorPrimary"
+		android:layout_alignParentTop="true"
+		>
 
 		<ImageView
 			android:id="@+id/activity_map_titlebar_back"
@@ -42,34 +43,63 @@
  			/>
 	</RelativeLayout>
 
+
+	<LinearLayout
+		android:layout_alignParentBottom="true"
+		android:id="@+id/layout_poi_address"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:background="@color/white"
+		android:orientation="vertical"
+		android:layout_margin="@dimen/margin"
+		>
+
+		<TextView
+			android:id="@+id/tv_poi_name"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:textSize="@dimen/LargeTextSize"
+			android:textColor="@color/secondary_text"
+
+			/>
+
+		<TextView
+			android:id="@+id/tv_poi_address"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:textSize="@dimen/SmallTextSize"
+			android:textColor="@color/divider"
+
+			/>
+
+	</LinearLayout>
+
+
 	<RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="fill_parent" >
-            
-            <com.baidu.mapapi.map.MapView  
-			    android:id="@+id/bmapView"  
-			    android:layout_width="fill_parent"  
-			    android:layout_height="fill_parent"  
-			    android:clickable="true" />
-            <!---->
-           <!--<TextView-->
-            <!--android:id="@+id/zywzTextView"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_above="@+id/zywz"-->
-            <!--android:layout_centerHorizontal="true"-->
-            <!--android:background="@drawable/custom_info_bubble"-->
-            <!--android:gravity="center" />-->
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_above="@id/layout_poi_address"
+		android:layout_below="@id/titlebar"
+		>
 
-        <ImageView
-            android:id="@+id/zywz"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:gravity="top"
-            android:src="@drawable/icon_position"  />
- 
-    </RelativeLayout>
+		<com.baidu.mapapi.map.MapView
+			android:id="@+id/bmapView"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:clickable="true" />
 
-</LinearLayout>
+
+		<ImageView
+			android:id="@+id/zywz"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_centerHorizontal="true"
+			android:layout_centerVertical="true"
+			android:gravity="top"
+			android:src="@drawable/icon_position"  />
+
+	</RelativeLayout>
+
+
+
+</RelativeLayout>

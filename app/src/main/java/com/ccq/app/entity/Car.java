@@ -1,5 +1,6 @@
 package com.ccq.app.entity;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**************************************************
@@ -11,7 +12,7 @@ import java.util.List;
  *
  **************************************************/
 
-public class Car {
+public class Car implements Serializable{
     private String address;
     private int addtime;
     private String addtime_format;
@@ -29,6 +30,34 @@ public class Car {
     private int year;
     private String isshare;
     private java.util.List<PicImgBean> pic_img;
+
+    private String longitude;
+    private String latitude;
+    private String detailAddress;
+
+    public String getDetailAddress() {
+        return detailAddress;
+    }
+
+    public void setDetailAddress(String detailAddress) {
+        this.detailAddress = detailAddress;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
 
     private PicImgBean picfmid_img;
 
@@ -232,7 +261,7 @@ public class Car {
     }
 
 
-    public class PicImgBean {
+    public class PicImgBean implements Serializable {
 
         /**
          * id : 5488

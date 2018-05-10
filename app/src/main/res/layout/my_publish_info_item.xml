@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:layout_marginLeft="@dimen/padding"
-    android:layout_marginRight="@dimen/padding"
+    android:layout_marginTop="@dimen/margin"
+    android:layout_marginLeft="@dimen/margin"
+    android:layout_marginRight="@dimen/margin"
     >
         <RelativeLayout
+            android:id="@+id/layout_imgs"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            >
 
                 <ImageView
                     android:id="@+id/item_info_image"
@@ -32,9 +36,28 @@
         </RelativeLayout>
 
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/item_manage"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:text="管理"
+            android:textSize="@dimen/BasicTextSize"
+            android:layout_gravity="bottom"
+            android:textColor="@color/steelblue"
+            android:paddingLeft="4dp"
+            android:paddingTop="8dp"
+            android:paddingRight="8dp"
+            android:layout_alignBottom="@id/layout_imgs"
+            android:layout_alignParentRight="true"
+            />
+
+
+
+        <LinearLayout
+            android:layout_toRightOf="@id/layout_imgs"
+            android:layout_toLeftOf="@id/item_manage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_marginLeft="@dimen/margin"
             android:layout_gravity="bottom"
@@ -45,9 +68,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="品牌型号名称"
-                    android:padding="2dp"
+                    android:paddingBottom="2dp"
                     android:textStyle="bold"
-                    android:textSize="@dimen/LargeTextSize"
+                    android:textSize="@dimen/BasicTextSize"
                     android:textColor="@color/primary_text"
                     />
 
@@ -56,12 +79,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="地址"
+                    android:maxLines="2"
                     android:textColor="@color/secondary_text"
-                    android:paddingRight="4dp"
-                    android:paddingLeft="4dp"
-                    android:paddingBottom="4dp"
-                    android:textSize="@dimen/BasicTextSize"
-                    android:layout_marginRight="8dp"
+                    android:paddingBottom="2dp"
+                    android:textSize="@dimen/SmallTextSize"
                     />
 
                 <TextView
@@ -69,12 +90,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="时间"
+                    android:paddingBottom="2dp"
                     android:textColor="@color/lightgrey"
-                    android:paddingRight="4dp"
-                    android:paddingLeft="4dp"
-                    android:paddingBottom="4dp"
                     android:textSize="@dimen/SmallerTextSize"
-                    android:layout_marginRight="8dp"
                     />
 
                 <TextView
@@ -83,22 +101,12 @@
                     android:layout_height="wrap_content"
                     android:text="价格"
                     android:textColor="@color/orange"
-                    android:padding="4dp"
+                    android:textSize="@dimen/SmallerTextSize"
                     android:layout_gravity="bottom"
                      />
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/item_manage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="管理"
-            android:textSize="@dimen/BasicTextSize"
-            android:layout_gravity="bottom"
-            android:textColor="@color/steelblue"
-            android:padding="4dp"
-             />
 
-</LinearLayout>
+</RelativeLayout>
 

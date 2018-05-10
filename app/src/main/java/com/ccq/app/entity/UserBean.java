@@ -101,6 +101,24 @@ public class UserBean {
     private String cityName;
     private String jingdu;
     private String weidu;
+    private boolean isBusiness;
+    private boolean isMember;
+
+    public boolean isBusiness() {
+        return isBusiness;
+    }
+
+    public void setBusiness(boolean business) {
+        isBusiness = business;
+    }
+
+    public boolean isMember() {
+        return isMember;
+    }
+
+    public void setMember(boolean member) {
+        isMember = member;
+    }
 
     public String getProvinceName() {
         return provinceName;
