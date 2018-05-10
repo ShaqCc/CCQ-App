@@ -1,1 +1,1 @@
-[{"outputType":{"type":"AAPT_FRIENDLY_MERGED_MANIFESTS"},"apkInfo":{"type":"MAIN","splits":[],"versionCode":40},"path":"AndroidManifest.xml","properties":{"packageId":"com.aurelhubert.ahbottomnavigation","split":""}}]
+[{"outputType":{"type":"AAPT_FRIENDLY_MERGED_MANIFESTS"},"apkInfo":{"type":"MAIN","splits":[],"versionCode":40,"versionName":"2.1.0","enabled":true,"outputFile":"bottombar-lib-debug.aar","fullName":"debug","baseName":"debug"},"path":"AndroidManifest.xml","properties":{"packageId":"com.aurelhubert.ahbottomnavigation","split":""}}]

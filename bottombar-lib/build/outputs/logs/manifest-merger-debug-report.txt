@@ -1,39 +1,39 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\CCQ-workspace\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml:1:1-7:12
-INJECTED from C:\CCQ-workspace\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml:1:1-7:12
-INJECTED from C:\CCQ-workspace\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml:1:1-7:12
-INJECTED from C:\CCQ-workspace\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml:1:1-7:12
-INJECTED from C:\CCQ-workspace\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml:1:1-7:12
-INJECTED from C:\CCQ-workspace\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml:1:1-7:12
-INJECTED from C:\CCQ-workspace\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml:1:1-7:12
+ADDED from D:\studio\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml:1:1-7:12
+INJECTED from D:\studio\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml:1:1-7:12
+INJECTED from D:\studio\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml:1:1-7:12
+INJECTED from D:\studio\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml:1:1-7:12
+INJECTED from D:\studio\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml:1:1-7:12
+INJECTED from D:\studio\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml:1:1-7:12
+INJECTED from D:\studio\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml:1:1-7:12
 	package
-		ADDED from C:\CCQ-workspace\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml:1:11-55
-		INJECTED from C:\CCQ-workspace\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml
-		INJECTED from C:\CCQ-workspace\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml
+		ADDED from D:\studio\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml:1:11-55
+		INJECTED from D:\studio\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml
+		INJECTED from D:\studio\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml
 	android:versionName
-		INJECTED from C:\CCQ-workspace\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml
-		ADDED from C:\CCQ-workspace\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml:1:1-7:12
-		INJECTED from C:\CCQ-workspace\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml
+		INJECTED from D:\studio\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml
+		ADDED from D:\studio\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml:1:1-7:12
+		INJECTED from D:\studio\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml
 	android:versionCode
-		INJECTED from C:\CCQ-workspace\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml
-		ADDED from C:\CCQ-workspace\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml:1:1-7:12
-		INJECTED from C:\CCQ-workspace\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml
+		INJECTED from D:\studio\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml
+		ADDED from D:\studio\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml:1:1-7:12
+		INJECTED from D:\studio\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml
 	xmlns:android
-		ADDED from C:\CCQ-workspace\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml:2:11-69
+		ADDED from D:\studio\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml:2:11-69
 application
-ADDED from C:\CCQ-workspace\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml:4:5-5:11
+ADDED from D:\studio\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml:4:5-5:11
 uses-sdk
-INJECTED from C:\CCQ-workspace\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml reason: use-sdk injection requested
-INJECTED from C:\CCQ-workspace\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml
-INJECTED from C:\CCQ-workspace\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml
-INJECTED from C:\CCQ-workspace\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml
-INJECTED from C:\CCQ-workspace\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml
+INJECTED from D:\studio\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from D:\studio\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml
+INJECTED from D:\studio\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml
+INJECTED from D:\studio\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml
+INJECTED from D:\studio\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml
 	android:targetSdkVersion
-		INJECTED from C:\CCQ-workspace\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml
-		ADDED from C:\CCQ-workspace\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml
-		INJECTED from C:\CCQ-workspace\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml
+		INJECTED from D:\studio\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml
+		ADDED from D:\studio\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml
+		INJECTED from D:\studio\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml
 	android:minSdkVersion
-		INJECTED from C:\CCQ-workspace\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml
-		ADDED from C:\CCQ-workspace\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml
-		INJECTED from C:\CCQ-workspace\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml
+		INJECTED from D:\studio\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml
+		ADDED from D:\studio\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml
+		INJECTED from D:\studio\CCQ-App\bottombar-lib\src\main\AndroidManifest.xml

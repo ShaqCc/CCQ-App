@@ -52,6 +52,8 @@ import cn.jiguang.imui.messages.MsgListAdapter;
 import cn.jiguang.imui.messages.ViewHolderController;
 import cn.jiguang.imui.messages.ptr.PtrHandler;
 import cn.jiguang.imui.messages.ptr.PullToRefreshLayout;
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.model.Message;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -598,45 +600,46 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             }
         });
 
-        MyMessage message = new MyMessage("Hello World", IMessage.MessageType.RECEIVE_TEXT.ordinal());
+
+        MyMessage        message = new MyMessage("Hello World", IMessage.MessageType.RECEIVE_TEXT.ordinal());
         message.setUserInfo(new DefaultUser("0", "Deadpool", "R.drawable.deadpool"));
         mAdapter.addToStart(message, true);
-        MyMessage voiceMessage = new MyMessage("", IMessage.MessageType.RECEIVE_VOICE.ordinal());
-        voiceMessage.setUserInfo(new DefaultUser("0", "Deadpool", "R.drawable.deadpool"));
-        voiceMessage.setMediaFilePath(Environment.getExternalStorageDirectory().getAbsolutePath() + "/voice/2018-02-28-105103.m4a");
-        voiceMessage.setDuration(4);
-        mAdapter.addToStart(voiceMessage, true);
-
-        MyMessage sendVoiceMsg = new MyMessage("", IMessage.MessageType.SEND_VOICE.ordinal());
-        sendVoiceMsg.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
-        sendVoiceMsg.setMediaFilePath(Environment.getExternalStorageDirectory().getAbsolutePath() + "/voice/2018-02-28-105103.m4a");
-        sendVoiceMsg.setDuration(4);
-        mAdapter.addToStart(sendVoiceMsg, true);
-        MyMessage eventMsg = new MyMessage("haha", IMessage.MessageType.EVENT.ordinal());
-        mAdapter.addToStart(eventMsg, true);
-
-        MyMessage receiveVideo = new MyMessage("", IMessage.MessageType.RECEIVE_VIDEO.ordinal());
-        receiveVideo.setMediaFilePath(Environment.getExternalStorageDirectory().getPath() + "/Pictures/Hangouts/video-20170407_135638.3gp");
-        receiveVideo.setDuration(4);
-        receiveVideo.setUserInfo(new DefaultUser("0", "Deadpool", "R.drawable.deadpool"));
-        mAdapter.addToStart(receiveVideo, true);
-        mAdapter.addToEndChronologically(mData);
-        PullToRefreshLayout layout = mChatView.getPtrLayout();
-        layout.setPtrHandler(new PtrHandler() {
-            @Override
-            public void onRefreshBegin(PullToRefreshLayout layout) {
-                Log.i("MessageListActivity", "Loading next page");
-                loadNextPage();
-            }
-        });
-        // Deprecated, should use onRefreshBegin to load next page
-        mAdapter.setOnLoadMoreListener(new MsgListAdapter.OnLoadMoreListener() {
-            @Override
-            public void onLoadMore(int page, int totalCount) {
+//        MyMessage voiceMessage = new MyMessage("", IMessage.MessageType.RECEIVE_VOICE.ordinal());
+//        voiceMessage.setUserInfo(new DefaultUser("0", "Deadpool", "R.drawable.deadpool"));
+//        voiceMessage.setMediaFilePath(Environment.getExternalStorageDirectory().getAbsolutePath() + "/voice/2018-02-28-105103.m4a");
+//        voiceMessage.setDuration(4);
+//        mAdapter.addToStart(voiceMessage, true);
+//
+//        MyMessage sendVoiceMsg = new MyMessage("", IMessage.MessageType.SEND_VOICE.ordinal());
+//        sendVoiceMsg.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
+//        sendVoiceMsg.setMediaFilePath(Environment.getExternalStorageDirectory().getAbsolutePath() + "/voice/2018-02-28-105103.m4a");
+//        sendVoiceMsg.setDuration(4);
+//        mAdapter.addToStart(sendVoiceMsg, true);
+//        MyMessage eventMsg = new MyMessage("haha", IMessage.MessageType.EVENT.ordinal());
+//        mAdapter.addToStart(eventMsg, true);
+//
+//        MyMessage receiveVideo = new MyMessage("", IMessage.MessageType.RECEIVE_VIDEO.ordinal());
+//        receiveVideo.setMediaFilePath(Environment.getExternalStorageDirectory().getPath() + "/Pictures/Hangouts/video-20170407_135638.3gp");
+//        receiveVideo.setDuration(4);
+//        receiveVideo.setUserInfo(new DefaultUser("0", "Deadpool", "R.drawable.deadpool"));
+//        mAdapter.addToStart(receiveVideo, true);
+//        mAdapter.addToEndChronologically(mData);
+//        PullToRefreshLayout layout = mChatView.getPtrLayout();
+//        layout.setPtrHandler(new PtrHandler() {
+//            @Override
+//            public void onRefreshBegin(PullToRefreshLayout layout) {
 //                Log.i("MessageListActivity", "Loading next page");
 //                loadNextPage();
-            }
-        });
+//            }
+//        });
+//        // Deprecated, should use onRefreshBegin to load next page
+//        mAdapter.setOnLoadMoreListener(new MsgListAdapter.OnLoadMoreListener() {
+//            @Override
+//            public void onLoadMore(int page, int totalCount) {
+////                Log.i("MessageListActivity", "Loading next page");
+////                loadNextPage();
+//            }
+//        });
 
         mChatView.setAdapter(mAdapter);
         mAdapter.getLayoutManager().scrollToPosition(0);
