@@ -15,6 +15,10 @@ import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.model.UserInfo;
 import cn.jpush.im.android.api.options.RegisterOptionalUserInfo;
 import cn.jpush.im.api.BasicCallback;
+import jiguang.chat.activity.MainActivity;
+import jiguang.chat.database.UserEntry;
+import jiguang.chat.utils.SharePreferenceManager;
+import jiguang.chat.utils.ToastUtil;
 
 /**************************************************
  *
@@ -39,7 +43,7 @@ public class JmessageUtils {
         return "";
     }
 
-    static String getUserName(String userid){
+    public static String getUserName(String userid){
         return "chanche@"+userid;
     }
 
@@ -57,25 +61,30 @@ public class JmessageUtils {
         return MD5(userid);
     }
 
-    public static void registerIM(UserBean userBean) {
+    public static void registerIM(final UserBean userBean) {
         RegisterOptionalUserInfo info = new RegisterOptionalUserInfo();
+        //设置昵称
         info.setNickname(AppCache.getUserBean().getNickname());
+        //设置性别
         info.setGender(UserInfo.Gender.male);
-        registerIM(CcqApp.getAppContext(), userBean.getUserid(), userBean.getUserid(), info);
+        //设置头像
+        info.setAvatar(Utils.getAvatarPath());
+        String userName = getUserName(userBean.getUserid());
+        String pwd = MD5(userBean.getUserid());
+        registerIM(CcqApp.getAppContext(), userName,pwd , info);
     }
 
     private static void registerIM(final Context context, final String userName,
                                    final String password, RegisterOptionalUserInfo registerOptionalUserInfo) {
-        JMessageClient.register(getUserName(userName), MD5(password), new BasicCallback() {
+        JMessageClient.register(userName, password, registerOptionalUserInfo,new BasicCallback() {
             @Override
             public void gotResult(int responseCode, String registerDesc) {
-                if (responseCode == 0) {
+                //注册成功               已经注册过
+                if (responseCode == 0 || responseCode==898001) {
                     Toast.makeText(context, "注册成功", Toast.LENGTH_SHORT).show();
                     SharedPreferencesUtils.setParam(context,Constants.IS_REGISTER_JIM,true);
                     Log.i(TAG, "JMessageClient.register " + ", responseCode = " + responseCode + " ; registerDesc = " + registerDesc);
                     loginIM(context, userName, password);
-                    //更新头像
-                    upateHeadImg();
                 } else {
                     Toast.makeText(context, "注册失败", Toast.LENGTH_SHORT).show();
                     SharedPreferencesUtils.setParam(context,Constants.IS_REGISTER_JIM,false);
@@ -85,29 +94,47 @@ public class JmessageUtils {
         });
     }
 
+    public static void loginIM(final Context context, String userName, final String password) {
+//        JMessageClient.login(getUserName(userName), MD5(password), new BasicCallback() {
+//            @Override
+//            public void gotResult(int responseCode, String LoginDesc) {
+//                if (responseCode == 0) {
+//                    Toast.makeText(context, "登录成功", Toast.LENGTH_SHORT).show();
+//                    SharedPreferencesUtils.setParam(context,Constants.IS_LOGIN_JIM,true);
+//                    Log.i(TAG, "JMessageClient.login" + ", responseCode = " + responseCode + " ; LoginDesc = " + LoginDesc);
+//                } else {
+//                    Toast.makeText(context, "登录失败", Toast.LENGTH_SHORT).show();
+//                    SharedPreferencesUtils.setParam(context,Constants.IS_LOGIN_JIM,false);
+//                    Log.i(TAG, "JMessageClient.login" + ", responseCode = " + responseCode + " ; LoginDesc = " + LoginDesc);
+//                }
+//            }
+//        });
 
-    private static void upateHeadImg() {
-        JMessageClient.updateUserAvatar(new File(Utils.getAvatarPath()), new BasicCallback() {
+        JMessageClient.login(userName, password, new BasicCallback() {
             @Override
-            public void gotResult(int i, String s) {
-                ToastUtils.show(CcqApp.getAppContext(), "更新用户头像结果：" + s);
-            }
-        });
-    }
-
-
-    public static void loginIM(final Context context, String userName, String password) {
-        JMessageClient.login(getUserName(userName), MD5(password), new BasicCallback() {
-            @Override
-            public void gotResult(int responseCode, String LoginDesc) {
+            public void gotResult(int responseCode, String responseMessage) {
                 if (responseCode == 0) {
-                    Toast.makeText(context, "登录成功", Toast.LENGTH_SHORT).show();
+                    SharePreferenceManager.setCachedPsw(password);
+                    UserInfo myInfo = JMessageClient.getMyInfo();
+                    File avatarFile = myInfo.getAvatarFile();
+                    //登陆成功,如果用户有头像就把头像存起来,没有就设置null
+                    if (avatarFile != null) {
+                        SharePreferenceManager.setCachedAvatarPath(avatarFile.getAbsolutePath());
+                    } else {
+                        SharePreferenceManager.setCachedAvatarPath(null);
+                    }
+                    String username = myInfo.getUserName();
+                    String appKey = myInfo.getAppKey();
+                    UserEntry user = UserEntry.getUser(username, appKey);
+                    if (null == user) {
+                        user = new UserEntry(username, appKey);
+                        user.save();
+                    }
                     SharedPreferencesUtils.setParam(context,Constants.IS_LOGIN_JIM,true);
-                    Log.i(TAG, "JMessageClient.login" + ", responseCode = " + responseCode + " ; LoginDesc = " + LoginDesc);
+                    ToastUtil.shortToast(CcqApp.getAppContext(), "登陆成功");
                 } else {
-                    Toast.makeText(context, "登录失败", Toast.LENGTH_SHORT).show();
                     SharedPreferencesUtils.setParam(context,Constants.IS_LOGIN_JIM,false);
-                    Log.i(TAG, "JMessageClient.login" + ", responseCode = " + responseCode + " ; LoginDesc = " + LoginDesc);
+                    ToastUtil.shortToast(CcqApp.getAppContext(), "登陆失败" + responseMessage);
                 }
             }
         });

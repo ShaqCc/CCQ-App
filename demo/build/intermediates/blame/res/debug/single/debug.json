@@ -1,366 +1,366 @@
 [
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_show_download_voice_info.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_show_download_voice_info.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_create_message.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_create_message.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi_jpush_ic_richpush_actionbar_divider.png.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\drawable-hdpi\\jpush_ic_richpush_actionbar_divider.png"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_message_sending_options_layout.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\message_sending_options_layout.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_create_group_custom_message.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_create_group_custom_message.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_set_get_custom_message_string.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_set_get_custom_message_string.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_show_logout_info.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_show_logout_info.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_exit_group.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_exit_group.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_create_image_content_file.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_create_image_content_file.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_show_download_voice_info.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_show_download_voice_info.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_update_user_avatar.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_update_user_avatar.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_chatroom.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_chatroom.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_message_sending_options_layout.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\message_sending_options_layout.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_change_group_admin.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_change_group_admin.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_show_image.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_show_image.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi_jpush_ic_richpush_actionbar_divider.png.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\drawable-hdpi\\jpush_ic_richpush_actionbar_divider.png"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_create_single_text_message.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_create_single_text_message.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_set_get_boolean_extra.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_set_get_boolean_extra.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi_jpush_richpush_btn_selector.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\drawable-hdpi\\jpush_richpush_btn_selector.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\mipmap-hdpi_ic_launcher.png.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\mipmap-hdpi\\ic_launcher.png"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_update_user_info.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_update_user_info.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_add_friend.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_add_friend.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_create_group.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_create_group.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_friend_contact_manager.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_friend_contact_manager.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_exit_group.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_exit_group.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_conversation.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_conversation.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_get_user_info.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_get_user_info.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_show_friend_reason.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_show_friend_reason.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_set_get_number_extra.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_set_get_number_extra.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_get_user_info.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_get_user_info.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_set_get_string_extra.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_set_get_string_extra.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_show_image.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_show_image.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_show_groupinfo.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_show_groupinfo.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_is_show_sig_notify.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_is_show_sig_notify.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_about_setting.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_about_setting.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_notify_type.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_notify_type.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_show_download_path.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_show_download_path.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_conversation_info.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_conversation_info.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_notify_type.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_notify_type.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_create_send_image_message.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_create_send_image_message.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_get_black_list.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_get_black_list.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_get_custom_map.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_get_custom_map.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_set_get_boolean_extra.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_set_get_boolean_extra.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_dissolve_group.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_dissolve_group.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\mipmap-hdpi_ic_launcher.png.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\mipmap-hdpi\\ic_launcher.png"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_create_group.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_create_group.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_updatepassword.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_updatepassword.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_show_info.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_show_info.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi_jpush_ic_richpush_actionbar_back.png.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\drawable-hdpi\\jpush_ic_richpush_actionbar_back.png"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_update_group_info.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_update_group_info.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_get_public_group_infos.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_get_public_group_infos.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_is_show_group_notify.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_is_show_group_notify.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_is_show_sig_notify.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_is_show_sig_notify.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_show_groupinfo.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_show_groupinfo.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_create_send_image_message.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_create_send_image_message.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_create_group_voice_message.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_create_group_voice_message.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_create_single_image_message.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_create_single_image_message.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_show_download_path.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_show_download_path.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_set_get_custom_message_string.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_set_get_custom_message_string.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_create_group_image_message.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_create_group_image_message.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_location_message.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_location_message.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_set_get_number_extra.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_set_get_number_extra.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_set_get_extra.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_set_get_extra.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_updatepassword.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_updatepassword.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_forward_message.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_forward_message.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_show_group_notification.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_show_group_notification.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_dissolve_group.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_dissolve_group.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_create_single_voice_message.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_create_single_voice_message.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_show_group_notification.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_show_group_notification.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_receipt.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_receipt.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_create_send_custom_message.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_create_send_custom_message.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_type.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_type.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_show_info.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_show_info.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_image_content.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_image_content.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_create_group_text_message.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_create_group_text_message.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_show_group_member_approval_list_item.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_show_group_member_approval_list_item.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_no_disturb_list.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_no_disturb_list.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_get_black_list.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_get_black_list.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_show_group_member_approval_list_item.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_show_group_member_approval_list_item.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_show_logout_info.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_show_logout_info.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_create_send_voice.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_create_send_voice.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_register.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_register.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_create_group_image_message.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_create_group_image_message.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_show_trans_command.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_show_trans_command.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_create_message.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_create_message.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_update_user_extras.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_update_user_extras.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_delete_conversation.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_delete_conversation.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_create_send_text_message.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_create_send_text_message.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_chat.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_chat.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_set_get_string_extra.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_set_get_string_extra.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_create_image_content_bitmap.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_create_image_content_bitmap.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_message_content.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_message_content.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_add_friend.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_add_friend.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_show_group_member_approval.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_show_group_member_approval.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_receipt.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_receipt.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_get_local_group_members.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_get_local_group_members.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_show_group_member_approval.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_show_group_member_approval.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_forward_message.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_forward_message.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_get_local_group_members.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_get_local_group_members.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\mipmap-xxhdpi_ic_launcher.png.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\mipmap-xxhdpi\\ic_launcher.png"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_create_send_text_message.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_create_send_text_message.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi_jpush_richpush_btn_selector.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\drawable-hdpi\\jpush_richpush_btn_selector.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_message_content.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_message_content.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_apply_join_group.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_apply_join_group.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi_jpush_richpush_progressbar.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\drawable-hdpi\\jpush_richpush_progressbar.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_group_info.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_group_info.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_group_info.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_group_info.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_create_image_content_file.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_create_image_content_file.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_create_send_file_message.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_create_send_file_message.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_retract.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_retract.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\mipmap-mdpi_ic_launcher.png.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\mipmap-mdpi\\ic_launcher.png"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_get_public_group_infos.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_get_public_group_infos.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_group_keeper.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_group_keeper.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_create_send_file_message.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_create_send_file_message.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_update_user_extras.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_update_user_extras.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi_jpush_ic_richpush_actionbar_back.png.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\drawable-hdpi\\jpush_ic_richpush_actionbar_back.png"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_type.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_type.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_update_user_avatar.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_update_user_avatar.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_show_myinfo_update.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_show_myinfo_update.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\mipmap-mdpi_ic_launcher.png.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\mipmap-mdpi\\ic_launcher.png"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\mipmap-xxhdpi_ic_launcher.png.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\mipmap-xxhdpi\\ic_launcher.png"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_message_info.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_message_info.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_login.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_login.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_set_get_extra.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_set_get_extra.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_create_group_voice_message.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_create_group_voice_message.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\mipmap-xhdpi_ic_launcher.png.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\mipmap-xhdpi\\ic_launcher.png"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_conversation_info.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_conversation_info.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_create_trans_command.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_create_trans_command.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_change_group_admin.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_change_group_admin.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_blocked_group_message.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_blocked_group_message.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_is_show_group_notify.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_is_show_group_notify.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_login.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_login.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_image_content.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_image_content.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi_jpush_richpush_progressbar.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\drawable-hdpi\\jpush_richpush_progressbar.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_blocked_group_message.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_blocked_group_message.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_create_group_custom_message.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_create_group_custom_message.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_chatroom.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_chatroom.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_create_single_custom_message.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_create_single_custom_message.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_message.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_message.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\mipmap-xxxhdpi_ic_launcher.png.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\mipmap-xxxhdpi\\ic_launcher.png"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_friend_contact_manager.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_friend_contact_manager.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_create_send_custom_message.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_create_send_custom_message.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_get_custom_map.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_get_custom_map.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_create_image_content_bitmap.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_create_image_content_bitmap.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_add_remove_group_member.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_add_remove_group_member.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_create_single_image_message.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_create_single_image_message.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_get_conversation_info.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_get_conversation_info.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_conversation_target_input_layout.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\conversation_target_input_layout.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_update_group_info.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_update_group_info.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_add_remove_group_member.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_add_remove_group_member.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_create_single_voice_message.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_create_single_voice_message.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_chat.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_chat.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_register.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_register.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_location_message.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_location_message.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_conversation_target_input_layout.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\conversation_target_input_layout.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_get_conversation_info.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_get_conversation_info.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_show_trans_command.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_show_trans_command.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_asserte_quals.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_asserte_quals.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_show_friend_reason.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_show_friend_reason.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_add_users_to_black_list.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_add_users_to_black_list.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_create_single_custom_message.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_create_single_custom_message.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_create_single_text_message.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_create_single_text_message.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\mipmap-xxxhdpi_ic_launcher.png.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\mipmap-xxxhdpi\\ic_launcher.png"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_about_setting.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_about_setting.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_add_users_to_black_list.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_add_users_to_black_list.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_no_disturb_list.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_no_disturb_list.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_create_trans_command.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_create_trans_command.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_create_send_voice.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_create_send_voice.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_set_group_mem_silence.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_set_group_mem_silence.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_message.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_message.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_message_info.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_message_info.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_group_keeper.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_group_keeper.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_apply_join_group.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_apply_join_group.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_set_group_mem_silence.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_set_group_mem_silence.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_conversation.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_conversation.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_update_user_info.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_update_user_info.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_asserte_quals.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_asserte_quals.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_delete_conversation.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_delete_conversation.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\mipmap-xhdpi_ic_launcher.png.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\mipmap-xhdpi\\ic_launcher.png"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_create_group_text_message.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_create_group_text_message.xml"
     },
     {
-        "merged": "C:\\CCQ-workspace\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_retract.xml.flat",
-        "source": "C:\\CCQ-workspace\\CCQ-App\\demo\\res\\layout\\activity_retract.xml"
+        "merged": "D:\\studio\\test\\CCQ-App\\demo\\build\\intermediates\\res\\merged\\debug\\layout_activity_show_myinfo_update.xml.flat",
+        "source": "D:\\studio\\test\\CCQ-App\\demo\\res\\layout\\activity_show_myinfo_update.xml"
     }
 ]

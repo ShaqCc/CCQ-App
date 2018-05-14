@@ -1,12 +1,9 @@
 package com.ccq.app.ui;
 
 import android.content.Intent;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.text.TextUtils;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationAdapter;
@@ -18,13 +15,12 @@ import com.ccq.app.ui.home.HomeFragment;
 import com.ccq.app.ui.message.MessageFragment;
 import com.ccq.app.ui.publish.PublishFragment;
 import com.ccq.app.ui.user.UserFragment;
-import com.ccq.app.utils.statusbar.StatusBarUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.OnClick;
+import jiguang.chat.activity.fragment.ConversationListFragment;
 
 
 public class MainActivity extends BaseActivity<MainPresenter> implements MainView {
@@ -35,13 +31,14 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
     @BindView(R.id.main_bottom_navigation)
     AHBottomNavigation mNavigation;
 
-    private List<BaseFragment> mFragments = new ArrayList<>();
+    private List<Fragment> mFragments = new ArrayList<>();
     private final String[] fragmentTitles = new String[]{"首页", "发布", "消息", "我的"};
     private MainFragmentAdapter mFragmentAdapter;
+    private MessageFragment conversationListFragment;
 
     @Override
     protected int inflateContentView() {
-        return R.layout.activity_main;
+        return R.layout.activity_main_ccp;
     }
 
 
@@ -57,7 +54,8 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
     private void initViewPager() {
         mFragments.add(new HomeFragment());
         mFragments.add(new PublishFragment());
-        mFragments.add(new MessageFragment());
+        conversationListFragment = new MessageFragment();
+        mFragments.add(conversationListFragment);
         mFragments.add(new UserFragment());
         mFragmentAdapter = new MainFragmentAdapter(getSupportFragmentManager(), mFragments);
         mMainViewpager.setAdapter(mFragmentAdapter);
@@ -93,8 +91,11 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
                     return false;
                 else {
                     mMainViewpager.setCurrentItem(position, false);
-                    ((BaseFragment) mFragmentAdapter.getItem(position)).refreshUI();
-                    switch (position){
+                    if (mFragmentAdapter.getItem(position) instanceof BaseFragment){
+                        ((BaseFragment) mFragmentAdapter.getItem(position)).refreshUI();
+                    }
+
+                    switch (position) {
                         case 0:
                             setToolBarVisible(false);
                             break;
@@ -115,6 +116,12 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
                 }
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        conversationListFragment.sortConvList();
     }
 
     @Override

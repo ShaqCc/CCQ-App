@@ -40,6 +40,7 @@ public class HomePresenter extends BasePresenter<IHomeView> {
             @Override
             public void onFailure(Call<List<BannerBean>> call, Throwable t) {
                 ToastUtils.show(mView.get(), t.getMessage());
+                t.printStackTrace();
             }
         });
 

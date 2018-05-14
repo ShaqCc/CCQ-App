@@ -23,8 +23,8 @@ import com.ccq.app.ui.publish.DoubleListRightAdapter;
 import com.ccq.app.ui.user.adapter.SubcribeListAdapter;
 import com.ccq.app.utils.AppCache;
 import com.ccq.app.utils.ToastUtils;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.jpush.JsonObject;
+import com.google.gson.jpush.JsonParser;
 
 import java.util.HashMap;
 import java.util.List;

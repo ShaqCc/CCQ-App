@@ -43,13 +43,7 @@ import com.ccq.app.utils.FileUtil;
 import com.ccq.app.utils.ToastUtils;
 import com.ccq.app.weidget.ListDialog;
 import com.ccq.app.weidget.MyGridView;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.lzy.imagepicker.ImagePicker;
-import com.lzy.imagepicker.bean.ImageItem;
-import com.lzy.imagepicker.loader.ImageLoader;
-import com.lzy.imagepicker.ui.ImageGridActivity;
-import com.lzy.imagepicker.view.CropImageView;
+
 import com.qiniu.android.jpush.utils.StringUtils;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
@@ -77,6 +71,10 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.Subject;
+import jiguang.chat.utils.imagepicker.ImageGridActivity;
+import jiguang.chat.utils.imagepicker.ImageLoader;
+import jiguang.chat.utils.imagepicker.ImagePicker;
+import jiguang.chat.utils.imagepicker.bean.ImageItem;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.Request;
@@ -380,7 +378,7 @@ public class PublishFragment extends BaseFragment {
                     List<Object> list = response.body();
                     if(list.size()>0){
                         for (Object obj : list){
-                            JsonObject returnData = new JsonParser().parse(obj.toString()).getAsJsonObject();
+                            com.google.gson.jpush.JsonObject returnData = new com.google.gson.jpush.JsonParser().parse(obj.toString()).getAsJsonObject();
                             String year = returnData.get("name").getAsString();
                             carAgeList.add(year);
                         }
@@ -562,6 +560,7 @@ public class PublishFragment extends BaseFragment {
 
         @Override
         public void onReceiveLocation(BDLocation location) {
+
             if (null != location && location.getLocType() != BDLocation.TypeServerError) {
                 logMsg(location.getAddrStr());
                 point = new LatLng(location.getLatitude(), location.getLongitude());
@@ -699,8 +698,25 @@ public class PublishFragment extends BaseFragment {
 
 class PicassoImageLoader implements ImageLoader {
 
+//    @Override
+//    public void displayImage(Activity activity, String path, ImageView imageView, int width, int height) {
+//        Picasso.with(activity)//
+//                .load(Uri.fromFile(new File(path)))//
+//                .placeholder(R.mipmap.default_image)//
+//                .error(R.mipmap.default_image)//
+//                .resize(width, height)//
+//                .centerInside()//
+//                .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)//
+//                .into(imageView);
+//    }
+//
+//    @Override
+//    public void displayImagePreview(Activity activity, String path, ImageView imageView, int width, int height) {
+//
+//    }
+
     @Override
-    public void displayImage(Activity activity, String path, ImageView imageView, int width, int height) {
+    public void displayImages(Activity activity, String path, ImageView imageView, int width, int height) {
         Picasso.with(activity)//
                 .load(Uri.fromFile(new File(path)))//
                 .placeholder(R.mipmap.default_image)//
@@ -709,11 +725,6 @@ class PicassoImageLoader implements ImageLoader {
                 .centerInside()//
                 .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)//
                 .into(imageView);
-    }
-
-    @Override
-    public void displayImagePreview(Activity activity, String path, ImageView imageView, int width, int height) {
-
     }
 
     @Override

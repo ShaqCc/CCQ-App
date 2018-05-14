@@ -24,8 +24,7 @@ import com.ccq.app.ui.user.adapter.MyPublishListAdapter;
 import com.ccq.app.utils.AppCache;
 import com.ccq.app.utils.ToastUtils;
 import com.ccq.app.utils.ViewState;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -203,7 +202,7 @@ public class TabHomeFragment extends BaseFragment {
             public void onResponse(Call<Object> call, Response<Object> response) {
                 Object obj = response.body();
                 if (obj != null) {
-                    JsonObject returnData = new JsonParser().parse(obj.toString()).getAsJsonObject();
+                    com.google.gson.jpush.JsonObject returnData = new com.google.gson.jpush.JsonParser().parse(obj.toString()).getAsJsonObject();
                     String mesg = returnData.get("message").getAsString();
                     ToastUtils.show(get(),mesg);
 
@@ -227,7 +226,7 @@ public class TabHomeFragment extends BaseFragment {
             public void onResponse(Call<Object> call, Response<Object> response) {
                 Object obj = response.body();
                 if (obj != null) {
-                    JsonObject returnData = new JsonParser().parse(obj.toString()).getAsJsonObject();
+                    com.google.gson.jpush.JsonObject returnData = new com.google.gson.jpush.JsonParser().parse(obj.toString()).getAsJsonObject();
                     String mesg = returnData.get("message").getAsString();
                     ToastUtils.show(get(),mesg);
 
@@ -252,7 +251,7 @@ public class TabHomeFragment extends BaseFragment {
             public void onResponse(Call<Object> call, Response<Object> response) {
                 Object obj = response.body();
                 if (obj != null) {
-                    JsonObject returnData = new JsonParser().parse(obj.toString()).getAsJsonObject();
+                    com.google.gson.jpush.JsonObject returnData = new com.google.gson.jpush.JsonParser().parse(obj.toString()).getAsJsonObject();
                     String mesg = returnData.get("message").getAsString();
                     ToastUtils.show(get(),mesg);
                 }

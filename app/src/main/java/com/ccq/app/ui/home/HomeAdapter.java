@@ -10,32 +10,39 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.ccq.app.R;
-import com.ccq.app.entity.BannerBean;
+import com.ccq.app.base.CcqApp;
 import com.ccq.app.entity.Car;
-import com.ccq.app.http.ApiParams;
-import com.ccq.app.ui.city.ProvinceActivity;
-import com.ccq.app.ui.message.MessageListActivity;
+import com.ccq.app.ui.message.SingleChatActivity;
+import com.ccq.app.ui.user.LoginActivity;
+import com.ccq.app.utils.AppCache;
 import com.ccq.app.utils.DensityUtils;
-import com.ccq.app.utils.GlideImageLoader;
+import com.ccq.app.utils.JmessageUtils;
 import com.ccq.app.utils.Utils;
 import com.ccq.app.weidget.MyGridView;
 import com.previewlibrary.PhotoActivity;
-import com.youth.banner.Banner;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.model.Conversation;
+import cn.jpush.im.android.api.model.UserInfo;
+import cn.jpush.im.android.eventbus.EventBus;
+import cn.jpush.im.api.BasicCallback;
+import jiguang.chat.activity.ChatActivity;
+import jiguang.chat.activity.PersonalActivity;
+import jiguang.chat.application.JGApplication;
+import jiguang.chat.entity.Event;
+import jiguang.chat.entity.EventType;
+import jiguang.chat.utils.ThreadUtil;
+import jiguang.chat.utils.ToastUtil;
 import me.drakeet.materialdialog.MaterialDialog;
-import me.gujun.android.taggroup.TagGroup;
 
 /**************************************************
  *
@@ -187,8 +194,31 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
                     Utils.call(context, car.getPhone());
                 break;
             case R.id.item_tv_message:
-                Intent intent = new Intent(context, MessageListActivity.class);
+                if(AppCache.getUserBean()==null){
+                    context.startActivity(new Intent(context, LoginActivity.class));
+                    return;
+                }
+//                mTargetId = intent.getStringExtra(TARGET_ID);
+//                mTargetAppKey = intent.getStringExtra(TARGET_APP_KEY);
+//                mTitle = intent.getStringExtra(JGApplication.CONV_TITLE);
+
+                String userName = JmessageUtils.getUserName(car.getUserInfo().getUserid() + "");
+                Intent intent = new Intent(context, SingleChatActivity.class);
+                intent.putExtra(JGApplication.CONV_TITLE, car.getUserInfo().getNickname());
+                intent.putExtra(JGApplication.TARGET_ID, userName);
+                intent.putExtra(JGApplication.TARGET_APP_KEY, CcqApp.jmappkey);
                 context.startActivity(intent);
+
+
+                Conversation conv = JMessageClient.getSingleConversation(userName, CcqApp.jmappkey);
+                //如果会话为空，使用EventBus通知会话列表添加新会话
+                if (conv == null) {
+                    conv = Conversation.createSingleConversation(userName,  CcqApp.jmappkey);
+                    EventBus.getDefault().post(new Event.Builder()
+                            .setType(EventType.createConversation)
+                            .setConversation(conv)
+                            .build());
+                }
                 break;
             case R.id.item_car_iv_moments:
                 final MaterialDialog dialog = new MaterialDialog(context);
