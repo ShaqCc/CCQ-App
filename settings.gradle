@@ -1,1 +1,1 @@
-include ':app', ':bottombar-lib', ':banner-lib', ':dialog-lib', ':index-lib', ':tag-lib', ':messagelist',  ':chatapp',  ':reclib-qq',  ':reclib-testemoticons', ':imagepicker'
+include ':app', ':bottombar-lib', ':banner-lib', ':dialog-lib', ':index-lib', ':tag-lib', ':messagelist',  ':chatapp',  ':reclib-qq',  ':reclib-testemoticons'
