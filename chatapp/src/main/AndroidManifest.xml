@@ -65,11 +65,11 @@
 
         <!-- Required SDK 核心功能 -->
         <!-- 可配置android:process参数将PushService放在其他进程中 -->
+        <!--android:process=":remote"-->
         <service
             android:name="cn.jpush.android.service.PushService"
             android:enabled="true"
-            android:exported="false"
-            android:process=":remote">
+            android:exported="false">
             <intent-filter>
                 <action android:name="cn.jpush.android.intent.REGISTER"/>
                 <action android:name="cn.jpush.android.intent.REPORT"/>

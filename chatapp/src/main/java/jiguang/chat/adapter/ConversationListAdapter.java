@@ -66,7 +66,7 @@ public class ConversationListAdapter extends BaseAdapter {
     private UserInfo mUserInfo;
     private GroupInfo mGroupInfo;
     private ConversationListView mConversationListView;
-    private String userNamePrefix = "";
+
 
     public ConversationListAdapter(Activity context, List<Conversation> data, ConversationListView convListView) {
         this.mContext = context;
@@ -160,14 +160,6 @@ public class ConversationListAdapter extends BaseAdapter {
         mUIHandler.removeMessages(REFRESH_CONVERSATION_LIST);
         mUIHandler.sendEmptyMessageDelayed(REFRESH_CONVERSATION_LIST, 200);
 
-    }
-
-    /**
-     * 设置用户 名字的前缀   如   chanche@007
-     * @param userNamePrefix
-     */
-    public void setUserNamePrefix(String userNamePrefix) {
-        this.userNamePrefix = userNamePrefix;
     }
 
     //取消会话置顶
@@ -409,8 +401,9 @@ public class ConversationListAdapter extends BaseAdapter {
 
         if (convItem.getType().equals(ConversationType.single)) {
             groupBlocked.setVisibility(View.GONE);
-            String name = convItem.getTitle().replace(userNamePrefix, "");
-            convName.setText(name);
+
+            String title  = ((UserInfo) convItem.getTargetInfo()).getNickname();
+            convName.setText(title);
             mUserInfo = (UserInfo) convItem.getTargetInfo();
             if (mUserInfo != null) {
                 mUserInfo.getAvatarBitmap(new GetAvatarBitmapCallback() {

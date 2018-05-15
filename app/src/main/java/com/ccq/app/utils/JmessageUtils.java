@@ -14,6 +14,7 @@ import java.security.MessageDigest;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.model.UserInfo;
 import cn.jpush.im.android.api.options.RegisterOptionalUserInfo;
+import cn.jpush.im.android.tasks.UpdateUserInfoTask;
 import cn.jpush.im.api.BasicCallback;
 import jiguang.chat.activity.MainActivity;
 import jiguang.chat.database.UserEntry;
@@ -43,8 +44,8 @@ public class JmessageUtils {
         return "";
     }
 
-    public static String getUserName(String userid){
-        return "chanche@"+userid;
+    public static String getUserName(String userid) {
+        return "chanche@" + userid;
     }
 
     /**
@@ -57,42 +58,33 @@ public class JmessageUtils {
         return "";
     }
 
-    static String getPassword(String userid){
+    static String getPassword(String userid) {
         return MD5(userid);
     }
 
     public static void registerIM(final UserBean userBean) {
-        RegisterOptionalUserInfo info = new RegisterOptionalUserInfo();
-        //设置昵称
-        info.setNickname(AppCache.getUserBean().getNickname());
-        //设置性别
-        info.setGender(UserInfo.Gender.male);
-        //设置头像
-        info.setAvatar(Utils.getAvatarPath());
-        String userName = getUserName(userBean.getUserid());
+        final String userName = getUserName(userBean.getUserid());
         String pwd = MD5(userBean.getUserid());
-        registerIM(CcqApp.getAppContext(), userName,pwd , info);
-    }
 
-    private static void registerIM(final Context context, final String userName,
-                                   final String password, RegisterOptionalUserInfo registerOptionalUserInfo) {
-        JMessageClient.register(userName, password, registerOptionalUserInfo,new BasicCallback() {
+        JMessageClient.register(userName, userName, new BasicCallback() {
             @Override
             public void gotResult(int responseCode, String registerDesc) {
-                //注册成功               已经注册过
-                if (responseCode == 0 || responseCode==898001) {
-                    Toast.makeText(context, "注册成功", Toast.LENGTH_SHORT).show();
-                    SharedPreferencesUtils.setParam(context,Constants.IS_REGISTER_JIM,true);
+                //注册成功
+                if (responseCode == 0 || responseCode == 898001) {
+//                    Toast.makeText(context, "注册成功", Toast.LENGTH_SHORT).show();
+                    SharedPreferencesUtils.setParam(CcqApp.getAppContext(), Constants.IS_REGISTER_JIM, true);
                     Log.i(TAG, "JMessageClient.register " + ", responseCode = " + responseCode + " ; registerDesc = " + registerDesc);
-                    loginIM(context, userName, password);
+                    loginIM(CcqApp.getAppContext(), userName, userName);
+                    UpdateUserInfo();
                 } else {
-                    Toast.makeText(context, "注册失败", Toast.LENGTH_SHORT).show();
-                    SharedPreferencesUtils.setParam(context,Constants.IS_REGISTER_JIM,false);
+//                    Toast.makeText(context, "注册失败", Toast.LENGTH_SHORT).show();
+                    SharedPreferencesUtils.setParam(CcqApp.getAppContext(), Constants.IS_REGISTER_JIM, false);
                     Log.i(TAG, "JMessageClient.register " + ", responseCode = " + responseCode + " ; registerDesc = " + registerDesc);
                 }
             }
         });
     }
+
 
     public static void loginIM(final Context context, String userName, final String password) {
 //        JMessageClient.login(getUserName(userName), MD5(password), new BasicCallback() {
@@ -130,14 +122,25 @@ public class JmessageUtils {
                         user = new UserEntry(username, appKey);
                         user.save();
                     }
-                    SharedPreferencesUtils.setParam(context,Constants.IS_LOGIN_JIM,true);
+                    SharedPreferencesUtils.setParam(context, Constants.IS_LOGIN_JIM, true);
                     ToastUtil.shortToast(CcqApp.getAppContext(), "登陆成功");
+                    UpdateUserInfo();
                 } else {
-                    SharedPreferencesUtils.setParam(context,Constants.IS_LOGIN_JIM,false);
+                    SharedPreferencesUtils.setParam(context, Constants.IS_LOGIN_JIM, false);
                     ToastUtil.shortToast(CcqApp.getAppContext(), "登陆失败" + responseMessage);
                 }
             }
         });
+    }
+
+    /**
+     * 更新用户信息
+     */
+    private static void UpdateUserInfo() {
+        UserInfo myInfo = JMessageClient.getMyInfo();
+        myInfo.setNickname(AppCache.getUserBean().getNickname());
+        JMessageClient.updateMyInfo(UserInfo.Field.nickname,myInfo,null);
+        JMessageClient.updateUserAvatar(new File(Utils.getAvatarPath()),null);
     }
 
     private static String MD5(String s) {

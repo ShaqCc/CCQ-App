@@ -142,7 +142,6 @@ public class ChatActivity extends BaseActivity implements FuncLayout.OnFuncKeyBo
     private boolean mAtAll = false;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -304,7 +303,6 @@ public class ChatActivity extends BaseActivity implements FuncLayout.OnFuncKeyBo
             }
         });
     }
-
 
 
     private void initEmoticonsKeyBoardBar() {

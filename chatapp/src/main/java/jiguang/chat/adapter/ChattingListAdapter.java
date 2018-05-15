@@ -47,6 +47,7 @@ import jiguang.chat.activity.PersonalActivity;
 import jiguang.chat.activity.receiptmessage.ReceiptMessageListActivity;
 import jiguang.chat.application.JGApplication;
 import jiguang.chat.controller.ChatItemController;
+import jiguang.chat.listener.HeaderIconClick;
 import jiguang.chat.utils.DialogCreator;
 import jiguang.chat.utils.HandleResponseCode;
 import jiguang.chat.utils.TimeFormat;
@@ -96,11 +97,6 @@ public class ChattingListAdapter extends BaseAdapter {
     private ChatItemController mController;
     private Dialog mDialog;
     private boolean mHasLastPage = false;
-
-    /**
-     * item  子view点击事件
-     */
-    private View.OnClickListener itemClickViewListener;
 
     public ChattingListAdapter(Activity context, Conversation conv, ContentLongClickListener longClickListener) {
         this.mContext = context;
@@ -187,10 +183,6 @@ public class ChattingListAdapter extends BaseAdapter {
                 notifyDataSetChanged();
             }
         }
-    }
-
-    public void setItemClickViewListener(View.OnClickListener itemClickViewListener) {
-        this.itemClickViewListener = itemClickViewListener;
     }
 
     public boolean isHasLastPage() {
@@ -583,38 +575,34 @@ public class ChattingListAdapter extends BaseAdapter {
             } else {
                 holder.headIcon.setImageResource(R.drawable.jmui_head_icon);
             }
+            holder.headIcon.setOnClickListener(new HeaderIconClick());
 
-            if(itemClickViewListener != null){
-                holder.headIcon.setOnClickListener(itemClickViewListener);
-            }else {
-                // 点击头像跳转到个人信息界面
-                holder.headIcon.setOnClickListener(new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View arg0) {
-                        Intent intent = new Intent();
-                        if (msg.getDirect() == MessageDirect.send) {
-                            intent.putExtra(JGApplication.TARGET_ID, JMessageClient.getMyInfo().getUserName());
-                            intent.setClass(mContext, PersonalActivity.class);
-                            mContext.startActivity(intent);
-                        } else {
-                            String targetID = userInfo.getUserName();
-                            intent.putExtra(JGApplication.TARGET_ID, targetID);
-                            intent.putExtra(JGApplication.TARGET_APP_KEY, userInfo.getAppKey());
-                            intent.putExtra(JGApplication.GROUP_ID, mGroupId);
-                            if (userInfo.isFriend()) {
-                                intent.setClass(mContext, FriendInfoActivity.class);
-                            } else {
-                                intent.setClass(mContext, GroupNotFriendActivity.class);
-                            }
-                            ((Activity) mContext).startActivityForResult(intent,
-                                    JGApplication.REQUEST_CODE_FRIEND_INFO);
-                        }
-                    }
-                });
-                holder.headIcon.setTag(position);
-                holder.headIcon.setOnLongClickListener(mLongClickListener);
-            }
+//            holder.headIcon.setOnClickListener(new View.OnClickListener() {
+//
+//                @Override
+//                public void onClick(View arg0) {
+//                    Intent intent = new Intent();
+//                    if (msg.getDirect() == MessageDirect.send) {
+//                        intent.putExtra(JGApplication.TARGET_ID, JMessageClient.getMyInfo().getUserName());
+//                        intent.setClass(mContext, PersonalActivity.class);
+//                        mContext.startActivity(intent);
+//                    } else {
+//                        String targetID = userInfo.getUserName();
+//                        intent.putExtra(JGApplication.TARGET_ID, targetID);
+//                        intent.putExtra(JGApplication.TARGET_APP_KEY, userInfo.getAppKey());
+//                        intent.putExtra(JGApplication.GROUP_ID, mGroupId);
+//                        if (userInfo.isFriend()) {
+//                            intent.setClass(mContext, FriendInfoActivity.class);
+//                        } else {
+//                            intent.setClass(mContext, GroupNotFriendActivity.class);
+//                        }
+//                        ((Activity) mContext).startActivityForResult(intent,
+//                                JGApplication.REQUEST_CODE_FRIEND_INFO);
+//                    }
+//                }
+//            });
+//            holder.headIcon.setTag(position);
+//            holder.headIcon.setOnLongClickListener(mLongClickListener);
         }
 
 
@@ -826,7 +814,7 @@ public class ChattingListAdapter extends BaseAdapter {
                     public void gotResult(final int status, String desc) {
                         holder.progressTv.setVisibility(View.GONE);
                         //此方法是api21才添加的如果低版本会报错找不到此方法.升级api或者使用ContextCompat.getDrawable
-                        holder.contentLl.setBackground(mContext.getDrawable(R.drawable.jmui_msg_send_bg));
+                        holder.contentLl.setBackground(mContext.getResources().getDrawable(R.drawable.jmui_msg_send_bg));
                         if (status != 0) {
                             HandleResponseCode.onHandle(mContext, status, false);
                             holder.resend.setVisibility(View.VISIBLE);
@@ -885,7 +873,8 @@ public class ChattingListAdapter extends BaseAdapter {
 
         @Override
         public boolean onLongClick(View v) {
-            onContentLongClick((Integer) v.getTag(), v);
+            //TODO 暂时不用长按事件
+//            onContentLongClick((Integer) v.getTag(), v);
             return true;
         }
 

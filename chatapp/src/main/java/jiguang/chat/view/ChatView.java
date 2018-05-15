@@ -47,6 +47,8 @@ public class ChatView extends RelativeLayout {
         mReturnButton = (ImageButton) findViewById(R.id.jmui_return_btn);
         mGroupNumTv = (TextView) findViewById(R.id.jmui_group_num_tv);
         mRightBtn = (ImageButton) findViewById(R.id.jmui_right_btn);
+        //TODO 暂时不用好友群组
+        mRightBtn.setVisibility(GONE);
         mChatTitle = (TextView) findViewById(R.id.jmui_title);
         mAtMeBtn = (Button) findViewById(R.id.jmui_at_me_btn);
         if (densityDpi <= 160) {

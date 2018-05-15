@@ -25,6 +25,7 @@ public class Constants {
 
     public static String IS_REGISTER_JIM = "is_register_jim";//是否注册过极光im
     public static String IS_LOGIN_JIM = "is_login_jim";//是否登录了极光im
+    public static String IS_UPDATE_USER_INFO = "IS_UPDATE_USER_INFO";//是否登更新了用户信息
 
 
     //event bus

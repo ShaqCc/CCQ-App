@@ -25,6 +25,5 @@ public class MessageFragment extends ConversationListFragment {
         View toolbra = mRootView.findViewById(R.id.rl_toolbra);
         toolbra.setVisibility(View.GONE);
         mConvListView.dismissSearchView();
-        mConvListController.setUserNamePrefix("chanche@");
     }
 }

@@ -40,10 +40,7 @@ public class ConversationListController implements View.OnClickListener,
     private ConversationListAdapter mListAdapter;
     private List<Conversation> mDatas = new ArrayList<Conversation>();
     private Dialog mDialog;
-    /**
-     * 用户名前缀
-     */
-    private String userNamePrefix = "";
+
 
     public ConversationListController(ConversationListView listView, ConversationListFragment context,
                                       int width) {
@@ -95,15 +92,6 @@ public class ConversationListController implements View.OnClickListener,
         mConvListView.setConvListAdapter(mListAdapter);
     }
 
-    /**
-     * 设置用户 名字的前缀   如   chanche@007
-     * @param userNamePrefix
-     */
-    public void setUserNamePrefix(String userNamePrefix) {
-        this.userNamePrefix = userNamePrefix;
-        mListAdapter.setUserNamePrefix(userNamePrefix);
-    }
-
 
     @Override
     public void onClick(View v) {
@@ -146,8 +134,7 @@ public class ConversationListController implements View.OnClickListener,
                 //单聊
             } else {
                 String targetId = ((UserInfo) conv.getTargetInfo()).getUserName();
-                String title  = targetId;
-                title  = title.replace(userNamePrefix,"");
+                String title  = ((UserInfo) conv.getTargetInfo()).getNickname();
                 intent.putExtra(JGApplication.CONV_TITLE, title);
                 intent.putExtra(JGApplication.TARGET_ID, targetId);
                 intent.putExtra(JGApplication.TARGET_APP_KEY, conv.getTargetAppKey());
