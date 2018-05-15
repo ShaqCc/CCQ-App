@@ -172,13 +172,12 @@ public class ChatActivity extends BaseActivity implements FuncLayout.OnFuncKeyBo
         if (!TextUtils.isEmpty(mTargetId)) {
             //单聊
             mIsSingle = true;
-            mChatView.setChatTitle(mTitle);
             mConv = JMessageClient.getSingleConversation(mTargetId, mTargetAppKey);
             if (mConv == null) {
                 mConv = Conversation.createSingleConversation(mTargetId, mTargetAppKey);
             }
             mChatAdapter = new ChattingListAdapter(mContext, mConv, longClickListener);
-
+            mChatView.setChatTitle(((UserInfo)mConv.getTargetInfo()).getNickname());
         } else {
             //群聊
             mIsSingle = false;
