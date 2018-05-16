@@ -1,25 +1,30 @@
 package com.ccq.app.utils;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.ccq.app.base.CcqApp;
 import com.ccq.app.entity.UserBean;
+import com.ccq.app.http.ApiService;
+import com.ccq.app.http.RetrofitClient;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.security.MessageDigest;
 
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.model.UserInfo;
-import cn.jpush.im.android.api.options.RegisterOptionalUserInfo;
-import cn.jpush.im.android.tasks.UpdateUserInfoTask;
 import cn.jpush.im.api.BasicCallback;
-import jiguang.chat.activity.MainActivity;
 import jiguang.chat.database.UserEntry;
 import jiguang.chat.utils.SharePreferenceManager;
 import jiguang.chat.utils.ToastUtil;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**************************************************
  *
@@ -34,50 +39,66 @@ public class JmessageUtils {
 
     private final static String TAG = "JmessageUtils";
 
-    /**
-     * @return 获取极光登录的userid，格式：chanche@userid;
-     */
-    public static String getJimUserName() {
-        if (AppCache.getUserBean() != null) {
-            return "chanche@" + AppCache.getUserBean().getUserid();
-        }
-        return "";
-    }
 
     public static String getUserName(String userid) {
         return "chanche@" + userid;
     }
 
     /**
-     * @return 极光登录的密码
+     * 注册im
+     * @param userBean
      */
-    public static String getJimPassword() {
-        if (AppCache.getUserBean() != null) {
-            return MD5(AppCache.getUserBean().getUserid());
-        }
-        return "";
-    }
-
-    static String getPassword(String userid) {
-        return MD5(userid);
-    }
-
     public static void registerIM(final UserBean userBean) {
-        final String userName = getUserName(userBean.getUserid());
-        String pwd = MD5(userBean.getUserid());
+        downImageJi(userBean);
+    }
 
+    /**
+     * 分三步
+     * 1、下载微信用户头像
+     * 2、注册极光im
+     * 3、登陆极光im
+     * @param userBean
+     */
+    private static void downImageJi(final UserBean userBean) {
+        ApiService apiService = RetrofitClient.getInstance().getApiService();
+        Call<ResponseBody> responseBodyCall = apiService.downloadPic(userBean.getHeadimgurl());
+        if (responseBodyCall.isExecuted()) return;
+        responseBodyCall.enqueue(new Callback<ResponseBody>() {
+
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    boolean writtenToDisk = writeResponseBodyToDisk(response.body(), Utils.getAvatarPath());
+                    if (writtenToDisk){
+                        regist(userBean);
+                    }
+                } else {
+                    ToastUtils.show(CcqApp.getAppContext(), response.message());
+                }
+            }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                ToastUtils.show(CcqApp.getAppContext(), t.getMessage());
+            }
+        });
+    }
+
+    /**
+     * 注册im
+     * @param userBean
+     */
+    private static void regist(UserBean userBean) {
+        final String userName = getUserName(userBean.getUserid());
+        final String headimgurl = userBean.getHeadimgurl();
         JMessageClient.register(userName, userName, new BasicCallback() {
             @Override
             public void gotResult(int responseCode, String registerDesc) {
                 //注册成功
                 if (responseCode == 0 || responseCode == 898001) {
-//                    Toast.makeText(context, "注册成功", Toast.LENGTH_SHORT).show();
                     SharedPreferencesUtils.setParam(CcqApp.getAppContext(), Constants.IS_REGISTER_JIM, true);
                     Log.i(TAG, "JMessageClient.register " + ", responseCode = " + responseCode + " ; registerDesc = " + registerDesc);
-                    loginIM(CcqApp.getAppContext(), userName, userName);
-                    UpdateUserInfo();
+                    loginIM(CcqApp.getAppContext(), userName, userName,headimgurl);
                 } else {
-//                    Toast.makeText(context, "注册失败", Toast.LENGTH_SHORT).show();
                     SharedPreferencesUtils.setParam(CcqApp.getAppContext(), Constants.IS_REGISTER_JIM, false);
                     Log.i(TAG, "JMessageClient.register " + ", responseCode = " + responseCode + " ; registerDesc = " + registerDesc);
                 }
@@ -85,23 +106,14 @@ public class JmessageUtils {
         });
     }
 
-
-    public static void loginIM(final Context context, String userName, final String password) {
-//        JMessageClient.login(getUserName(userName), MD5(password), new BasicCallback() {
-//            @Override
-//            public void gotResult(int responseCode, String LoginDesc) {
-//                if (responseCode == 0) {
-//                    Toast.makeText(context, "登录成功", Toast.LENGTH_SHORT).show();
-//                    SharedPreferencesUtils.setParam(context,Constants.IS_LOGIN_JIM,true);
-//                    Log.i(TAG, "JMessageClient.login" + ", responseCode = " + responseCode + " ; LoginDesc = " + LoginDesc);
-//                } else {
-//                    Toast.makeText(context, "登录失败", Toast.LENGTH_SHORT).show();
-//                    SharedPreferencesUtils.setParam(context,Constants.IS_LOGIN_JIM,false);
-//                    Log.i(TAG, "JMessageClient.login" + ", responseCode = " + responseCode + " ; LoginDesc = " + LoginDesc);
-//                }
-//            }
-//        });
-
+    /**
+     *  登陆im
+     * @param context
+     * @param userName
+     * @param password
+     * @param headimgurl
+     */
+    private static void loginIM(final Context context, String userName, final String password, final String headimgurl) {
         JMessageClient.login(userName, password, new BasicCallback() {
             @Override
             public void gotResult(int responseCode, String responseMessage) {
@@ -114,6 +126,7 @@ public class JmessageUtils {
                         SharePreferenceManager.setCachedAvatarPath(avatarFile.getAbsolutePath());
                     } else {
                         SharePreferenceManager.setCachedAvatarPath(null);
+                        JmessageUtils.UpdateUserInfo();
                     }
                     String username = myInfo.getUserName();
                     String appKey = myInfo.getAppKey();
@@ -124,7 +137,6 @@ public class JmessageUtils {
                     }
                     SharedPreferencesUtils.setParam(context, Constants.IS_LOGIN_JIM, true);
                     ToastUtil.shortToast(CcqApp.getAppContext(), "登陆成功");
-                    UpdateUserInfo();
                 } else {
                     SharedPreferencesUtils.setParam(context, Constants.IS_LOGIN_JIM, false);
                     ToastUtil.shortToast(CcqApp.getAppContext(), "登陆失败" + responseMessage);
@@ -136,11 +148,23 @@ public class JmessageUtils {
     /**
      * 更新用户信息
      */
-    private static void UpdateUserInfo() {
+    public static void UpdateUserInfo() {
         UserInfo myInfo = JMessageClient.getMyInfo();
-        myInfo.setNickname(AppCache.getUserBean().getNickname());
-        JMessageClient.updateMyInfo(UserInfo.Field.nickname,myInfo,null);
-        JMessageClient.updateUserAvatar(new File(Utils.getAvatarPath()),null);
+        if(myInfo.getAvatar()==null){
+            myInfo.setNickname(AppCache.getUserBean().getNickname());
+            JMessageClient.updateMyInfo(UserInfo.Field.nickname,myInfo,null);
+            JMessageClient.updateUserAvatar(new File(Utils.getAvatarPath()), new BasicCallback() {
+                @Override
+                public void gotResult(int i, String s) {
+                    UserInfo myInfo = JMessageClient.getMyInfo();
+                    File avatarFile = myInfo.getAvatarFile();
+                    //登陆成功,如果用户有头像就把头像存起来,没有就设置null
+                    if (avatarFile != null) {
+                        SharePreferenceManager.setCachedAvatarPath(avatarFile.getAbsolutePath());
+                    }
+                }
+            });
+        }
     }
 
     private static String MD5(String s) {
@@ -162,5 +186,43 @@ public class JmessageUtils {
             ret.append(HEX_DIGITS[bytes[i] & 0x0f]);
         }
         return ret.toString();
+    }
+
+
+    private static boolean writeResponseBodyToDisk(ResponseBody body, String filePath) {
+        try {
+            File futureStudioIconFile = new File(filePath);
+            InputStream inputStream = null;
+            OutputStream outputStream = null;
+            try {
+                byte[] fileReader = new byte[4096];
+                long fileSize = body.contentLength();
+                long fileSizeDownloaded = 0;
+                inputStream = body.byteStream();
+                outputStream = new FileOutputStream(futureStudioIconFile);
+                while (true) {
+                    int read = inputStream.read(fileReader);
+                    if (read == -1) {
+                        break;
+                    }
+                    outputStream.write(fileReader, 0, read);
+                    fileSizeDownloaded += read;
+                    Log.d("download", "file download: " + fileSizeDownloaded + " of " + fileSize);
+                }
+                outputStream.flush();
+                return true;
+            } catch (IOException e) {
+                return false;
+            } finally {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+                if (outputStream != null) {
+                    outputStream.close();
+                }
+            }
+        } catch (IOException e) {
+            return false;
+        }
     }
 }

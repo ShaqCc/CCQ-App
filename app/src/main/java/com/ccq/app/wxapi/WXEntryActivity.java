@@ -12,12 +12,12 @@ import com.ccq.app.entity.UserBean;
 import com.ccq.app.entity.WxLoginResultBean;
 import com.ccq.app.entity.WxUserInfo;
 import com.ccq.app.http.ApiService;
-import com.ccq.app.http.HttpClient;
 import com.ccq.app.http.RetrofitClient;
 import com.ccq.app.ui.MainActivity;
 import com.ccq.app.ui.user.BindPhoneActivity;
 import com.ccq.app.utils.AppCache;
 import com.ccq.app.utils.Constants;
+
 import com.ccq.app.utils.JmessageUtils;
 import com.ccq.app.utils.KLog;
 
@@ -143,6 +143,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                             getUserInfoByUnionid(unionid, access_token, openid, wxUserUrl);
                         }
                     }
+
                     @Override
                     public void onFailure(Call<WxLoginResultBean> call, Throwable t) {
                         ToastUtils.show(WXEntryActivity.this, "微信登陆失败，请重试");
@@ -153,6 +154,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
 
     /**
      * 获取铲车圈系统内用户的信息
+     *
      * @param unionid
      * @param access_token
      * @param openid
@@ -166,9 +168,8 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                         if (response.body() == null) {
                             //用户首次登陆，获取用户微信里的昵称，头像等
                             getWxUserInfo(wxUserUrl, access_token, openid);
-
                         } else {
-                            SharedPreferencesUtils.setParam(WXEntryActivity.this, Constants.USER_ID,response.body().getUserid());
+                            SharedPreferencesUtils.setParam(WXEntryActivity.this, Constants.USER_ID, response.body().getUserid());
                             //用户非首次登陆
                             AppCache.setUserBean(response.body());
                             startActivity(new Intent(WXEntryActivity.this, MainActivity.class));
@@ -188,6 +189,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
 
     /**
      * 获取微信用户信息
+     *
      * @param wxUserUrl
      * @param access_token
      * @param openid
@@ -198,10 +200,11 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                 .enqueue(new Callback<WxUserInfo>() {
                     @Override
                     public void onResponse(Call<WxUserInfo> call, Response<WxUserInfo> response) {
-                        //下载用户头像
-                        HttpClient.getInstance(WXEntryActivity.this).download(apiService.downloadPic(response.body().getHeadimgurl()));
                         //跳转到绑定手机页面
                         BindPhoneActivity.launch(WXEntryActivity.this, response.body());
+//                        //下载用户头像
+//                        ApiService apiService = RetrofitClient.getInstance().getApiService();
+//                        HttpClient.getInstance(WXEntryActivity.this).download(apiService.downloadPic(response.body().getHeadimgurl()));
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {

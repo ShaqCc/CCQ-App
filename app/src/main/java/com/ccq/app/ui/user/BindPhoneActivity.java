@@ -11,17 +11,12 @@ import android.widget.TextView;
 
 import com.ccq.app.R;
 import com.ccq.app.base.BaseActivity;
-import com.ccq.app.base.CcqApp;
 import com.ccq.app.entity.BaseBean;
 import com.ccq.app.entity.UserBean;
 import com.ccq.app.entity.WxUserInfo;
-import com.ccq.app.http.HttpClient;
 import com.ccq.app.utils.AppCache;
 import com.ccq.app.utils.JmessageUtils;
 import com.ccq.app.utils.ToastUtils;
-import com.ccq.app.utils.Utils;
-
-import java.io.File;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -96,16 +91,17 @@ public class BindPhoneActivity extends BaseActivity<SetFilePresenter> implements
                     ToastUtils.show(this, "请填写验证码！");
                     return;
                 }
+                mPresenter.bindUserInfo(wxUserInfo.getUnionid(), phone,
+                        checkCode, wxUserInfo.getHeadimgurl(), "", "", wxUserInfo.getNickname());
 
                 //检查头像是否下载完毕
-                String avatarPath = Utils.getAvatarPath();
-                File file = new File(avatarPath);
-                if (file.exists() && file.length()>10) {
-                    mPresenter.bindUserInfo(wxUserInfo.getUnionid(), phone,
-                            checkCode, file.getAbsolutePath(), "", "", wxUserInfo.getNickname());
-                } else {
-                    ToastUtils.show(CcqApp.getAppContext(),"头像下载失败");
-                }
+//                String avatarPath = Utils.getAvatarPath();
+//                File file = new File(avatarPath);
+//                if (file.exists() && file.length()>10) {
+//
+//                } else {
+//                    ToastUtils.show(CcqApp.getAppContext(),"头像下载失败");
+//                }
                 break;
         }
     }
