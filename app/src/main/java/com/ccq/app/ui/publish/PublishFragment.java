@@ -34,6 +34,7 @@ import com.ccq.app.base.BasePresenter;
 import com.ccq.app.base.CcqApp;
 import com.ccq.app.entity.BrandBean;
 import com.ccq.app.entity.BrandModelBean;
+import com.ccq.app.entity.Car;
 import com.ccq.app.entity.CarInfo;
 import com.ccq.app.http.ApiService;
 import com.ccq.app.http.RetrofitClient;
@@ -50,6 +51,7 @@ import com.squareup.picasso.Picasso;
 
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
+import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.IOException;
@@ -154,6 +156,7 @@ public class PublishFragment extends BaseFragment {
     private String imgids;
     private String videoids;
 
+    private Car car;
 
     @Override
     protected int inflateContentView() {
@@ -206,8 +209,37 @@ public class PublishFragment extends BaseFragment {
     @Override
     public void initData() {
         apiService = RetrofitClient.getInstance().getApiService();
+        car = (Car) get().getIntent().getSerializableExtra("bean");
         getBDlocation();
         getNianFen();
+        initCarInfo();
+    }
+
+    private void initCarInfo() {
+        if(car !=null){
+//            map.put("address",btnCarLocation.getText().toString());
+//            map.put("content",etDescription.getText().toString());
+//            map.put("imglist",TextUtils.isEmpty(imgids)?"":imgids);
+//            map.put("videolist",TextUtils.isEmpty(videoids)?"":videoids);
+//            map.put("latitude",point.latitude);
+//            map.put("longitude",point.longitude);
+//            map.put("number",brandModelBean.getId());
+//            map.put("phone",etUserPhone.getText().toString());
+//            map.put("pinpai",brandBean.getId());
+//            map.put("price",etCarPrice.getText().toString());
+//            map.put("userid",AppCache.getUserBean().getUserid());
+//            map.put("year",btnCarAge.getText().toString());
+
+            btnCarLocation.setText(car.getAddress());
+            etDescription.setText(car.getContent());
+            if(!TextUtils.isEmpty(car.getLatitude()) && !TextUtils.isEmpty(car.getLongitude())){
+                point = new LatLng(Double.parseDouble(car.getLatitude()),Double.parseDouble(car.getLongitude()));
+            }
+            etCarPrice.setText(String.valueOf(car.getPrice()));
+            btnCarAge.setText(String.valueOf(car.getYear()));
+            btnSubmit.setText("修改");
+
+        }
     }
 
     public void initYearList(){
@@ -251,14 +283,13 @@ public class PublishFragment extends BaseFragment {
                 tvFold.setVisibility(View.GONE);
                 break;
             case R.id.btn_submit:
-//                sendCheck();
-                uploadFile();
+                sendCheck();
                 break;
         }
     }
 
     /**
-     * 检查是否登录，和 今日是否可上报（最多五次）
+     * 检查是否登录，和 今日是否可上报（最多3次）
      */
     private void sendCheck(){
         if(AppCache.getUserBean()==null){
@@ -326,14 +357,11 @@ public class PublishFragment extends BaseFragment {
                     @Override
                     public void onSubscribe(Disposable d) {
                         if(d.isDisposed()){
-                            Log.e(" on subscribe -------" ,"===========");
                         }
                     }
 
                     @Override
                     public void onNext(Boolean boo) {
-                        Log.e(" on Next ------" ,"===========");
-
                         if(boo){
                             imgids = StringUtils.join(imgidList.toArray(new String[imgidList.size()]),",");
                             videoids = StringUtils.join(videoidList.toArray(new String[videoidList.size()]),",");
@@ -342,12 +370,10 @@ public class PublishFragment extends BaseFragment {
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e(" on Error ------" ,"===========");
                     }
 
                     @Override
                     public void onComplete() {
-                        Log.e(" on Complete ------" ,"===========");
                         submitData();
                     }
                 });
@@ -443,32 +469,13 @@ public class PublishFragment extends BaseFragment {
     }
 
     private void submitData(){
-//        CarInfo  car = new CarInfo();
-//        car.setAddress(btnCarLocation.getText().toString());
-//        car.setContent(etDescription.getText().toString());
-//        car.setImglist(imgids);
-//        car.setVideolist(videoids);
-//        car.setLatitude(String.valueOf(point.latitude));
-//        car.setLongitude(String.valueOf(point.longitude));
-//        car.setNumber(Integer.parseInt(brandModelBean.getId()));
-//        car.setPhone(etUserPhone.getText().toString());
-//        car.setPhoneCode("");
-//        car.setPinpai(Integer.parseInt(brandBean.getId()));
-//        if(!TextUtils.isEmpty(etCarPrice.getText().toString())){
-//            car.setPrice(Float.parseFloat(etCarPrice.getText().toString()));
-//        }
-//        if(AppCache.getUserBean()!=null){
-//            car.setUserid(Integer.valueOf(AppCache.getUserBean().getUserid()));
-//        }
-//        car.setYear(Integer.parseInt(btnCarAge.getText().toString()));
-
         HashMap<String,Object> map = new HashMap<>();
         map.put("address",btnCarLocation.getText().toString());
         map.put("content",etDescription.getText().toString());
         map.put("imglist",TextUtils.isEmpty(imgids)?"":imgids);
         map.put("videolist",TextUtils.isEmpty(videoids)?"":videoids);
-        map.put("latitude",point.latitude);
-        map.put("longitude",point.longitude);
+        map.put("latitude",String.valueOf(point.latitude));
+        map.put("longitude",String.valueOf(point.longitude));
         map.put("number",brandModelBean.getId());
         map.put("phone",etUserPhone.getText().toString());
         map.put("pinpai",brandBean.getId());
@@ -481,7 +488,7 @@ public class PublishFragment extends BaseFragment {
             public void onResponse(Call<Object> call, Response<Object> response) {
                 Map<String,String> map = (Map<String, String>) response.body();
                 String message = map.get("message");
-                if("0.0".equals(map.get("code"))||"0".equals(map.get("code"))) {
+                if("0.0".equals(map.get("code").toString())||"0".equals(map.get("code").toString())) {
                     message = "发布成功";
                 }
                 ToastUtils.show(get(),message);

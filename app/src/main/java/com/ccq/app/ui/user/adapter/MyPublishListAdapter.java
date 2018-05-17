@@ -72,6 +72,11 @@ public class  MyPublishListAdapter extends RecyclerView.Adapter<MyPublishListAda
             }
         });
 
+        if(Car.getType()== 1){
+            holder.itemSaleOut.setVisibility(View.VISIBLE);
+        }else{
+            holder.itemSaleOut.setVisibility(View.GONE);
+        }
 
         holder.itemInfoImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,7 +119,6 @@ public class  MyPublishListAdapter extends RecyclerView.Adapter<MyPublishListAda
         this.context = context;
     }
 
-
     static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView itemInfoImage;
         TextView itemImageCount;
@@ -123,27 +127,25 @@ public class  MyPublishListAdapter extends RecyclerView.Adapter<MyPublishListAda
         TextView itemTime;
         TextView itemPrice;
         TextView itemManage;
+        ImageView itemSaleOut;
 
         public ViewHolder(View view) {
             super(view);
             itemInfoImage = view.findViewById(R.id.item_info_image);
             itemImageCount = view.findViewById(R.id.item_image_count);
-
+            itemSaleOut = view.findViewById(R.id.item_sale_out);
             itemBrandModelName = view.findViewById(R.id.item_brand_model_name);
             itemLocation = view.findViewById(R.id.item_location);
             itemTime = view.findViewById(R.id.item_time);
             itemPrice = view.findViewById(R.id.item_price);
             itemManage = view.findViewById(R.id.item_manage);
-
         }
     }
-
 
     public interface onItemManageInterface{
          void onManageClick(int position);
 
          void onMapShowClick(int position);
     }
-
 
 }

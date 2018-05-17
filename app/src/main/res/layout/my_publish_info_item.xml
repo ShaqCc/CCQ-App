@@ -33,6 +33,16 @@
                     android:textColor="@color/white"
                     />
 
+                <ImageView
+                    android:id="@+id/item_sale_out"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/icon_sale_out"
+                    android:layout_alignTop="@id/item_info_image"
+                    android:layout_alignLeft="@id/item_info_image"
+                    android:layout_margin="@dimen/paddingSmall"
+                    />
+
         </RelativeLayout>
 
 

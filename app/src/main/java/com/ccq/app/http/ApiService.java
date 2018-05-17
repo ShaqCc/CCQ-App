@@ -223,9 +223,17 @@ public interface ApiService {
     Call<Object> jIMUpload(@Url String url, @Field("type")String type,@Part MultipartBody.Part file);
 
 
-
     @POST("/car/addr")
     Call<Object> getCarAddress(@Query("carid") String carid);
+
+
+    @POST("/car/info")
+    Call<Object> getCarInfo(@Query("userid") String userid,@Query("carid") String carid);
+
+
+    @POST("/vip/money")
+    Call<Object> getVipMoney(@Query("month") String month);
+
 
 //    ------------------------------------微信登陆相关接口-----------------------------------------------
 

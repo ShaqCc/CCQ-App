@@ -3,6 +3,7 @@ package com.ccq.app.http;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.text.TextUtils;
 
 import com.ccq.app.base.CcqApp;
 import com.ccq.app.entity.BaseBean;
@@ -20,7 +21,7 @@ import retrofit2.Call;
  *
  **************************************************/
 
-public abstract class ProgressCallBack<T extends BaseBean> {
+public abstract class ProgressCallBack<T> {
 
     private boolean isShowProgress = true;
     private Context mContext;
@@ -28,10 +29,20 @@ public abstract class ProgressCallBack<T extends BaseBean> {
     private T response;
     private OnProgressCancle mCancelListener;
     private Call mCall;
+    private String showMessage;
 
     public ProgressCallBack(Context context, boolean isShowProgress) {
         this.mContext = context;
         this.isShowProgress = isShowProgress;
+        if (mProgress == null) {
+            initProgress();
+        }
+    }
+
+    public ProgressCallBack(Context context, boolean isShowProgress,String showMessage) {
+        this.mContext = context;
+        this.isShowProgress = isShowProgress;
+        this.showMessage = showMessage;
         if (mProgress == null) {
             initProgress();
         }
@@ -48,8 +59,8 @@ public abstract class ProgressCallBack<T extends BaseBean> {
     }
 
     protected void onFailure(T response) {
-        if (response != null) {
-            ToastUtils.show(CcqApp.getAppContext(), response.getMessage());
+        if (response != null &&  response instanceof BaseBean) {
+            ToastUtils.show(CcqApp.getAppContext(), ((BaseBean) response).getMessage());
         }
         dismissProgress();
     }
@@ -67,7 +78,8 @@ public abstract class ProgressCallBack<T extends BaseBean> {
     private void initProgress() {
         if (mContext != null) {
             mProgress = new ProgressDialog(mContext);
-            mProgress.setMessage("拼命加载中...");
+            if(TextUtils.isEmpty(showMessage)) showMessage = "拼命加载中...";
+            mProgress.setMessage(showMessage);
             mProgress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             mProgress.setCancelable(true);
             mProgress.setCanceledOnTouchOutside(false);

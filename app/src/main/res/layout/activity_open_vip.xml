@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical"
+      android:background="#f6f6f6"
+    >
+
+   <LinearLayout
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:orientation="horizontal"
+       android:layout_marginLeft="@dimen/paddingSmall"
+       android:layout_marginRight="@dimen/paddingSmall"
+       android:layout_marginTop="@dimen/margin"
+       android:layout_marginBottom="@dimen/margin"
+       >
+
+       <TextView
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="开通会员"
+           android:textSize="@dimen/BasicTextSize"
+           android:textColor="@color/primary_text"
+           />
+
+       <TextView
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="优势"
+           android:textSize="@dimen/BasicTextSize"
+           android:textColor="@color/orange"
+           />
+
+       <TextView
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="(优势持续升级)"
+           android:textSize="@dimen/SmallerTextSize"
+           android:textColor="@color/primary_text"
+           />
+
+   </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/paddingSmall"
+        android:background="@color/white">
+
+        <TextView
+            android:id="@+id/tv_vip_advantage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="@dimen/BasicTextSize"
+            android:textColor="@color/colorPrimary"
+            />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/paddingSmall"
+        android:layout_marginRight="@dimen/paddingSmall"
+        android:layout_marginTop="@dimen/margin"
+        android:layout_marginBottom="@dimen/margin"
+        android:text="开通时长"
+        android:textSize="@dimen/BasicTextSize"
+        android:textColor="@color/primary_text"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/white"
+        >
+
+        <TextView
+            android:id="@+id/tv_month_twelve"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="12个月"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:background="@color/colorPrimary"
+            android:textSize="@dimen/BasicTextSize"
+            android:padding="@dimen/paddingSmall"
+            android:textColor="@color/white"
+            />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@color/color_grey_eaeaea" />
+
+        <TextView
+            android:id="@+id/tv_month_six"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="6个月"
+            android:gravity="center"
+            android:textSize="@dimen/BasicTextSize"
+            android:padding="@dimen/paddingSmall"
+            android:textColor="@color/primary_text"
+            android:layout_weight="1"
+
+            />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@color/color_grey_eaeaea" />
+
+        <TextView
+            android:id="@+id/tv_month_three"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="3个月"
+            android:gravity="center"
+            android:textSize="@dimen/BasicTextSize"
+            android:padding="@dimen/paddingSmall"
+            android:textColor="@color/primary_text"
+            android:layout_weight="1"
+
+            />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@color/color_grey_eaeaea" />
+
+        <TextView
+            android:id="@+id/tv_month_one"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1个月"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:textSize="@dimen/BasicTextSize"
+            android:padding="@dimen/paddingSmall"
+            android:textColor="@color/primary_text"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/margin"
+        android:paddingLeft="@dimen/paddingSmall"
+        android:paddingRight="@dimen/paddingSmall"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="应付"
+            android:textSize="@dimen/BasicTextSize"
+            android:textColor="@color/primary_text"
+            />
+
+        <TextView
+            android:id="@+id/tv_pay_money"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="300元"
+            android:layout_marginLeft="2dp"
+            android:textSize="@dimen/BasicTextSize"
+            android:textColor="@color/orange"
+            />
+
+
+        <TextView
+            android:id="@+id/tv_money_discount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0.35折"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_margin="@dimen/margin"
+            android:background="@drawable/bg_red_corner"
+            android:textColor="@color/white"
+            android:textSize="@dimen/BasicTextSize"
+            />
+
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_pay"
+        android:background="@drawable/btn_style_one"
+        android:layout_width="match_parent"
+        android:layout_height="50dip"
+        android:textColor="@color/white"
+        android:layout_marginRight="@dimen/paddingSmall"
+        android:layout_marginLeft="@dimen/paddingSmall"
+        android:layout_marginBottom="@dimen/padding"
+        android:layout_marginTop="@dimen/padding"
+        android:gravity="center"
+        android:textSize="@dimen/LargeTextSize"
+        android:text="微信支付" />
+
+</LinearLayout>

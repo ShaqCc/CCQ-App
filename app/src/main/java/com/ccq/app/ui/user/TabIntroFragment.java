@@ -92,13 +92,13 @@ public class TabIntroFragment extends BaseFragment {
 
     @Subscribe
     public void onReceiveLoginSuccess(Integer eventId) {
-        Log.e("11---" ,eventId.toString());
+        if(eventId == Constants.WX_LOGIN_SUCCESS){
+            initData();
+        }
     }
 
     @Subscribe
     public void onRefreshData(Integer eventId) {
-        Log.e("4444---" ,eventId.toString());
-
         if(eventId == Constants.REFRESH_EVENT){
             getUser(AppCache.getUserBean().getUserid());
         }

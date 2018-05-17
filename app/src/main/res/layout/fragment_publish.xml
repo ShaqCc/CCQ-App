@@ -34,12 +34,12 @@
                     <TextView
                         style="@style/labelLeft"
                         android:text="*"
-                        android:textSize="14sp"
                         android:textColor="@color/red"
                         />
                     <TextView
                         style="@style/labelLeft"
-                        android:text="品牌型号" />
+                        android:text="品牌型号"
+                        />
 
                     <Button
                         android:id="@+id/btn_band_model"
@@ -110,13 +110,13 @@
                         android:hint="默认面议"
                         android:inputType="number"
                         android:maxLength="100"
-                        android:textSize="14sp"
                         />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="万元"
+                        android:textSize="@dimen/BasicTextSize"
                         android:textColor="@color/colorPrimary"
                         />
 
@@ -136,6 +136,7 @@
                     <TextView
                         android:id="@+id/tv_image_size"
                         style="@style/inputWidgetRight"
+                        android:textSize="@dimen/BasicTextSize"
                         android:background="@color/windowBackgroundColor"
                         android:text="0/18"
                         />
@@ -197,7 +198,6 @@
                             android:id="@+id/et_description"
                             style="@style/inputWidgetLeft"
                             android:hint="描述（可不填）"
-                            android:textSize="14sp"
                             />
 
                     </LinearLayout>
@@ -259,7 +259,6 @@
                             android:id="@+id/et_user_phone"
                             style="@style/inputWidgetLeft"
                             android:hint=""
-                            android:textSize="14sp"
                             android:inputType="number"
                             android:maxLength="11"
                             />
@@ -277,6 +276,7 @@
                         style="@style/labelLeft"
                         android:padding="@dimen/paddingSmall"
                         android:textColor="@color/steelblue"
+                        android:textSize="@dimen/BasicTextSize"
                         android:text="收起" />
 
                 </LinearLayout>

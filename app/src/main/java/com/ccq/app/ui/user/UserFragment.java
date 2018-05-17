@@ -1,5 +1,7 @@
 package com.ccq.app.ui.user;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -67,6 +69,14 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
     LinearLayout layoutMySubscribeFans;
     @BindView(R.id.btn_invite_attation)
     Button btnInviteAttation;
+    @BindView(R.id.layout_home)
+    LinearLayout layoutHome;
+    @BindView(R.id.layout_intro)
+    LinearLayout layoutIntro;
+    @BindView(R.id.btn_user_setting)
+    Button btnUserSetting;
+    @BindView(R.id.btn_vip_setting)
+    Button btnUserVip;
 
     private MyFragmentAdapter adapter;
 
@@ -234,14 +244,14 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
         unbinder.unbind();
     }
 
-    @OnClick({R.id.tv_home, R.id.tv_intro, R.id.layout_my_subscribe, R.id.layout_my_subscribe_fans})
+    @OnClick({R.id.tv_home, R.id.tv_intro, R.id.layout_my_subscribe, R.id.layout_my_subscribe_fans, R.id.layout_home, R.id.layout_intro,R.id.btn_user_setting, R.id.btn_vip_setting,R.id.btn_invite_attation})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.tv_home:
+            case R.id.layout_home:
                 vpMyInfo.setCurrentItem(0);
                 selectHome();
                 break;
-            case R.id.tv_intro:
+            case R.id.layout_intro:
                 vpMyInfo.setCurrentItem(1);
                 selectIntro();
                 break;
@@ -254,6 +264,15 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
                 Intent ii = new Intent(getActivity(), UserSubscribeActivity.class);
                 ii.putExtra("type", 1);
                 getActivity().startActivity(ii);
+                break;
+            case R.id.btn_user_setting:
+                showUserSettingDialog();
+                break;
+            case R.id.btn_vip_setting:
+                startActivity(new Intent(get(),OpenVipActivity.class));
+                break;
+            case R.id.btn_invite_attation:
+
                 break;
         }
     }
@@ -272,8 +291,56 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
         tvIntroLine.setVisibility(View.VISIBLE);
     }
 
-    @OnClick(R.id.btn_invite_attation)
-    public void onViewClicked() {
+    private  void showUserSettingDialog(){
+        String[] items = {"二维码水印","修改图片","切换账号"};
+        AlertDialog.Builder listDialog =
+                new AlertDialog.Builder(get());
+        listDialog.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which){
+                    case 0:
+                        Intent i = new Intent(get(),SetWechatQRActivity.class);
+                        getActivity().startActivity(i);
+                        break;
+                    case 1:
+                        //非会员或过期提醒
+                        if(AppCache.getUserBean().getVip()==0){
+                            showComfirmDialog("此功能只有会员可用，是否开通会员",0);
+                        }
+                        break;
+                    case 2:
+                        //非会员或过期提醒
+                        if(AppCache.getUserBean().getVip()==0){
+                            showComfirmDialog("此功能只有会员可用，是否开通会员",1);
+                        }
+                        break;
+                }
+            }
+        });
+        listDialog.show();
+    }
+
+    private void showComfirmDialog(String message , final int type){
+        AlertDialog.Builder builder = new AlertDialog.Builder(get());
+        builder.setTitle("错误提示");
+        builder.setMessage(message);
+        builder.setCancelable(true);
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                startActivity(new Intent(get(),OpenVipActivity.class));
+                 dialog.dismiss();
+            }
+        });
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builder.show();
 
     }
 

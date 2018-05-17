@@ -14,9 +14,12 @@ import android.view.ViewGroup;
 import com.ccq.app.R;
 import com.ccq.app.base.BaseFragment;
 import com.ccq.app.base.BasePresenter;
+import com.ccq.app.entity.BaseBean;
 import com.ccq.app.entity.Car;
 import com.ccq.app.entity.SubscribeUser;
 import com.ccq.app.http.ApiService;
+import com.ccq.app.http.HttpClient;
+import com.ccq.app.http.ProgressCallBack;
 import com.ccq.app.http.RetrofitClient;
 import com.ccq.app.ui.publish.BaseMapActivity;
 import com.ccq.app.ui.publish.PublishFragment;
@@ -119,8 +122,12 @@ public class TabHomeFragment extends BaseFragment {
     }
 
     private  void showSelectDialog(){
+        //type ：  0，在售, 1已售
         String sale = editCar.getType()==0 ? "已售" :"在售" ;
-        final String[] items = { sale,"删除","编辑","刷新"};
+        String[] items = { sale,"删除","编辑","刷新"};
+        if(editCar.getType() == 1){
+            items = new String[]{sale, "删除"};
+        }
         AlertDialog.Builder listDialog =
                 new AlertDialog.Builder(get());
         listDialog.setItems(items, new DialogInterface.OnClickListener() {
@@ -134,10 +141,10 @@ public class TabHomeFragment extends BaseFragment {
                         showComfirmDialog("确定要删除此条信息吗？",which);
                         break;
                     case 2:
-                        showComfirmDialog("确定要刷新此信息吗？会员及经销商每天只能刷新5次！",which);
+                        editCar();
                         break;
                     case 3:
-                        refreshCar(String.valueOf(editCar.getId()));
+                        showComfirmDialog("确定要刷新此信息吗？会员及经销商每天只能刷新5次！",which);
                         break;
                 }
             }
@@ -160,9 +167,9 @@ public class TabHomeFragment extends BaseFragment {
                     case 1:
                         removeCar();
                         break;
-                    case 2:
+                    case 3:
                         if(AppCache.getUserBean().isBusiness() || AppCache.getUserBean().isMember()){
-                            editCar();
+                            refreshCar();
                         }else{
                             AlertDialog.Builder alertbuild = new AlertDialog.Builder(get());
                             alertbuild.setTitle("");
@@ -242,11 +249,10 @@ public class TabHomeFragment extends BaseFragment {
 
     /**
      * 刷新车辆信息
-     * @param carid
      */
-    private void refreshCar(String carid){
+    private void refreshCar(){
         apiService = RetrofitClient.getInstance().getApiService();
-        apiService.refreshCarInfo(AppCache.getUserBean().getUserid(),carid).enqueue(new Callback<Object>() {
+        apiService.refreshCarInfo(AppCache.getUserBean().getUserid(),String.valueOf(editCar.getId())).enqueue(new Callback<Object>() {
             @Override
             public void onResponse(Call<Object> call, Response<Object> response) {
                 Object obj = response.body();
@@ -285,12 +291,15 @@ public class TabHomeFragment extends BaseFragment {
         carMap.put("userid", AppCache.getUserBean().getUserid());
         carMap.put("start", "0");
         carMap.put("limit", "20");
-        apiService.getUserCarList(carMap).enqueue(new Callback() {
+
+        HttpClient.getInstance(get()).sendRequest(apiService.getUserCarList(carMap), new ProgressCallBack<List<Car>>(get(),true,"正在查询...") {
+
             @Override
-            public void onResponse(Call call, Response response) {
-                if (response!=null && response.body()!=null){
+            protected void onSuccess(List<Car> response) {
+                super.onSuccess(response);
+                if (response!=null){
                     if(carList!=null)carList.clear();
-                    carList.addAll( (List<Car>) response.body());
+                    carList.addAll(response);
                     if(carList.size()<1){
 //                        setViewState(ViewState.STATE_EMPTY);
                     }else{
@@ -300,10 +309,30 @@ public class TabHomeFragment extends BaseFragment {
             }
 
             @Override
-            public void onFailure(Call call, Throwable t) {
-
+            protected void onError(Throwable t) {
+                super.onError(t);
             }
         });
+
+//        apiService.getUserCarList(carMap).enqueue(new Callback() {
+//            @Override
+//            public void onResponse(Call call, Response response) {
+//                if (response!=null && response.body()!=null){
+//                    if(carList!=null)carList.clear();
+//                    carList.addAll( (List<Car>) response.body());
+//                    if(carList.size()<1){
+////                        setViewState(ViewState.STATE_EMPTY);
+//                    }else{
+//                        adapter.notifyDataSetChanged();
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call call, Throwable t) {
+//
+//            }
+//        });
 
     }
 

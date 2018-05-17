@@ -31,9 +31,23 @@ public class Car implements Serializable{
     private String isshare;
     private java.util.List<PicImgBean> pic_img;
 
+    /**
+     *  获取车辆位置接口
+     *  {
+     code:0,
+     message:””
+     address:”详情地址”
+     name :”标题”,
+     “longitude”:””,
+     “latitude”:””       经纬度
+     }
+     */
     private String longitude;
     private String latitude;
     private String detailAddress;
+
+
+
 
     public String getDetailAddress() {
         return detailAddress;

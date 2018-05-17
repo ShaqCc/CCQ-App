@@ -70,7 +70,10 @@
         <activity android:name=".ui.message.SingleChatActivity"/>
 
         <activity android:name=".ui.user.EditMyIntroActivity" />
-        <activity android:name=".ui.user.EditPublishActivity"></activity>
+        <activity android:name=".ui.user.EditPublishActivity" />
+        <activity android:name=".ui.user.SetWechatQRActivity" />
+        <activity android:name=".ui.user.OpenVipActivity" />
+
     </application>
 
 </manifest>
