@@ -96,25 +96,7 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         switch (getItemViewType(position)) {
-//            case ITEM_BANNER:
-//                BannerHolder bannerHolder = (BannerHolder) holder;
-//                setBannerHolder((BannerHolder) holder);
-//                //设置轮播图
-//                //设置图片加载器
-//                bannerHolder.banner.setImageLoader(new GlideImageLoader());
-//                //设置图片集合
-//                bannerHolder.banner.setImages(getBannerImages());
-//                //banner设置方法全部调用完毕时最后调用
-//                bannerHolder.banner.start();
-//                //点击事件
-//                bannerHolder.mItemBannerRbCity.setOnCheckedChangeListener(this);
-//                bannerHolder.mItemBannerRbBrand.setOnClickListener(this);
-//                bannerHolder.mItemBannerRbSize.setOnClickListener(this);
-//                bannerHolder.mItemBannerRbAge.setOnClickListener(this);
-//                bannerHolder.mItemBannerRbOrder.setOnClickListener(this);
-//                //tag view
-//                updateTagGroup();
-//                break;
+
             case ITEM_COMMON:
                 final CarHolder carHolder = (CarHolder) holder;
                 Car carBean = carList.get(position);
@@ -266,7 +248,7 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
 
     @Override
     public int getItemViewType(int position) {
-        if (position == getItemCount())
+        if (position+1 == getItemCount())
             return ITEM_FOOTER;
 
         else return ITEM_COMMON;

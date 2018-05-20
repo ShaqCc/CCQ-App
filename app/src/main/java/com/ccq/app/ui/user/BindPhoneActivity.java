@@ -15,11 +15,15 @@ import com.ccq.app.entity.BaseBean;
 import com.ccq.app.entity.UserBean;
 import com.ccq.app.entity.WxUserInfo;
 import com.ccq.app.utils.AppCache;
+import com.ccq.app.utils.Constants;
 import com.ccq.app.utils.JmessageUtils;
 import com.ccq.app.utils.ToastUtils;
 
+import org.greenrobot.eventbus.EventBus;
+
 import butterknife.BindView;
 import butterknife.OnClick;
+import jiguang.chat.entity.Event;
 
 /**************************************************
  *
@@ -118,6 +122,7 @@ public class BindPhoneActivity extends BaseActivity<SetFilePresenter> implements
             JmessageUtils.registerIM(userBean);
         }
         finish();
+        EventBus.getDefault().post(Constants.WX_LOGIN_SUCCESS);
     }
 
     @Override

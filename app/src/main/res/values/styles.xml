@@ -35,7 +35,7 @@
 
 
     <style name="text_common_style">
-        <item name="android:layout_width">150px</item>
+        <item name="android:layout_width">75dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/black_de</item>
         <item name="android:textSize">@dimen/textSize_common</item>

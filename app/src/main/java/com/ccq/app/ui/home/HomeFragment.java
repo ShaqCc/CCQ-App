@@ -4,9 +4,11 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import com.ccq.app.R;
 import com.ccq.app.base.BaseFragment;
@@ -46,7 +48,7 @@ import me.gujun.android.taggroup.TagGroup;
  * Author: Created by bayin on 2018/3/26.
  ****************************************/
 
-public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeView {
+public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeView, View.OnClickListener {
 
     @BindView(R.id.home_recyclerview)
     RecyclerView homeRecyclerView;
@@ -66,8 +68,17 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
     CheckBox bannerRbAge;
     @BindView(R.id.banner_rb_order)
     CheckBox bannerRbOrder;
-    @BindView(R.id.tag_group)
-    TagGroup tagGroup;
+    @BindView(R.id.tag_province)
+    View tagProvince;
+    @BindView(R.id.tag_brand)
+    View tagBrand;
+    @BindView(R.id.tag_type)
+    View tagType;
+    @BindView(R.id.tag_age)
+    View tagAge;
+    @BindView(R.id.tag_order)
+    View tagOrder;
+
 
     private HomeAdapter homeAdapter;
     private List<Car> dataList = new ArrayList<>();
@@ -82,9 +93,63 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
         @Override
         public void onDismiss() {
             resetCheckBoxState();
+            updateTags();
         }
     };
+    private String[] orderStringArray;
+
+    /**
+     * 设置tag
+     */
+    private void updateTags() {
+        //城市
+        String cityName = ApiParams.getCityName();
+        if (!TextUtils.isEmpty(cityName)) {
+            tagProvince.setVisibility(View.VISIBLE);
+            tvCity.setText(cityName);
+        } else {
+            tagProvince.setVisibility(View.GONE);
+        }
+        //品牌
+        String brandName = ApiParams.getBrandName();
+        if (!TextUtils.isEmpty(brandName)) {
+            tagBrand.setVisibility(View.VISIBLE);
+            tvBrand.setText(brandName);
+        } else {
+            tagBrand.setVisibility(View.GONE);
+        }
+        //型号
+        String typeName = ApiParams.getTypeName();
+        if (!TextUtils.isEmpty(typeName)) {
+            tagType.setVisibility(View.VISIBLE);
+            tvType.setText(typeName);
+        } else {
+            tagType.setVisibility(View.GONE);
+        }
+        //车龄
+        String age = ApiParams.getAge();
+        if (!TextUtils.isEmpty(age)) {
+            tagAge.setVisibility(View.VISIBLE);
+            tvAge.setText(age);
+        } else {
+            tagAge.setVisibility(View.GONE);
+        }
+        //排序方式
+        String orderFunc = ApiParams.getOrderFunc();
+        if (!TextUtils.isEmpty(orderFunc)) {
+            tagOrder.setVisibility(View.VISIBLE);
+            tvOrder.setText(orderFunc);
+        } else {
+            tagOrder.setVisibility(View.GONE);
+        }
+    }
+
     private OrderAdapter orderAdapter;
+    private TextView tvCity;
+    private TextView tvBrand;
+    private TextView tvType;
+    private TextView tvAge;
+    private TextView tvOrder;
 
     @Override
     protected int inflateContentView() {
@@ -139,7 +204,22 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
                 }
             }
         });
-
+        //init tags
+        tvCity = tagProvince.findViewById(R.id.tag_tv_content);
+//        View ivDeleteCity = tagProvince.findViewById(R.id.tag_iv_delete);
+        tagProvince.setOnClickListener(this);
+        tvBrand = tagBrand.findViewById(R.id.tag_tv_content);
+//        View ivDeleteBrand = tagBrand.findViewById(R.id.tag_iv_delete);
+        tagBrand.setOnClickListener(this);
+        tvType = tagType.findViewById(R.id.tag_tv_content);
+//        View ivDeleteType = tagType.findViewById(R.id.tag_iv_delete);
+        tagType.setOnClickListener(this);
+        tvAge = tagAge.findViewById(R.id.tag_tv_content);
+//        View ivDeleteAge = tagAge.findViewById(R.id.tag_iv_delete);
+        tagAge.setOnClickListener(this);
+        tvOrder = tagOrder.findViewById(R.id.tag_tv_content);
+//        View ivDeleteOrder = tagOrder.findViewById(R.id.tag_iv_delete);
+        tagOrder.setOnClickListener(this);
         EventBus.getDefault().register(this);
     }
 
@@ -160,11 +240,16 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
     @Override
     public void initData() {
         mPresenter.loadData(isInit);
-        String[] stringArray = getResources().getStringArray(R.array.order_array);
-        List<String> list = Arrays.asList(stringArray);
+        orderStringArray = getResources().getStringArray(R.array.order_array);
+        List<String> list = Arrays.asList(orderStringArray);
         orderAdapter = new OrderAdapter(list);
     }
 
+    /**
+     * 设置banner数据
+     *
+     * @param banners
+     */
     @Override
     public void showBanner(List<BannerBean> banners) {
         if (banners != null && banners.size() > 0) {
@@ -174,6 +259,12 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
         }
     }
 
+    /**
+     * 获取banner的url
+     *
+     * @param bannerList
+     * @return
+     */
     private List<String> getBannerImages(List<BannerBean> bannerList) {
         ArrayList<String> strings = new ArrayList<>();
         if (bannerList != null && bannerList.size() > 0) {
@@ -184,6 +275,11 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
         return strings;
     }
 
+    /**
+     * 设置首页列表数据
+     *
+     * @param cars
+     */
     @Override
     public void showCarList(List<Car> cars) {
         isInit = true;
@@ -201,25 +297,41 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
         }
     }
 
+    /**
+     * 设置弹窗品牌列表
+     *
+     * @param list
+     */
     @Override
     public void showBrandList(List<BrandBean> list) {
         if (list != null && list.size() > 0) {
             DialogUtils.showListPopWindow(get(), homeHeader, new BrandAdapter(list),
                     new DialogUtils.OnPopItemClickListener<BrandBean>() {
                         @Override
-                        public void OnPopItemClick(BrandBean bean,int position) {
+                        public void OnPopItemClick(BrandBean bean, int position) {
                             ApiParams.setBrandid(bean.getId());
+                            ApiParams.setBrandName(bean.getName());
                             mPresenter.filterCar(ApiParams.getCarMap());
                         }
                     }, dismissListener);
         }
     }
 
+    /**
+     * 设置型号列表数据
+     *
+     * @param list
+     */
     @Override
     public void showTypeList(List<Object> list) {
 
     }
 
+    /**
+     * 设置年份列表数据
+     *
+     * @param list
+     */
     @Override
     public void showYearList(List<YearLimitBean> list) {
         DialogUtils.showListPopWindow(get(), homeHeader, new YearAdapter(list), new DialogUtils.OnPopItemClickListener() {
@@ -227,9 +339,10 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
             public void OnPopItemClick(Object o, int position) {
                 YearLimitBean year = (YearLimitBean) o;
                 ApiParams.setYearid(year.getId());
+                ApiParams.setAge(year.getName());
                 mPresenter.filterCar(ApiParams.getCarMap());
             }
-        },dismissListener);
+        }, dismissListener);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -238,11 +351,15 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
             pageIndex = 1;
             ApiParams.setPage(pageIndex);
             ACTION_TYPE = ACTION_REFRESH;
+            updateTags();
             mPresenter.filterCar(ApiParams.getCarMap());
         }
     }
 
 
+    /**
+     * 重置checkbox状态
+     */
     private void resetCheckBoxState() {
         bannerRbCity.setChecked(false);
         bannerRbAge.setChecked(false);
@@ -266,22 +383,27 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
                 break;
             case R.id.banner_rb_brand:
                 resetCheckBoxState();
+                bannerRbBrand.setChecked(true);
                 mPresenter.chooseBrand();
                 break;
             case R.id.banner_rb_size:
                 resetCheckBoxState();
+                bannerRbSize.setChecked(true);
                 mPresenter.chooseType();
                 break;
             case R.id.banner_rb_age:
                 resetCheckBoxState();
+                bannerRbAge.setChecked(true);
                 mPresenter.chooseYear();
                 break;
             case R.id.banner_rb_order:
                 resetCheckBoxState();
+                bannerRbOrder.setChecked(true);
                 DialogUtils.showListPopWindow(get(), homeHeader, orderAdapter, new DialogUtils.OnPopItemClickListener() {
                     @Override
                     public void OnPopItemClick(Object o, int position) {
                         ApiParams.setOrder(String.valueOf(position));
+                        ApiParams.setOrderFunc(orderStringArray[position]);
                         mPresenter.filterCar(ApiParams.getCarMap());
                     }
                 }, dismissListener);
@@ -293,5 +415,33 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
     public void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+    }
+
+    /**
+     * tags的点击事件
+     *
+     * @param view
+     */
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.tag_province:
+                ApiParams.removeCity();
+                break;
+            case R.id.tag_brand:
+                ApiParams.removeBrand();
+                break;
+            case R.id.tag_type:
+                ApiParams.removeType();
+                break;
+            case R.id.tag_age:
+                ApiParams.removeAge();
+                break;
+            case R.id.tag_order:
+                ApiParams.removeOrderFunc();
+                break;
+        }
+        updateTags();
+        mPresenter.filterCar(ApiParams.getCarMap());
     }
 }

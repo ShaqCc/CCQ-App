@@ -11,29 +11,11 @@
         <ImageView
             android:id="@+id/user_iv_banner"
             android:layout_width="match_parent"
-            android:layout_height="120dp"
+            android:layout_height="160dp"
             android:scaleType="centerCrop"
             android:src="@mipmap/user_banner" />
 
-        <ImageView
-            android:id="@+id/user_iv_header"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="100dp"
-            android:background="@color/white"
-            android:src="@mipmap/ic_no_login" />
-
-        <TextView
-            android:id="@+id/tv_userName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="70dp"
-            android:layout_marginTop="100dp"
-            android:text="请登录"
-            android:textColor="@color/white"
-            android:textSize="@dimen/textSize_common"
-            android:textStyle="bold" />
+        <include layout="@layout/include_user_info_card" />
 
         <RelativeLayout
             android:layout_width="match_parent"

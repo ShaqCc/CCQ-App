@@ -4,7 +4,9 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.MainThread;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +27,7 @@ import com.ccq.app.http.RetrofitClient;
 import com.ccq.app.ui.user.adapter.MyFragmentAdapter;
 import com.ccq.app.utils.AppCache;
 import com.ccq.app.utils.Constants;
+import com.ccq.app.utils.SharedPreferencesUtils;
 import com.ccq.app.utils.ToastUtils;
 import com.google.gson.jpush.JsonObject;
 import com.google.gson.jpush.JsonParser;
@@ -34,11 +37,13 @@ import com.tencent.mm.opensdk.openapi.IWXAPIEventHandler;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import jiguang.chat.model.Constant;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -125,7 +130,32 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
         }
     }
 
-    @Subscribe
+    @Override
+    public void onResume() {
+        super.onResume();
+        String userId = (String) SharedPreferencesUtils.getParam(get(), Constants.USER_ID, "");
+        if (!TextUtils.isEmpty(userId)) {
+            RetrofitClient.getInstance().getApiService().getUser(userId)
+                    .enqueue(new Callback<UserBean>() {
+                        @Override
+                        public void onResponse(Call<UserBean> call, Response<UserBean> response) {
+                            if (response.isSuccessful() && response.body()!=null) {
+                                AppCache.setUserBean(response.body());
+                                Glide.with(get()).load(response.body().getHeadimgurl()).into(ivHeader);
+                                setView();
+                                getData();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<UserBean> call, Throwable t) {
+
+                        }
+                    });
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReceiveLoginSuccess(Integer eventId) {
         Log.e("222---", eventId.toString());
 
@@ -137,7 +167,7 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
         }
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRefreshData(Integer eventId) {
         Log.e("333---", eventId.toString());
     }

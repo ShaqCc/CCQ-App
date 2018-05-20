@@ -3,16 +3,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="170dp"
+        android:background="@mipmap/ccq_banner_1">
 
         <com.youth.banner.Banner
             android:id="@+id/home_banner"
             android:layout_width="match_parent"
-            android:layout_height="170dp" />
+            android:layout_height="match_parent" />
 
         <include layout="@layout/include_home_action_layout" />
     </FrameLayout>
@@ -76,16 +78,38 @@
 
     <View style="@style/tranversLine" />
 
-    <me.gujun.android.taggroup.TagGroup
-        android:id="@+id/tag_group"
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/home_tag_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:paddingBottom="5dp"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="5dp"
-        android:visibility="gone" />
+        app:flexWrap="wrap"
+        android:paddingLeft="16dp">
+
+        <include
+            android:id="@+id/tag_province"
+            android:visibility="gone"
+            layout="@layout/tag_options_layout" />
+
+        <include
+            android:id="@+id/tag_brand"
+            android:visibility="gone"
+            layout="@layout/tag_options_layout" />
+
+        <include
+            android:id="@+id/tag_type"
+            android:visibility="gone"
+            layout="@layout/tag_options_layout" />
+
+        <include
+            android:id="@+id/tag_age"
+            android:visibility="gone"
+            layout="@layout/tag_options_layout" />
+
+        <include
+            android:id="@+id/tag_order"
+            android:visibility="gone"
+            layout="@layout/tag_options_layout" />
+    </com.google.android.flexbox.FlexboxLayout>
 
     <View style="@style/tranversLine" />
 </LinearLayout>

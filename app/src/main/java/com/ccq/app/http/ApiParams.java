@@ -18,6 +18,43 @@ public class ApiParams {
 
 
     private static Map<String, String> carMap;
+    private static String cityName;//城市
+    private static String brandName;//品牌名称
+    private static String typeName;//型号
+    private static String orderFunc;//排序方式
+    private static String age;//车龄
+
+    public static String getBrandName() {
+        return brandName;
+    }
+
+    public static void setBrandName(String b) {
+        brandName = b;
+    }
+
+    public static String getTypeName() {
+        return typeName;
+    }
+
+    public static void setTypeName(String t) {
+        typeName = t;
+    }
+
+    public static String getOrderFunc() {
+        return orderFunc;
+    }
+
+    public static void setOrderFunc(String o) {
+        orderFunc = o;
+    }
+
+    public static String getAge() {
+        return age;
+    }
+
+    public static void setAge(String a) {
+        age = a;
+    }
 
     public static Map<String, String> getCarMap() {
         if (carMap == null) initCarMap();
@@ -124,4 +161,31 @@ public class ApiParams {
     public static String getIspage() {
         return carMap.get("ispage");
     }
+
+    public static void removeCity(){
+        carMap.remove("cityid");
+        carMap.remove("provinceid");
+        carMap.remove("cityName");
+    }
+
+    public static void removeBrand(){
+        carMap.remove("brandid");
+        brandName = "";
+    }
+
+    public static void removeType(){
+        carMap.remove("type");
+        typeName = "";
+    }
+
+    public static void removeAge(){
+        carMap.remove("yearid");
+        age = "";
+    }
+
+    public static void removeOrderFunc(){
+        carMap.remove("order");
+        orderFunc = "";
+    }
+
 }

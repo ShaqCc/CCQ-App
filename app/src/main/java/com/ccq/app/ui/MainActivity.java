@@ -91,7 +91,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
                     return false;
                 else {
                     mMainViewpager.setCurrentItem(position, false);
-                    if (mFragmentAdapter.getItem(position) instanceof BaseFragment){
+                    if (mFragmentAdapter.getItem(position) instanceof BaseFragment) {
                         ((BaseFragment) mFragmentAdapter.getItem(position)).refreshUI();
                     }
 
@@ -121,7 +121,8 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
     @Override
     protected void onResume() {
         super.onResume();
-        conversationListFragment.sortConvList();
+        if (conversationListFragment != null)
+            conversationListFragment.sortConvList();
     }
 
     @Override

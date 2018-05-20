@@ -122,25 +122,31 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
         Toast.makeText(this, result, Toast.LENGTH_LONG).show();
 
     }
-
+    //获取微信登录access_token
+    String accessTokenUrl = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code";
+    //获取微信用户信息
+    String wxUserUrl = "https://api.weixin.qq.com/sns/userinfo?access_token=%s&openid=%s&lang=zh_CN";
     private void getAccessToken(String code) {
-        String url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code";
-        final String wxUserUrl = "https://api.weixin.qq.com/sns/userinfo?access_token=%s&openid=%s&lang=zh_CN";
-        url = String.format(url, Constants.WX_APP_ID, Constants.WX_APPSECRET, code);
+
+        accessTokenUrl = String.format(accessTokenUrl, Constants.WX_APP_ID, Constants.WX_APPSECRET, code);
         apiService = RetrofitClient.getInstance().getApiService();
-        apiService.getAccessToken(url)
+        apiService.getAccessToken(accessTokenUrl)
                 .enqueue(new Callback<WxLoginResultBean>() {
                     @Override
                     public void onResponse(@NonNull Call<WxLoginResultBean> call, @NonNull Response<WxLoginResultBean> response) {
                         //根据unid获取账户信息
                         if (response.body() != null) {
+                            //获取到微信的Unionid
                             String unionid = response.body().getUnionid();
+                            //存储unionid
                             SharedPreferencesUtils.setParam(WXEntryActivity.this, Constants.KEY_UNIONID,
                                     unionid);
+                            //access_token
                             final String access_token = response.body().getAccess_token();
+                            //openid
                             final String openid = response.body().getOpenid();
                             //获取系统内的用户信息
-                            getUserInfoByUnionid(unionid, access_token, openid, wxUserUrl);
+                            getUserInfoByUnionid(unionid, access_token, openid);
                         }
                     }
 
@@ -158,9 +164,8 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
      * @param unionid
      * @param access_token
      * @param openid
-     * @param wxUserUrl
      */
-    private void getUserInfoByUnionid(String unionid, final String access_token, final String openid, final String wxUserUrl) {
+    private void getUserInfoByUnionid(String unionid, final String access_token, final String openid) {
         apiService.loginWithWeixin(unionid)
                 .enqueue(new Callback<UserBean>() {
                     @Override
