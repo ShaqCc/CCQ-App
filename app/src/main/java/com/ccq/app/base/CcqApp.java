@@ -11,6 +11,7 @@ import com.ccq.app.http.RetrofitClient;
 import com.ccq.app.service.LocationService;
 import com.ccq.app.utils.AppCache;
 import com.ccq.app.utils.Constants;
+import com.ccq.app.utils.CrashHandler;
 import com.ccq.app.utils.JmessageUtils;
 import com.ccq.app.utils.SharedPreferencesUtils;
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -67,6 +68,9 @@ public class CcqApp extends com.activeandroid.app.Application {
         swapEnvironment(sContext, true);
         //注入框架
         ButterKnife.setDebug(true);
+        //崩溃日志抓取
+        CrashHandler crashHandler = CrashHandler.getInstance();
+        crashHandler.init(this);
 
         String userid = (String) SharedPreferencesUtils.getParam(this, Constants.USER_ID, "");
         if (!TextUtils.isEmpty(userid)) {

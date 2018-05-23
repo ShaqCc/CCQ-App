@@ -180,6 +180,12 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
                     context.startActivity(new Intent(context, LoginActivity.class));
                     return;
                 }
+                UserInfo myInfo = JMessageClient.getMyInfo();
+                if(myInfo==null){
+                    ToastUtil.shortToast(context,"IM未登录");
+                    JmessageUtils.registerIM(AppCache.getUserBean());
+                    return;
+                }
 //                mTargetId = intent.getStringExtra(TARGET_ID);
 //                mTargetAppKey = intent.getStringExtra(TARGET_APP_KEY);
 //                mTitle = intent.getStringExtra(JGApplication.CONV_TITLE);

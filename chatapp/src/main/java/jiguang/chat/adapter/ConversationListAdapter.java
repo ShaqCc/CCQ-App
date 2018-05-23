@@ -80,6 +80,7 @@ public class ConversationListAdapter extends BaseAdapter {
      * @param conv 要置顶的会话
      */
     public void setToTop(Conversation conv) {
+        if(mDatas==null)return;
         int oldCount = 0;
         int newCount = 0;
         ThreadUtil.runInUiThread(new Runnable() {
@@ -537,6 +538,7 @@ public class ConversationListAdapter extends BaseAdapter {
     List<Conversation> forCurrent = new ArrayList<>();
 
     public void sortConvList() {
+        if(mDatas==null)return;
         forCurrent.clear();
         topConv.clear();
         int i = 0;
