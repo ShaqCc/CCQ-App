@@ -139,7 +139,7 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
                     .enqueue(new Callback<UserBean>() {
                         @Override
                         public void onResponse(Call<UserBean> call, Response<UserBean> response) {
-                            if (response.isSuccessful() && response.body()!=null) {
+                            if (getActivity()!=null && response.isSuccessful() && response.body()!=null) {
                                 AppCache.setUserBean(response.body());
                                 Glide.with(get()).load(response.body().getHeadimgurl()).into(ivHeader);
                                 setView();

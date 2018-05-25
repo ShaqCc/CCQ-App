@@ -186,11 +186,16 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
                     JmessageUtils.registerIM(AppCache.getUserBean());
                     return;
                 }
+                String userName = car.getUserInfo().getJiguang_name();
+                if(TextUtils.isEmpty(userName)){
+                    ToastUtil.shortToast(context,"该用户未注册IM聊天系统");
+                    return;
+                }
 //                mTargetId = intent.getStringExtra(TARGET_ID);
 //                mTargetAppKey = intent.getStringExtra(TARGET_APP_KEY);
 //                mTitle = intent.getStringExtra(JGApplication.CONV_TITLE);
 
-                String userName = JmessageUtils.getUserName(car.getUserInfo().getUserid() + "");
+//                String userName = JmessageUtils.getUserName(car.getUserInfo().getUserid() + "");
                 Intent intent = new Intent(context, SingleChatActivity.class);
                 intent.putExtra(JGApplication.CONV_TITLE, car.getUserInfo().getNickname());
                 intent.putExtra(JGApplication.TARGET_ID, userName);

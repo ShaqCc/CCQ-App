@@ -89,7 +89,6 @@ public class JmessageUtils {
      */
     private static void regist(UserBean userBean) {
         final String userName = getUserName(userBean.getUserid());
-        final String headimgurl = userBean.getHeadimgurl();
         JMessageClient.register(userName, userName, new BasicCallback() {
             @Override
             public void gotResult(int responseCode, String registerDesc) {
@@ -97,7 +96,7 @@ public class JmessageUtils {
                 if (responseCode == 0 || responseCode == 898001) {
                     SharedPreferencesUtils.setParam(CcqApp.getAppContext(), Constants.IS_REGISTER_JIM, true);
                     Log.i(TAG, "JMessageClient.register " + ", responseCode = " + responseCode + " ; registerDesc = " + registerDesc);
-                    loginIM(CcqApp.getAppContext(), userName, userName,headimgurl);
+                    loginIM(CcqApp.getAppContext(), userName, userName);
                 } else {
                     SharedPreferencesUtils.setParam(CcqApp.getAppContext(), Constants.IS_REGISTER_JIM, false);
                     Log.i(TAG, "JMessageClient.register " + ", responseCode = " + responseCode + " ; registerDesc = " + registerDesc);
@@ -111,9 +110,8 @@ public class JmessageUtils {
      * @param context
      * @param userName
      * @param password
-     * @param headimgurl
      */
-    private static void loginIM(final Context context, String userName, final String password, final String headimgurl) {
+    public static void loginIM(final Context context, String userName, final String password) {
         JMessageClient.login(userName, password, new BasicCallback() {
             @Override
             public void gotResult(int responseCode, String responseMessage) {

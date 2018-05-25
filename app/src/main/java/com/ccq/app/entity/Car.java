@@ -248,6 +248,16 @@ public class Car implements Serializable{
         private int userid;
         private String headimgurl;
         private String nickname;
+        private String jiguang_name;
+
+
+        public String getJiguang_name() {
+            return jiguang_name;
+        }
+
+        public void setJiguang_name(String jiguang_name) {
+            this.jiguang_name = jiguang_name;
+        }
 
         public String getNickname() {
             return nickname;

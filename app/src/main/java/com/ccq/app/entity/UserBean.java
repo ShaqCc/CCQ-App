@@ -90,6 +90,7 @@ public class UserBean {
     private int vip;
     private int viptype;
     private int zhiding;
+    private String jiguang_name;
 
     /**
      * 个人中心 （已shou数量，未售数量，简介,地区，经纬度）
@@ -103,6 +104,15 @@ public class UserBean {
     private String weidu;
     private boolean isBusiness;
     private boolean isMember;
+
+
+    public String getJiguang_name() {
+        return jiguang_name;
+    }
+
+    public void setJiguang_name(String jiguang_name) {
+        this.jiguang_name = jiguang_name;
+    }
 
     public boolean isBusiness() {
         return isBusiness;

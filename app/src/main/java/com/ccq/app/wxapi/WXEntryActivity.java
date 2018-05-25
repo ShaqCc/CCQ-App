@@ -6,8 +6,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.ccq.app.base.CcqApp;
 import com.ccq.app.entity.UserBean;
 import com.ccq.app.entity.WxLoginResultBean;
 import com.ccq.app.entity.WxUserInfo;
@@ -179,8 +181,15 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                             AppCache.setUserBean(response.body());
                             startActivity(new Intent(WXEntryActivity.this, MainActivity.class));
                             EventBus.getDefault().post(Constants.WX_LOGIN_SUCCESS);
-                            //注册登录极光
-                            JmessageUtils.registerIM(response.body());
+                            String jiguang_name = response.body().getJiguang_name();
+                            if(TextUtils.isEmpty(jiguang_name)){
+                                //注册登录极光
+                                JmessageUtils.registerIM(response.body());
+                            }else {
+                                //登陆极光im
+                                JmessageUtils.loginIM(CcqApp.getAppContext(),jiguang_name,jiguang_name);
+                            }
+
                         }
                     }
 
