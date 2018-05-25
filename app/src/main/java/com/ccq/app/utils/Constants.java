@@ -1,5 +1,7 @@
 package com.ccq.app.utils;
 
+import com.ccq.app.http.ApiParams;
+
 /**************************************************
  *
  * 作者：巴银
@@ -11,6 +13,7 @@ package com.ccq.app.utils;
 
 public class Constants {
     public static String WX_APP_ID = "wx1a2af6a07fd055a2";
+    public static String WX_MCH_ID = "1351167601"; //微信商户号
     public static String WX_APPSECRET = "9ab4beba012874e989a35cf2d79b54fa";
     public static String WX_STATE = "ccq_wx_login";
 
@@ -32,6 +35,13 @@ public class Constants {
     public static final int WX_LOGIN_SUCCESS = 20001;//微信登录成功事件码
 
     public static final int REFRESH_EVENT = 20002;//页面刷新事件
+
+
+    /**
+     * 微信回调地址
+     */
+    public static final String WX_PAY_CALLBACK_URL = ApiParams.BASEURL+"/weixin/notify";
+
 
 
 

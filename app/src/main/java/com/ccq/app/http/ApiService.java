@@ -234,6 +234,9 @@ public interface ApiService {
     @POST("/vip/money")
     Call<Object> getVipMoney(@Query("month") String month);
 
+    @POST("/weixin/pay")
+    Call<Object> getWeiXinPay(@QueryMap Map<String, String> carParams);
+
 
 //    ------------------------------------微信登陆相关接口-----------------------------------------------
 

@@ -486,9 +486,9 @@ public class PublishFragment extends BaseFragment {
         apiService.addCarInfo(map).enqueue(new Callback<Object>() {
             @Override
             public void onResponse(Call<Object> call, Response<Object> response) {
-                Map<String,String> map = (Map<String, String>) response.body();
-                String message = map.get("message");
-                if("0.0".equals(map.get("code").toString())||"0".equals(map.get("code").toString())) {
+                Map<String,Object> map = (Map<String, Object>) response.body();
+                String message = (String) map.get("message");
+                if(0.0 == (Double) map.get("code")) {
                     message = "发布成功";
                 }
                 ToastUtils.show(get(),message);
