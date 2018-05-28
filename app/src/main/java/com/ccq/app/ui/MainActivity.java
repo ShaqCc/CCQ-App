@@ -15,6 +15,7 @@ import com.ccq.app.ui.home.HomeFragment;
 import com.ccq.app.ui.message.MessageFragment;
 import com.ccq.app.ui.publish.PublishFragment;
 import com.ccq.app.ui.user.UserFragment;
+import com.ccq.app.weidget.Toasty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
 
     @BindView(R.id.main_bottom_navigation)
     AHBottomNavigation mNavigation;
+
 
     private List<Fragment> mFragments = new ArrayList<>();
     private final String[] fragmentTitles = new String[]{"首页", "发布", "消息", "我的"};
@@ -98,24 +100,33 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
                     switch (position) {
                         case 0:
                             setToolBarVisible(false);
+                            btSetting.setVisibility(View.GONE);
                             break;
                         case 1:
                             setToolBarVisible(true);
                             setToolBarTitle("发布");
+                            btSetting.setVisibility(View.GONE);
                             break;
                         case 2:
                             setToolBarVisible(true);
                             setToolBarTitle("消息");
+                            btSetting.setVisibility(View.GONE);
                             break;
                         case 3:
                             setToolBarVisible(true);
                             setToolBarTitle("个人中心");
+                            btSetting.setVisibility(View.VISIBLE);
                             break;
                     }
                     return true;
                 }
             }
         });
+    }
+
+    @Override
+    protected void settting() {
+        Toasty.info(this,"开发中").show();
     }
 
     @Override

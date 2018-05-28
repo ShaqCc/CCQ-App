@@ -1,6 +1,7 @@
 package com.ccq.app.ui.user;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.CountDownTimer;
@@ -8,6 +9,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ccq.app.R;
 import com.ccq.app.base.BaseActivity;
@@ -17,13 +19,13 @@ import com.ccq.app.entity.WxUserInfo;
 import com.ccq.app.utils.AppCache;
 import com.ccq.app.utils.Constants;
 import com.ccq.app.utils.JmessageUtils;
-import com.ccq.app.utils.ToastUtils;
+import com.ccq.app.utils.MMAlert;
+import com.ccq.app.weidget.Toasty;
 
 import org.greenrobot.eventbus.EventBus;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import jiguang.chat.entity.Event;
 
 /**************************************************
  *
@@ -44,6 +46,7 @@ public class BindPhoneActivity extends BaseActivity<SetFilePresenter> implements
     @BindView(R.id.et_check_code)
     EditText etCheckCode;
     private MyTimer myTimer;
+    private ProgressDialog dialog;
 
     public static void launch(Activity from, WxUserInfo info) {
         if (from != null) {
@@ -63,6 +66,8 @@ public class BindPhoneActivity extends BaseActivity<SetFilePresenter> implements
     protected void initView() {
         super.initView();
         setToolBarTitle("绑定手机");
+        dialog = new ProgressDialog(this);
+        MMAlert.showAlert(this,"新用户首次登录需要绑定您的手机号","铲车圈提示").show();
     }
 
     @Override
@@ -78,23 +83,26 @@ public class BindPhoneActivity extends BaseActivity<SetFilePresenter> implements
             case R.id.send_check_code:
                 phone = phoneNumber.getText().toString();
                 if (TextUtils.isEmpty(phone)) {
-                    ToastUtils.show(this, "请填写手机号！");
+                    Toasty.info(this,"请填写手机号", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                showProgress("发送中...");
                 mPresenter.sendCheckCode(phone);
                 break;
             case R.id.bt_bind:
 
                 phone = phoneNumber.getText().toString();
                 if (TextUtils.isEmpty(phone)) {
-                    ToastUtils.show(this, "请填写手机号！");
+                    Toasty.info(this,"请填写手机号", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 String checkCode = etCheckCode.getText().toString();
                 if (TextUtils.isEmpty(checkCode)) {
-                    ToastUtils.show(this, "请填写验证码！");
+                    Toasty.info(this,"请填写验证码", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
+                showProgress("加载中...");
                 mPresenter.bindUserInfo(wxUserInfo.getUnionid(), phone,
                         checkCode, wxUserInfo.getHeadimgurl(), "", "", wxUserInfo.getNickname());
 
@@ -110,29 +118,45 @@ public class BindPhoneActivity extends BaseActivity<SetFilePresenter> implements
         }
     }
 
+    private void showProgress(String s) {
+        if (dialog == null) {
+            dialog = new ProgressDialog(this);
+        }
+        dialog.setMessage(s);
+        dialog.show();
+    }
+
+    private void dismiss(){
+        if (dialog != null && dialog.isShowing()) {
+            dialog.dismiss();
+        }
+    }
+
     @Override
     public Activity get() {
-        return getCurrentActivity();
+        return this;
     }
 
     @Override
     public void bindSuccess() {
+        dismiss();
         UserBean userBean = AppCache.getUserBean();
         if (userBean != null) {
             JmessageUtils.registerIM(userBean);
         }
-        finish();
         EventBus.getDefault().post(Constants.WX_LOGIN_SUCCESS);
+        finish();
     }
 
     @Override
     public void bindFailure() {
-
+        dismiss();
     }
 
     @Override
     public void sendCodeSuccess(BaseBean bean) {
-        ToastUtils.show(get(), bean.getMessage());
+        dismiss();
+        Toasty.success(this,bean.getMessage(), Toast.LENGTH_SHORT).show();
         if (bean.getCode() == 0) {
             if (myTimer != null) {
                 myTimer.cancel();

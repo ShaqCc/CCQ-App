@@ -1,6 +1,7 @@
 package com.ccq.app.ui.user;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +10,8 @@ import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -29,6 +32,7 @@ import com.ccq.app.utils.AppCache;
 import com.ccq.app.utils.Constants;
 import com.ccq.app.utils.SharedPreferencesUtils;
 import com.ccq.app.utils.ToastUtils;
+import com.ccq.app.weidget.Toasty;
 import com.google.gson.jpush.JsonObject;
 import com.google.gson.jpush.JsonParser;
 import com.tencent.mm.opensdk.modelbase.BaseReq;
@@ -90,6 +94,10 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
 
     @BindView(R.id.tv_userName)
     TextView tvName;
+    @BindView(R.id.tv_account)
+    TextView tvPhone;
+    @BindView(R.id.tv_user_location)
+    TextView tvLocation;
 
     @BindView(R.id.tv_home)
     TextView tvHome;
@@ -99,10 +107,17 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
     Unbinder unbinder;
     @BindView(R.id.vp_my_info)
     ViewPager vpMyInfo;
+    private ProgressDialog dialogProgress;
 
     @OnClick(R.id.user_iv_header)
     public void login() {
-        startActivity(new Intent(get(), LoginActivity.class));
+        UserBean userBean = AppCache.getUserBean();
+        if (userBean != null) {
+            //todo
+            Toasty.info(get(), "查看头像开发中...").show();
+        } else {
+            startActivity(new Intent(get(), LoginActivity.class));
+        }
     }
 
     @Override
@@ -117,7 +132,7 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
 
     @Override
     protected void initView(View rootView) {
-        EventBus.getDefault().register(this);
+//        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -130,53 +145,77 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
         }
     }
 
+    private void showProgress(String msg) {
+        if (dialogProgress == null) {
+            dialogProgress = new ProgressDialog(get());
+        }
+        dialogProgress.setMessage(msg);
+        dialogProgress.show();
+    }
+
+    void dismiss() {
+        if (dialogProgress != null && dialogProgress.isShowing()) {
+            dialogProgress.dismiss();
+        }
+    }
+
+
     @Override
     public void onResume() {
         super.onResume();
-        String userId = (String) SharedPreferencesUtils.getParam(get(), Constants.USER_ID, "");
-        if (!TextUtils.isEmpty(userId)) {
-            RetrofitClient.getInstance().getApiService().getUser(userId)
+        String unionId = (String) SharedPreferencesUtils.getParam(get(), Constants.KEY_UNIONID, "");
+        if (!TextUtils.isEmpty(unionId)) {
+            showProgress("刷新中...");
+            RetrofitClient.getInstance().getApiService().getUserByUniondId(unionId)
                     .enqueue(new Callback<UserBean>() {
                         @Override
                         public void onResponse(Call<UserBean> call, Response<UserBean> response) {
-                            if (getActivity()!=null && response.isSuccessful() && response.body()!=null) {
-                                AppCache.setUserBean(response.body());
-                                Glide.with(get()).load(response.body().getHeadimgurl()).into(ivHeader);
+                            dismiss();
+                            UserBean userBean = response.body();
+                            if (getActivity() != null && response.isSuccessful() && userBean != null) {
+                                AppCache.setUserBean(userBean);
+                                Glide.with(get()).load(userBean.getHeadimgurl()).into(ivHeader);
                                 setView();
                                 getData();
                             }
+                            Toasty.success(get(), "更新成功！").show();
                         }
 
                         @Override
                         public void onFailure(Call<UserBean> call, Throwable t) {
-
+                            dismiss();
+                            Toasty.error(get(), t.getMessage()).show();
                         }
                     });
         }
     }
+//
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+//    public void onReceiveLoginSuccess(Integer eventId) {
+//        Log.e("222---", eventId.toString());
+//
+//        if (eventId.equals(Constants.WX_LOGIN_SUCCESS)) {
+//            ToastUtils.show(get(), "登录成功！设置页面数据！");
+//            Glide.with(get()).load(AppCache.getUserBean().getHeadimgurl()).into(ivHeader);
+//            setView();
+//            getData();
+//        }
+//    }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onReceiveLoginSuccess(Integer eventId) {
-        Log.e("222---", eventId.toString());
-
-        if (eventId.equals(Constants.WX_LOGIN_SUCCESS)) {
-            ToastUtils.show(get(), "登录成功！设置页面数据！");
-            Glide.with(get()).load(AppCache.getUserBean().getHeadimgurl()).into(ivHeader);
-            setView();
-            getData();
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onRefreshData(Integer eventId) {
-        Log.e("333---", eventId.toString());
-    }
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+//    public void onRefreshData(Integer eventId) {
+//        Log.e("333---", eventId.toString());
+//    }
 
 
     public void setView() {
-        tvName.setText(AppCache.getUserBean().getNickname());
+        UserBean userBean = AppCache.getUserBean();
+        tvName.setText(userBean.getNickname());
+        tvPhone.setText(userBean.getMobile());
+        tvLocation.setText(userBean.getProvinceName() + "·" + userBean.getCityName());
+
         llyoutMyInfo.setVisibility(View.VISIBLE);
-        llyoutMyAttention.setVisibility(View.VISIBLE);
+//        llyoutMyAttention.setVisibility(View.VISIBLE);
         adapter = new MyFragmentAdapter(getActivity().getSupportFragmentManager());
         vpMyInfo.setAdapter(adapter);
         vpMyInfo.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -274,7 +313,7 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
         unbinder.unbind();
     }
 
-    @OnClick({R.id.tv_home, R.id.tv_intro, R.id.layout_my_subscribe, R.id.layout_my_subscribe_fans, R.id.layout_home, R.id.layout_intro,R.id.btn_user_setting, R.id.btn_vip_setting,R.id.btn_invite_attation})
+    @OnClick({R.id.tv_home, R.id.tv_intro, R.id.layout_my_subscribe, R.id.layout_my_subscribe_fans, R.id.layout_home, R.id.layout_intro, R.id.btn_user_setting, R.id.btn_vip_setting, R.id.btn_invite_attation})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.layout_home:
@@ -299,7 +338,7 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
                 showUserSettingDialog();
                 break;
             case R.id.btn_vip_setting:
-                startActivity(new Intent(get(),OpenVipActivity.class));
+                startActivity(new Intent(get(), OpenVipActivity.class));
                 break;
             case R.id.btn_invite_attation:
 
@@ -321,28 +360,28 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
         tvIntroLine.setVisibility(View.VISIBLE);
     }
 
-    private  void showUserSettingDialog(){
-        String[] items = {"二维码水印","修改图片","切换账号"};
+    private void showUserSettingDialog() {
+        String[] items = {"二维码水印", "修改图片", "切换账号"};
         AlertDialog.Builder listDialog =
                 new AlertDialog.Builder(get());
         listDialog.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                switch (which){
+                switch (which) {
                     case 0:
-                        Intent i = new Intent(get(),SetWechatQRActivity.class);
+                        Intent i = new Intent(get(), SetWechatQRActivity.class);
                         getActivity().startActivity(i);
                         break;
                     case 1:
                         //非会员或过期提醒
-                        if(AppCache.getUserBean().getVip()==0){
-                            showComfirmDialog("此功能只有会员可用，是否开通会员",0);
+                        if (AppCache.getUserBean().getVip() == 0) {
+                            showComfirmDialog("此功能只有会员可用，是否开通会员", 0);
                         }
                         break;
                     case 2:
                         //非会员或过期提醒
-                        if(AppCache.getUserBean().getVip()==0){
-                            showComfirmDialog("此功能只有会员可用，是否开通会员",1);
+                        if (AppCache.getUserBean().getVip() == 0) {
+                            showComfirmDialog("此功能只有会员可用，是否开通会员", 1);
                         }
                         break;
                 }
@@ -351,7 +390,7 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
         listDialog.show();
     }
 
-    private void showComfirmDialog(String message , final int type){
+    private void showComfirmDialog(String message, final int type) {
         AlertDialog.Builder builder = new AlertDialog.Builder(get());
         builder.setTitle("错误提示");
         builder.setMessage(message);
@@ -359,8 +398,8 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                startActivity(new Intent(get(),OpenVipActivity.class));
-                 dialog.dismiss();
+                startActivity(new Intent(get(), OpenVipActivity.class));
+                dialog.dismiss();
             }
         });
         builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {

@@ -1,5 +1,7 @@
 package com.ccq.app.ui.user;
 
+import android.widget.Toast;
+
 import com.ccq.app.base.BasePresenter;
 import com.ccq.app.base.CcqApp;
 import com.ccq.app.entity.BaseBean;
@@ -7,6 +9,7 @@ import com.ccq.app.entity.BindResultBaen;
 import com.ccq.app.entity.UserBean;
 import com.ccq.app.utils.AppCache;
 import com.ccq.app.utils.ToastUtils;
+import com.ccq.app.weidget.Toasty;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -77,13 +80,14 @@ public class SetFilePresenter extends BasePresenter<IsetFileView> {
             public void onResponse(Call<UserBean> call, Response<UserBean> response) {
                 if (response.body()!=null){
                     AppCache.setUserBean(response.body());
+                    Toasty.success(mView.get(),"恭喜！绑定成功", Toast.LENGTH_SHORT).show();
                     mView.bindSuccess();
                 }
             }
 
             @Override
             public void onFailure(Call<UserBean> call, Throwable t) {
-                ToastUtils.show(CcqApp.getAppContext(),t.getMessage());
+                Toasty.error(mView.get(),t.getMessage()+"\n抱歉！出问题了，请稍后再试", Toast.LENGTH_SHORT).show();
                 mView.bindFailure();
             }
         });
