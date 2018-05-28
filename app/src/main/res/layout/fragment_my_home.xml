@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical">
+     <TextView
+         android:id="@+id/empty_layout"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:textColor="@color/black_de"
+         android:textSize="13sp"
+         android:gravity="center"
+         android:text="您还未发布信息哦，赶快发布一条试试吧！"/>
 
      <android.support.v7.widget.RecyclerView
          android:id="@+id/my_home_recycleview"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
-         >
+         />
 
 
-     </android.support.v7.widget.RecyclerView>
-</LinearLayout>
+</FrameLayout>

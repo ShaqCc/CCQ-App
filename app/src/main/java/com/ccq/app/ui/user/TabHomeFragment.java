@@ -53,6 +53,9 @@ public class TabHomeFragment extends BaseFragment {
 
     @BindView(R.id.my_home_recycleview)
     RecyclerView myHomeRecycleview;
+
+    @BindView(R.id.empty_layout)
+    View emptyView;
     Unbinder unbinder;
     private ApiService apiService;
     MyPublishListAdapter adapter;
@@ -73,6 +76,7 @@ public class TabHomeFragment extends BaseFragment {
 
     @Override
     protected void initView(View rootView) {
+        emptyView.setVisibility(View.GONE);
         LinearLayoutManager layoutmanager = new LinearLayoutManager(getActivity());
         //设置RecyclerView 布局
         myHomeRecycleview.setLayoutManager(layoutmanager);
@@ -80,13 +84,13 @@ public class TabHomeFragment extends BaseFragment {
         adapter = new MyPublishListAdapter(getActivity(), carList, new MyPublishListAdapter.onItemManageInterface() {
             @Override
             public void onManageClick(int position) {
-                editCar  = carList.get(position);
+                editCar = carList.get(position);
                 showSelectDialog();
             }
 
             @Override
             public void onMapShowClick(int position) {
-                editCar  = carList.get(position);
+                editCar = carList.get(position);
                 getCarLocation();
 
             }
@@ -98,18 +102,18 @@ public class TabHomeFragment extends BaseFragment {
         apiService.getCarAddress(String.valueOf(editCar.getId())).enqueue(new Callback<Object>() {
             @Override
             public void onResponse(Call<Object> call, Response<Object> response) {
-                Map<String,Object> map = (Map<String, Object>) response.body();
-                if(0.0== (Double)map.get("code")) {
+                Map<String, Object> map = (Map<String, Object>) response.body();
+                if (0.0 == (Double) map.get("code")) {
                     editCar.setDetailAddress((String) map.get("address"));
-                    editCar.setLatitude( map.get("latitude").toString());
+                    editCar.setLatitude(map.get("latitude").toString());
                     editCar.setLongitude(map.get("longitude").toString());
 
                     Intent i = new Intent(get(), BaseMapActivity.class);
-                    i.putExtra("showMap",true);
-                    i.putExtra("car",editCar);
+                    i.putExtra("showMap", true);
+                    i.putExtra("car", editCar);
                     get().startActivity(i);
 
-                }else{
+                } else {
                     ToastUtils.show(get(), (String) map.get("message"));
                 }
             }
@@ -121,11 +125,11 @@ public class TabHomeFragment extends BaseFragment {
         });
     }
 
-    private  void showSelectDialog(){
+    private void showSelectDialog() {
         //type ：  0，在售, 1已售
-        String sale = editCar.getType()==0 ? "已售" :"在售" ;
-        String[] items = { sale,"删除","编辑","刷新"};
-        if(editCar.getType() == 1){
+        String sale = editCar.getType() == 0 ? "已售" : "在售";
+        String[] items = {sale, "删除", "编辑", "刷新"};
+        if (editCar.getType() == 1) {
             items = new String[]{sale, "删除"};
         }
         AlertDialog.Builder listDialog =
@@ -133,18 +137,18 @@ public class TabHomeFragment extends BaseFragment {
         listDialog.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                switch (which){
+                switch (which) {
                     case 0:
-                        showComfirmDialog("确定要修改信息状态[在售／已售]吗？",which);
+                        showComfirmDialog("确定要修改信息状态[在售／已售]吗？", which);
                         break;
                     case 1:
-                        showComfirmDialog("确定要删除此条信息吗？",which);
+                        showComfirmDialog("确定要删除此条信息吗？", which);
                         break;
                     case 2:
                         editCar();
                         break;
                     case 3:
-                        showComfirmDialog("确定要刷新此信息吗？会员及经销商每天只能刷新5次！",which);
+                        showComfirmDialog("确定要刷新此信息吗？会员及经销商每天只能刷新5次！", which);
                         break;
                 }
             }
@@ -152,7 +156,7 @@ public class TabHomeFragment extends BaseFragment {
         listDialog.show();
     }
 
-    private void showComfirmDialog(String message , final int type){
+    private void showComfirmDialog(String message, final int type) {
         AlertDialog.Builder builder = new AlertDialog.Builder(get());
         builder.setTitle("操作提示：");
         builder.setMessage(message);
@@ -160,7 +164,7 @@ public class TabHomeFragment extends BaseFragment {
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                switch (type){
+                switch (type) {
                     case 0:
                         changeStatu();
                         break;
@@ -168,9 +172,9 @@ public class TabHomeFragment extends BaseFragment {
                         removeCar();
                         break;
                     case 3:
-                        if(AppCache.getUserBean().isBusiness() || AppCache.getUserBean().isMember()){
+                        if (AppCache.getUserBean().isBusiness() || AppCache.getUserBean().isMember()) {
                             refreshCar();
-                        }else{
+                        } else {
                             AlertDialog.Builder alertbuild = new AlertDialog.Builder(get());
                             alertbuild.setTitle("");
                             alertbuild.setCancelable(true);
@@ -202,16 +206,16 @@ public class TabHomeFragment extends BaseFragment {
     /**
      * 修改信息状态
      */
-    private void changeStatu(){
+    private void changeStatu() {
         apiService = RetrofitClient.getInstance().getApiService();
-        apiService.setCarStatus(AppCache.getUserBean().getUserid(),String.valueOf(editCar.getId())).enqueue(new Callback<Object>() {
+        apiService.setCarStatus(AppCache.getUserBean().getUserid(), String.valueOf(editCar.getId())).enqueue(new Callback<Object>() {
             @Override
             public void onResponse(Call<Object> call, Response<Object> response) {
                 Object obj = response.body();
                 if (obj != null) {
                     com.google.gson.jpush.JsonObject returnData = new com.google.gson.jpush.JsonParser().parse(obj.toString()).getAsJsonObject();
                     String mesg = returnData.get("message").getAsString();
-                    ToastUtils.show(get(),mesg);
+                    ToastUtils.show(get(), mesg);
 
                 }
             }
@@ -226,16 +230,16 @@ public class TabHomeFragment extends BaseFragment {
     /**
      * 删除车辆信息
      */
-    private void removeCar(){
+    private void removeCar() {
         apiService = RetrofitClient.getInstance().getApiService();
-        apiService.deleteCar(AppCache.getUserBean().getUserid(),String.valueOf(editCar.getId())).enqueue(new Callback<Object>() {
+        apiService.deleteCar(AppCache.getUserBean().getUserid(), String.valueOf(editCar.getId())).enqueue(new Callback<Object>() {
             @Override
             public void onResponse(Call<Object> call, Response<Object> response) {
                 Object obj = response.body();
                 if (obj != null) {
                     com.google.gson.jpush.JsonObject returnData = new com.google.gson.jpush.JsonParser().parse(obj.toString()).getAsJsonObject();
                     String mesg = returnData.get("message").getAsString();
-                    ToastUtils.show(get(),mesg);
+                    ToastUtils.show(get(), mesg);
 
                 }
             }
@@ -250,16 +254,16 @@ public class TabHomeFragment extends BaseFragment {
     /**
      * 刷新车辆信息
      */
-    private void refreshCar(){
+    private void refreshCar() {
         apiService = RetrofitClient.getInstance().getApiService();
-        apiService.refreshCarInfo(AppCache.getUserBean().getUserid(),String.valueOf(editCar.getId())).enqueue(new Callback<Object>() {
+        apiService.refreshCarInfo(AppCache.getUserBean().getUserid(), String.valueOf(editCar.getId())).enqueue(new Callback<Object>() {
             @Override
             public void onResponse(Call<Object> call, Response<Object> response) {
                 Object obj = response.body();
                 if (obj != null) {
                     com.google.gson.jpush.JsonObject returnData = new com.google.gson.jpush.JsonParser().parse(obj.toString()).getAsJsonObject();
                     String mesg = returnData.get("message").getAsString();
-                    ToastUtils.show(get(),mesg);
+                    ToastUtils.show(get(), mesg);
                 }
             }
 
@@ -273,17 +277,16 @@ public class TabHomeFragment extends BaseFragment {
     /**
      * 编辑信息
      */
-    private void editCar(){
+    private void editCar() {
         Intent i = new Intent(get(), EditPublishActivity.class);
-        i.putExtra("bean",editCar);
+        i.putExtra("bean", editCar);
         get().startActivity(i);
     }
 
 
-
     @Override
     public void initData() {
-        if(AppCache.getUserBean()==null){
+        if (AppCache.getUserBean() == null) {
             return;
         }
         apiService = RetrofitClient.getInstance().getApiService();
@@ -292,19 +295,26 @@ public class TabHomeFragment extends BaseFragment {
         carMap.put("start", "0");
         carMap.put("limit", "20");
 
-        HttpClient.getInstance(get()).sendRequest(apiService.getUserCarList(carMap), new ProgressCallBack<List<Car>>(get(),true,"正在查询...") {
+        HttpClient.getInstance(get()).sendRequest(apiService.getUserCarList(carMap), new ProgressCallBack<List<Car>>(get(), true, "正在查询...") {
 
             @Override
             protected void onSuccess(List<Car> response) {
                 super.onSuccess(response);
-                if (response!=null){
-                    if(carList!=null)carList.clear();
+                if (response != null) {
+                    if (carList != null) carList.clear();
                     carList.addAll(response);
-                    if(carList.size()<1){
+                    if (carList.size() < 1) {
+                        emptyView.setVisibility(View.VISIBLE);
+                        myHomeRecycleview.setVisibility(View.GONE);
 //                        setViewState(ViewState.STATE_EMPTY);
-                    }else{
+                    } else {
+                        emptyView.setVisibility(View.GONE);
+                        myHomeRecycleview.setVisibility(View.VISIBLE);
                         adapter.notifyDataSetChanged();
                     }
+                } else {
+                    emptyView.setVisibility(View.VISIBLE);
+                    myHomeRecycleview.setVisibility(View.GONE);
                 }
             }
 
