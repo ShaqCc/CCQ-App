@@ -17,67 +17,73 @@
 
         <include layout="@layout/include_user_info_card" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <!--<RelativeLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content">-->
 
-            <Button
-                android:id = "@+id/btn_user_setting"
+        <!--<Button-->
+        <!--android:id = "@+id/btn_user_setting"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:minHeight="0dp"-->
+        <!--android:background="@drawable/bg_white_corner"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:paddingLeft="12dp"-->
+        <!--android:paddingTop="4dp"-->
+        <!--android:paddingBottom="4dp"-->
+        <!--android:layout_marginRight="-12dp"-->
+        <!--android:layout_marginTop="8dp"-->
+        <!--android:drawableLeft="@drawable/icon_setting"-->
+        <!--android:text="设置   "-->
+        <!--android:textColor="@color/lightgrey"/>-->
+        <!--</RelativeLayout>-->
+
+        <LinearLayout
+            android:id="@+id/btn_vip_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:layout_marginRight="-12dp"
+            android:background="@drawable/bg_white_corner"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingBottom="4dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="20dp"
+            android:paddingTop="4dp">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/icon_no_vip" />
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:minHeight="0dp"
-                android:background="@drawable/bg_white_corner"
-                android:layout_alignParentRight="true"
-                android:paddingLeft="12dp"
-                android:paddingTop="4dp"
-                android:paddingBottom="4dp"
-                android:layout_marginRight="-12dp"
-                android:layout_marginTop="8dp"
-                android:drawableLeft="@drawable/icon_setting"
-                android:text="设置   "
-                android:textColor="@color/lightgrey"/>
-        </RelativeLayout>
+                android:layout_marginLeft="10dp"
+                android:text="会员  >"
+                android:textColor="@color/google_blue"
+                android:textSize="14sp" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <Button
-                android:id = "@+id/btn_vip_setting"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:minHeight="0dp"
-                android:background="@drawable/bg_white_corner"
-                android:layout_alignParentRight="true"
-                android:paddingLeft="12dp"
-                android:paddingTop="4dp"
-                android:paddingBottom="4dp"
-                android:layout_marginRight="-12dp"
-                android:layout_marginTop="40dp"
-                android:drawableLeft="@drawable/icon_vip"
-                android:text="  会员 >      "
-                android:textColor="@color/steelblue"/>
-        </RelativeLayout>
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/llyout_my_attention"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginLeft="70dp"
             android:layout_marginTop="120dp"
+            android:orientation="horizontal"
             android:padding="4dp"
-            android:visibility="gone"
-            >
+            android:visibility="gone">
 
             <LinearLayout
-                android:id = "@+id/layout_my_subscribe"
+                android:id="@+id/layout_my_subscribe"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_weight="1"
                 android:gravity="center"
-                >
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/tv_my_attention_count"
@@ -91,9 +97,9 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
                     android:background="@color/white"
                     android:gravity="center"
-                    android:layout_marginTop="2dp"
                     android:text="关注"
                     android:textColor="#898787" />
 
@@ -111,10 +117,9 @@
                 android:id="@+id/layout_my_subscribe_fans"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_weight="1"
                 android:gravity="center"
-                >
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/tv_my_fans_count"
@@ -128,8 +133,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@color/white"
                     android:layout_marginTop="2dp"
+                    android:background="@color/white"
                     android:gravity="center"
                     android:text="粉丝"
                     android:textColor="#898787" />
@@ -142,116 +147,121 @@
                 android:layout_height="30dp"
                 android:layout_gravity="center_vertical"
                 android:background="@drawable/btn_style_one"
-                android:text="邀请关注"
                 android:gravity="center"
-                android:textColor="@color/white"
                 android:paddingLeft="4dp"
                 android:paddingRight="4dp"
-                />
+                android:text="邀请关注"
+                android:textColor="@color/white" />
 
         </LinearLayout>
 
     </FrameLayout>
 
 
-    <LinearLayout
-        android:id="@+id/llyout_my_info"
+    <!--<LinearLayout-->
+    <!--android:id="@+id/llyout_my_info"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:orientation="vertical">-->
+
+    <!--<View-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="2dp"-->
+    <!--android:layout_marginBottom="5dp"-->
+    <!--android:background="#e7e7e7" />-->
+
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:orientation="horizontal"-->
+    <!--android:paddingLeft="10dp"-->
+    <!--android:paddingRight="10dp"-->
+    <!--android:paddingTop="10dp">-->
+
+    <!--<LinearLayout-->
+    <!--android:id="@+id/layout_home"-->
+    <!--android:layout_width="0dp"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_weight="1"-->
+    <!--android:gravity="center"-->
+    <!--android:orientation="vertical">-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/tv_home"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:background="@color/white"-->
+    <!--android:gravity="center"-->
+    <!--android:text="首页"-->
+    <!--android:textColor="@color/tab_text" />-->
+
+    <!--<View-->
+    <!--android:id="@+id/tv_home_line"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="3dp"-->
+    <!--android:layout_marginLeft="@dimen/padding"-->
+    <!--android:layout_marginRight="@dimen/padding"-->
+    <!--android:layout_marginTop="@dimen/margin"-->
+    <!--android:background="@color/steelblue" />-->
+
+    <!--</LinearLayout>-->
+
+
+    <!--<LinearLayout-->
+    <!--android:id="@+id/layout_intro"-->
+    <!--android:layout_width="0dp"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_weight="1"-->
+    <!--android:gravity="center"-->
+    <!--android:orientation="vertical">-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/tv_intro"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:background="@color/white"-->
+    <!--android:gravity="center"-->
+    <!--android:text="简介"-->
+    <!--android:textColor="@color/tab_text" />-->
+
+    <!--<View-->
+    <!--android:id="@+id/tv_intro_line"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="3dp"-->
+    <!--android:layout_marginLeft="@dimen/padding"-->
+    <!--android:layout_marginRight="@dimen/padding"-->
+    <!--android:layout_marginTop="@dimen/margin"-->
+    <!--android:background="@color/steelblue"-->
+    <!--android:visibility="gone" />-->
+
+    <!--</LinearLayout>-->
+
+    <!--</LinearLayout>-->
+
+    <!--<View-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="1dp"-->
+    <!--android:background="#f7f7f7" />-->
+
+    <!--</LinearLayout>-->
+    <com.ccq.app.weidget.SlidingTabLayout
+        android:id="@+id/user_pagerTabStrip"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="gone"
-        >
+        android:layout_height="45dp">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_marginBottom="5dp"
-            android:background="#e7e7e7" />
+    </com.ccq.app.weidget.SlidingTabLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingTop="10dp"
-            android:orientation="horizontal"
-            >
-
-            <LinearLayout
-                android:id="@+id/layout_home"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_weight="1"
-                android:gravity="center"
-                >
-
-                <TextView
-                    android:id="@+id/tv_home"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:gravity="center"
-                    android:text="首页"
-                    android:textColor="@color/tab_text" />
-
-                <View
-                    android:id="@+id/tv_home_line"
-                    android:layout_width="match_parent"
-                    android:layout_height="3dp"
-                    android:layout_marginTop="@dimen/margin"
-                    android:layout_marginLeft="@dimen/padding"
-                    android:layout_marginRight="@dimen/padding"
-                    android:background="@color/steelblue"
-                    />
-
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:id="@+id/layout_intro"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_weight="1"
-                android:gravity="center"
-                >
-
-                <TextView
-                    android:id="@+id/tv_intro"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:gravity="center"
-                    android:text="简介"
-                    android:textColor="@color/tab_text" />
-
-                <View
-                    android:id="@+id/tv_intro_line"
-                    android:layout_width="match_parent"
-                    android:layout_height="3dp"
-                    android:layout_marginTop="@dimen/margin"
-                    android:layout_marginLeft="@dimen/padding"
-                    android:layout_marginRight="@dimen/padding"
-                    android:background="@color/steelblue"
-                    android:visibility="gone"
-                    />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="16dp"
-            android:background="#f7f7f7" />
-
-    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#f7f7f7" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/vp_my_info"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+    </android.support.v4.view.ViewPager>
 
 
 </LinearLayout>

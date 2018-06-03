@@ -34,6 +34,7 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
     private RelativeLayout mToolBar;
     private TextView mToolBarTitle;
     private ImageView icFinish;
+    protected ImageView btSetting;
 
     /**
      * @return activity页面的xml布局
@@ -92,6 +93,13 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
             }
         });
         icFinish.setVisibility(View.GONE);
+        btSetting = findViewById(R.id.toolbar_iv_setting);
+        btSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                settting();
+            }
+        });
         //add rootview
         mRootView = LayoutInflater.from(this).inflate(inflateContentView(), null, false);
         mContainer.addView(mRootView);
@@ -99,6 +107,10 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
         ButterKnife.bind(this, mRootView);
         initView();
         initData();
+    }
+
+    protected void settting(){
+
     }
 
     public void setToolBarTitle(String title) {

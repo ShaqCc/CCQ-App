@@ -77,7 +77,7 @@ public interface ApiService {
 
 
     @GET("/user/isbind")
-    Call<UserBean> loginWithWeixin(@Query("unionid") String unionid);
+    Call<UserBean> getUserByUniondId(@Query("unionid") String unionid);
 
     @GET("/user/bind")
     Call<BindResultBaen> bindUserInfo(@Query("unionid") String unionid, @Query("mobile")String mobile,

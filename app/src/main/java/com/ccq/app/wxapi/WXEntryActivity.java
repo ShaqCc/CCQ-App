@@ -1,6 +1,7 @@
 package com.ccq.app.wxapi;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.ccq.app.R;
 import com.ccq.app.base.CcqApp;
 import com.ccq.app.entity.UserBean;
 import com.ccq.app.entity.WxLoginResultBean;
@@ -25,6 +27,7 @@ import com.ccq.app.utils.KLog;
 
 import com.ccq.app.utils.SharedPreferencesUtils;
 import com.ccq.app.utils.ToastUtils;
+import com.ccq.app.weidget.Toasty;
 import com.tencent.mm.opensdk.modelbase.BaseReq;
 import com.tencent.mm.opensdk.modelbase.BaseResp;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
@@ -55,6 +58,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
 
     private String tokenUrl = "https://api.weixin.qq.com/sns/oauth2/access_token";
     private ApiService apiService;
+    private ProgressDialog loginProgress;
 
 
     @Override
@@ -100,29 +104,34 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
         switch (baseResp.errCode) {
             case BaseResp.ErrCode.ERR_OK:
                 result = "授权成功";
+                Toasty.success(this,result,Toast.LENGTH_SHORT).show();
                 String code = ((SendAuth.Resp) baseResp).code;
+                loginProgress = new ProgressDialog(this);
+                loginProgress.setMessage(getString(R.string.wechat_login_ing));
+                loginProgress.show();
                 getAccessToken(code);
                 break;
             case BaseResp.ErrCode.ERR_USER_CANCEL:
                 result = "授权取消";
+                Toasty.warning(this,result,Toast.LENGTH_SHORT).show();
                 finish();
                 break;
             case BaseResp.ErrCode.ERR_AUTH_DENIED:
                 result = "授权拒绝";
+                Toasty.warning(this,result,Toast.LENGTH_SHORT).show();
                 finish();
                 break;
             case BaseResp.ErrCode.ERR_UNSUPPORT:
                 result = "该版本不支持";
+                Toasty.error(this,result,Toast.LENGTH_SHORT).show();
                 finish();
                 break;
             default:
                 result = "授权返回";
+                Toasty.info(this,result,Toast.LENGTH_SHORT).show();
                 finish();
                 break;
         }
-
-        Toast.makeText(this, result, Toast.LENGTH_LONG).show();
-
     }
     //获取微信登录access_token
     String accessTokenUrl = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code";
@@ -168,7 +177,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
      * @param openid
      */
     private void getUserInfoByUnionid(String unionid, final String access_token, final String openid) {
-        apiService.loginWithWeixin(unionid)
+        apiService.getUserByUniondId(unionid)
                 .enqueue(new Callback<UserBean>() {
                     @Override
                     public void onResponse(Call<UserBean> call, Response<UserBean> response) {
@@ -189,13 +198,20 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                                 //登陆极光im
                                 JmessageUtils.loginIM(CcqApp.getAppContext(),jiguang_name,jiguang_name);
                             }
-
+                            //登录完成
+                            if (loginProgress!=null) {
+                                loginProgress.dismiss();
+                            }
+                            finish();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<UserBean> call, Throwable t) {
-                        ToastUtils.show(WXEntryActivity.this, t.getMessage());
+                        if (loginProgress!=null) {
+                            loginProgress.dismiss();
+                        }
+                        Toasty.error(WXEntryActivity.this,t.getMessage(),Toast.LENGTH_LONG).show();
                         finish();
                     }
                 });
@@ -214,6 +230,9 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                 .enqueue(new Callback<WxUserInfo>() {
                     @Override
                     public void onResponse(Call<WxUserInfo> call, Response<WxUserInfo> response) {
+                        if (loginProgress!=null) {
+                            loginProgress.dismiss();
+                        }
                         //跳转到绑定手机页面
                         BindPhoneActivity.launch(WXEntryActivity.this, response.body());
 //                        //下载用户头像
@@ -224,12 +243,12 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                             public void run() {
                                 finish();
                             }
-                        }, 1000);
+                        }, 200);
                     }
 
                     @Override
                     public void onFailure(Call<WxUserInfo> call, Throwable t) {
-                        ToastUtils.show(WXEntryActivity.this, t.getMessage());
+                        Toasty.error(WXEntryActivity.this,t.getMessage(),Toast.LENGTH_LONG).show();
                         finish();
                     }
                 });
