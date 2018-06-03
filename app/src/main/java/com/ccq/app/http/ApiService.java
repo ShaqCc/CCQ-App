@@ -237,6 +237,22 @@ public interface ApiService {
     @POST("/weixin/pay")
     Call<Object> getWeiXinPay(@QueryMap Map<String, String> carParams);
 
+    /**
+     * @param id 视频id
+     * @return
+     */
+    @POST("/car/video/remove")
+    Call<Object> delCarVideo(@Query("userid") String userid,@Query("id") String id);
+
+    /**
+     *
+     * @param cid  图片id
+     * @return
+     */
+    @POST("/car/delimg")
+    Call<Object> delCarImg(@Query("cid") String cid);
+
+
 
 //    ------------------------------------微信登陆相关接口-----------------------------------------------
 

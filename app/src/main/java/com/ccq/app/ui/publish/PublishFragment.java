@@ -1,6 +1,5 @@
 package com.ccq.app.ui.publish;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -25,18 +24,17 @@ import android.widget.TextView;
 import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClientOption;
-import com.baidu.location.Poi;
 import com.baidu.mapapi.model.LatLng;
 import com.ccq.app.R;
-import com.ccq.app.base.BaseBean;
 import com.ccq.app.base.BaseFragment;
 import com.ccq.app.base.BasePresenter;
 import com.ccq.app.base.CcqApp;
 import com.ccq.app.entity.BrandBean;
 import com.ccq.app.entity.BrandModelBean;
 import com.ccq.app.entity.Car;
-import com.ccq.app.entity.CarInfo;
 import com.ccq.app.http.ApiService;
+import com.ccq.app.http.HttpClient;
+import com.ccq.app.http.ProgressCallBack;
 import com.ccq.app.http.RetrofitClient;
 import com.ccq.app.service.LocationService;
 import com.ccq.app.utils.AppCache;
@@ -48,10 +46,6 @@ import com.ccq.app.weidget.MyGridView;
 import com.qiniu.android.jpush.utils.StringUtils;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
-
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.IOException;
@@ -70,22 +64,18 @@ import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import io.reactivex.subjects.Subject;
+import jiguang.chat.utils.ToastUtil;
 import jiguang.chat.utils.imagepicker.ImageGridActivity;
 import jiguang.chat.utils.imagepicker.ImageLoader;
 import jiguang.chat.utils.imagepicker.ImagePicker;
 import jiguang.chat.utils.imagepicker.bean.ImageItem;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
-import okhttp3.Request;
 import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.http.Multipart;
 
 import static android.app.Activity.RESULT_OK;
 import static com.ccq.app.ui.publish.CheckListAdapter.*;
@@ -146,8 +136,8 @@ public class PublishFragment extends BaseFragment {
 
     private String locAddress="";
 
-    private BrandBean brandBean;
-    private BrandModelBean brandModelBean;
+    private BrandBean brandBean = new BrandBean();
+    private BrandModelBean brandModelBean = new BrandModelBean();
 
     private ApiService apiService;
 
@@ -157,6 +147,7 @@ public class PublishFragment extends BaseFragment {
     private String videoids;
 
     private Car car;
+    private Map<String,String> imgInfoMap;
 
     @Override
     protected int inflateContentView() {
@@ -171,7 +162,7 @@ public class PublishFragment extends BaseFragment {
     @Override
     protected void initView(View rootView) {
         setImageSetting();
-        setGridViewAdapter();
+        setGridViewAdapter(true);
         if(AppCache.getUserBean()!=null) etUserPhone.setText(AppCache.getUserBean().getMobile());
 
         gridviewPhotoVideo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -235,9 +226,40 @@ public class PublishFragment extends BaseFragment {
             if(!TextUtils.isEmpty(car.getLatitude()) && !TextUtils.isEmpty(car.getLongitude())){
                 point = new LatLng(Double.parseDouble(car.getLatitude()),Double.parseDouble(car.getLongitude()));
             }
+
+            btnBandModel.setText(car.getBrandName()+car.getNumberName());
+            etUserPhone.setText(car.getPhone());
             etCarPrice.setText(String.valueOf(car.getPrice()));
             btnCarAge.setText(String.valueOf(car.getYear()));
             btnSubmit.setText("修改");
+
+            brandBean.setId(car.getBrandId());
+            brandModelBean.setId(car.getNumberId());
+
+            List<com.ccq.app.entity.Car.PicImgBean> imgBeans = car.getPic_img();
+            List<Car.VideoBean> videoBeans = car.getVideoList();
+            String[] imageIds = car.getPic().split(",");
+            imgInfoMap = new HashMap<>();
+
+            if(imgBeans!=null){
+
+                for (int i=0; i<imgBeans.size();i++){
+                    Car.PicImgBean img = imgBeans.get(i);
+                    mMultiSelectPath.add(img.getSavename());
+                    imgInfoMap.put(img.getSavename(),img.getId());
+                }
+
+            }
+
+            if(videoBeans!=null){
+                for (int i=0; i<videoBeans.size();i++){
+                    Car.VideoBean video = videoBeans.get(i);
+                    mMultiSelectPath.add(video.getOsspath());
+                    imgInfoMap.put(video.getOsspath(),video.getId());
+                }
+            }
+
+            setGridViewAdapter(false);
 
         }
     }
@@ -504,30 +526,74 @@ public class PublishFragment extends BaseFragment {
 
     }
 
-    private void setGridViewAdapter(){
+    private void setGridViewAdapter(final boolean isFromLocal){
         Bitmap bm = BitmapFactory.decodeResource(this.getResources(),R.drawable.icon_add_photo);
         gridviewPhotoVideo.setColumnWidth( (int)(bm.getWidth()* 1.5));
         gridviewPhotoVideo.setHorizontalSpacing(1);
         gridviewPhotoVideo.setStretchMode(GridView.NO_STRETCH);
-        gridViewAdapter = new GridViewPhotoAdapter(getActivity(),mMultiSelectPath,bm.getWidth());
+        gridViewAdapter = new GridViewPhotoAdapter(getActivity(),mMultiSelectPath,bm.getWidth(),isFromLocal);
         gridviewPhotoVideo.setAdapter(gridViewAdapter);
         gridViewAdapter.setDeleteItemClickListener(new GridViewPhotoAdapter.DeleteItemClickListener() {
             @Override
             public void onListItemClickListener(int position) {
                 //删除图片
                 String deletePath = mMultiSelectPath.get(position);
-                if(photoPath.size()>0 && photoPath.contains(deletePath)){
-                    photoPath.remove(deletePath);
+
+                if(imgInfoMap.containsKey(deletePath)){
+                    deleteFileFromService(deletePath);
+                }else{
+                    if(photoPath.size()>0 && photoPath.contains(deletePath)){
+                        photoPath.remove(deletePath);
+                    }
+                    if(videoPath.size()>0 && videoPath.contains(deletePath)){
+                        videoPath.remove(deletePath);
+                    }
+                    mMultiSelectPath.remove(deletePath);
                 }
-                if(videoPath.size()>0 && videoPath.contains(deletePath)){
-                    videoPath.remove(deletePath);
-                }
-                mMultiSelectPath.remove(deletePath);
-                setGridViewAdapter();
+
+                setGridViewAdapter(isFromLocal);
             }
         });
     }
 
+
+    private void deleteFileFromService(final String deletePath){
+        Call<Object> call;
+        if(deletePath.endsWith("jpg") || deletePath.endsWith("jpeg")||deletePath.endsWith("png")||deletePath.endsWith("bmp")){
+            call = apiService.delCarImg(imgInfoMap.get(deletePath));
+        }else{
+            call = apiService.delCarVideo(AppCache.getUserBean().getUserid(),imgInfoMap.get(deletePath));
+        }
+        HttpClient.getInstance(get()).sendRequest(call, new ProgressCallBack<Object>(get(),true,"正在删除") {
+            @Override
+            protected void onSuccess(Object response) {
+                super.onSuccess(response);
+                if (response!=null){
+                    Map<String,Object> map = (Map<String, Object>) response;
+                    if(0.0 == (Double)map.get("code")){
+                        if(photoPath.size()>0 && photoPath.contains(deletePath)){
+                            photoPath.remove(deletePath);
+                        }
+                        if(videoPath.size()>0 && videoPath.contains(deletePath)){
+                            videoPath.remove(deletePath);
+                        }
+                        mMultiSelectPath.remove(deletePath);
+                    }
+                }
+            }
+
+            @Override
+            protected void onFailure(Object response) {
+                super.onFailure(response);
+                ToastUtil.shortToast(get(),"删除失败");
+            }
+
+            @Override
+            protected void onError(Throwable t) {
+                super.onError(t);
+            }
+        });
+    }
 
     public void showBrandSelectDialog(){
 
@@ -615,7 +681,7 @@ public class PublishFragment extends BaseFragment {
                     mMultiSelectPath.add(path);
                     photoPath.add(path);
                 }
-                setGridViewAdapter();
+                setGridViewAdapter(true);
             }
         }
 
@@ -644,14 +710,14 @@ public class PublishFragment extends BaseFragment {
                     String filepathtemp = FileUtil.getPath(get(), photoUri);
                     mMultiSelectPath.add(filepathtemp.toString());
                     photoPath.add(filepathtemp.toString());
-                    setGridViewAdapter();
+                    setGridViewAdapter(true);
                     break;
                 case RESULT_LOAD_VIDEO:
                     Uri videoUri = data.getData();
                     String vPath = FileUtil.getPath(get(), videoUri);
                     mMultiSelectPath.add(vPath.toString());
                     videoPath.add(vPath.toString());
-                    setGridViewAdapter();
+                    setGridViewAdapter(true);
                     break;
             }
         }

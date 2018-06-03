@@ -49,17 +49,21 @@ public class EditPublishActivity extends BaseActivity {
     protected void initView() {
         super.initView();
         toobarTitle.setText("修改信息");
+        setToolBarVisible(false);
 
         car = (Car) getIntent().getSerializableExtra("bean");
         getCarInfo();
 
+
+    }
+
+    private void showPage(){
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
 
         Fragment fragment = new PublishFragment();
         transaction.add(R.id.add_fragment,fragment);
         transaction.commit();
-        setToolBarVisible(false);
     }
 
     private void getCarInfo() {
@@ -67,14 +71,21 @@ public class EditPublishActivity extends BaseActivity {
             @Override
             public void onResponse(Call<Object> call, Response<Object> response) {
                 if(response.body()!=null){
-                    Map<String,Object> map = (Map<String, Object>) response.body();
-
+                    Map<String,Object>  map = (Map<String, Object>) response.body();
+                    Map<String,Object>  maps = ((Map)map.get("data"));
+                    car.setNumberName((String) maps.get("NumberName"));
+                    car.setBrandName((String) maps.get("BrandName"));
+                    car.setPic((String) maps.get("pic"));
+                    car.setVideoIds((String) maps.get("videoList"));
+                    car.setBrandId( maps.get("b_id").toString());
+                    car.setNumberId(maps.get("n_id").toString());
+                    showPage();
                 }
             }
 
             @Override
             public void onFailure(Call<Object> call, Throwable t) {
-
+                showPage();
             }
         });
 
@@ -84,8 +95,6 @@ public class EditPublishActivity extends BaseActivity {
     public void onViewClicked() {
         finish();
     }
-
-
 
 
 }
