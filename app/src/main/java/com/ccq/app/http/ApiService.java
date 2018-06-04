@@ -11,6 +11,7 @@ import com.ccq.app.entity.Car;
 import com.ccq.app.entity.CarInfo;
 import com.ccq.app.entity.Province;
 import com.ccq.app.entity.SubscribeUser;
+import com.ccq.app.entity.TypeBean;
 import com.ccq.app.entity.UserBean;
 import com.ccq.app.entity.WxLoginResultBean;
 import com.ccq.app.entity.WxUserInfo;
@@ -97,8 +98,8 @@ public interface ApiService {
     @GET("/car/brand")
     Call<List<BrandBean>> getBrandList();
 
-    @GET("/car/number")
-    Call<List<Object>> getCarTypeList();
+    @GET("/car/tonnage")
+    Call<List<TypeBean>> getCarTypeList(@Query("brandid")String brandId);
 
     @GET("/car/year")
     Call<List<YearLimitBean>> getCarYearList();

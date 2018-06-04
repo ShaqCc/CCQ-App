@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_gravity="center"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/shape_white_corner_bg">
+
+    <TextView
+        android:id="@+id/sort_tv_ccq"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="13dp"
+        android:paddingBottom="13dp"
+        android:paddingLeft="70dp"
+        android:paddingRight="70dp"
+        android:text="@string/app_name"
+        android:textColor="@color/black"
+        android:textSize="14sp"/>
+    <View style="@style/tranversLine"/>
+    <TextView
+        android:id="@+id/sort_tv_wjq"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="挖机圈"
+        android:paddingTop="13dp"
+        android:paddingBottom="13dp"
+        android:paddingLeft="70dp"
+        android:paddingRight="70dp"
+        android:textColor="@color/black"
+        android:textSize="14sp"/>
+</LinearLayout>

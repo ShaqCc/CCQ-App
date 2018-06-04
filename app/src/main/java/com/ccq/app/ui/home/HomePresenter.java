@@ -4,10 +4,12 @@ import com.ccq.app.base.BasePresenter;
 import com.ccq.app.entity.BannerBean;
 import com.ccq.app.entity.BrandBean;
 import com.ccq.app.entity.Car;
+import com.ccq.app.entity.TypeBean;
 import com.ccq.app.entity.YearLimitBean;
 import com.ccq.app.http.ApiParams;
 import com.ccq.app.utils.ToastUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -84,16 +86,43 @@ public class HomePresenter extends BasePresenter<IHomeView> {
     }
 
     public void chooseType() {
-        apiService.getCarTypeList().enqueue(new Callback<List<Object>>() {
+        apiService.getCarTypeList(ApiParams.getBrandid()).enqueue(new Callback<List<TypeBean>>() {
             @Override
-            public void onResponse(Call<List<Object>> call, Response<List<Object>> response) {
-                if (response!=null && response.body()!=null){
-                    mView.showTypeList(response.body());
+            public void onResponse(Call<List<TypeBean>> call, Response<List<TypeBean>> response) {
+                List<TypeBean> typeList = response.body();
+                if (typeList !=null){
+                    List<TypeBean.NumberListBean> dataList = new ArrayList<>();
+                    TypeBean.NumberListBean bean;
+                    for (int i = 0; i < typeList.size(); i++) {
+                        TypeBean typeBean = typeList.get(i);
+                        bean = new TypeBean.NumberListBean();
+                        bean.setSub(false);
+                        bean.setId(typeBean.getId());
+                        bean.setName(typeBean.getName());
+                        bean.setCode(typeBean.getCode());
+                        dataList.add(bean);
+                        //遍历子列表
+                        List<TypeBean.NumberListBean> numberList = typeBean.getNumberList();
+                        if (numberList!=null && numberList.size()>0) {
+                            for (int j = 0; j < numberList.size(); j++) {
+                                TypeBean.NumberListBean numberBean = numberList.get(j);
+                                bean = new TypeBean.NumberListBean();
+                                bean.setSub(true);
+                                bean.setTid(typeBean.getId());
+                                bean.setName(numberBean.getName());
+                                bean.setCode(numberBean.getCode());
+                                bean.setId(numberBean.getId());
+                                bean.setBid(numberBean.getBid());
+                                dataList.add(bean);
+                            }
+                        }
+                    }
+                    mView.showTypeList(dataList);
                 }
             }
 
             @Override
-            public void onFailure(Call<List<Object>> call, Throwable t) {
+            public void onFailure(Call<List<TypeBean>> call, Throwable t) {
 
             }
         });

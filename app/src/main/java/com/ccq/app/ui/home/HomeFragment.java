@@ -1,10 +1,13 @@
 package com.ccq.app.ui.home;
 
+import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.PopupWindow;
@@ -15,18 +18,21 @@ import com.ccq.app.base.BaseFragment;
 import com.ccq.app.entity.BannerBean;
 import com.ccq.app.entity.BrandBean;
 import com.ccq.app.entity.Car;
+import com.ccq.app.entity.TypeBean;
 import com.ccq.app.entity.YearLimitBean;
 import com.ccq.app.http.ApiParams;
 import com.ccq.app.ui.city.ProvinceActivity;
 import com.ccq.app.ui.home.adapter.BrandAdapter;
 import com.ccq.app.ui.home.adapter.OrderAdapter;
+import com.ccq.app.ui.home.adapter.TypeAdapter;
 import com.ccq.app.ui.home.adapter.YearAdapter;
+import com.ccq.app.ui.user.OpenVipActivity;
 import com.ccq.app.utils.DialogUtils;
 import com.ccq.app.utils.GlideImageLoader;
 import com.ccq.app.utils.RequestCode;
-import com.ccq.app.utils.ToastUtils;
 import com.ccq.app.utils.ViewState;
 import com.ccq.app.weidget.RecyclerViewHeader;
+import com.ccq.app.weidget.Toasty;
 import com.youth.banner.Banner;
 import com.youth.banner.WeakHandler;
 
@@ -40,7 +46,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import me.gujun.android.taggroup.TagGroup;
 
 /****************************************
  * 功能说明:  首页
@@ -323,8 +328,22 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
      * @param list
      */
     @Override
-    public void showTypeList(List<Object> list) {
-
+    public void showTypeList(List<TypeBean.NumberListBean> list) {
+        DialogUtils.showListPopWindow(get(), homeHeader, new TypeAdapter(list), new DialogUtils.OnPopItemClickListener() {
+            @Override
+            public void OnPopItemClick(Object o, int position) {
+                TypeBean.NumberListBean type = (TypeBean.NumberListBean) o;
+                if (type.isSub()) {
+                    //子列表
+                    ApiParams.setTon(type.getTid());
+                    ApiParams.setNumberid(type.getId());
+                } else {
+                    //一级列表
+                    ApiParams.setTon(type.getId());
+                }
+                mPresenter.filterCar(ApiParams.getCarMap());
+            }
+        }, dismissListener);
     }
 
     /**
@@ -372,10 +391,13 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.home_action_tv_sort:
+                showSortDialog();
                 break;
             case R.id.home_action_tv_buy:
+                Toasty.info(get(), "求购开发中...").show();
                 break;
             case R.id.home_action_tv_vip:
+                startActivity(new Intent(get(), OpenVipActivity.class));
                 break;
             case R.id.banner_rb_city:
                 resetCheckBoxState();
@@ -409,6 +431,31 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
                 }, dismissListener);
                 break;
         }
+    }
+
+    /**
+     * 切换分类对话框
+     */
+    private void showSortDialog() {
+        final Dialog sortDialog = new Dialog(get(), R.style.no_bg_dialog_theme);
+        View rootView = LayoutInflater.from(get()).inflate(R.layout.dialog_change_sort_layout, null, false);
+        sortDialog.setContentView(rootView);
+        rootView.findViewById(R.id.sort_tv_ccq).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sortDialog.dismiss();
+            }
+        });
+
+        rootView.findViewById(R.id.sort_tv_wjq).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toasty.info(get(), "挖机圈APP开发中..").show();
+                sortDialog.dismiss();
+            }
+        });
+
+        sortDialog.show();
     }
 
     @Override

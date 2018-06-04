@@ -85,4 +85,6 @@
         <item>History message 9</item>
         <item>History message 10</item>
     </string-array>
+
+    <string name="pay_result_callback_msg" formatted="false">微信支付结果：%s</string>
 </resources>

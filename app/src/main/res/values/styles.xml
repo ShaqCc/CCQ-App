@@ -16,6 +16,10 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
+    <style name="no_bg_dialog_theme" parent="dialog_default_style">
+        <item name="android:background">@color/transparent</item>
+    </style>
+
     <style name="rb_with_arrow_bt">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">match_parent</item>

@@ -1,6 +1,8 @@
 package com.ccq.app.utils;
 
 import android.app.Activity;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v7.widget.MenuPopupWindow;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
@@ -56,6 +58,7 @@ public class DialogUtils {
         popupWindow.setOutsideTouchable(false);
         popupWindow.setTouchable(true);
         popupWindow.setFocusable(true);
+        popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         popupWindow.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
         popupWindow.setHeight(SystemUtil.getScreenHeight(activity)/2);
         View contentView = LayoutInflater.from(activity).inflate(R.layout.pop_list_layout, null, false);

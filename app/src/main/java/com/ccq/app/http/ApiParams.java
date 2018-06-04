@@ -20,7 +20,10 @@ public class ApiParams {
     private static Map<String, String> carMap;
     private static String cityName;//城市
     private static String brandName;//品牌名称
-    private static String typeName;//型号
+    private static String typeName;//型号名称
+    private static String typeId;//吨位id
+    private static String numberName;//型号名称
+    private static String numberId;//型号id
     private static String orderFunc;//排序方式
     private static String age;//车龄
 
@@ -66,6 +69,22 @@ public class ApiParams {
         carMap.put("page", "1");
         carMap.put("size", "20");
         return carMap;
+    }
+
+    public static String getTypeId() {
+        return typeId;
+    }
+
+    public static void setTypeId(String typeId) {
+        ApiParams.typeId = typeId;
+    }
+
+    public static String getNumberName() {
+        return numberName;
+    }
+
+    public static void setNumberName(String numberName) {
+        ApiParams.numberName = numberName;
     }
 
     public static void setPage(int page){

@@ -73,6 +73,7 @@
         <activity android:name=".ui.user.EditPublishActivity" />
         <activity android:name=".ui.user.SetWechatQRActivity" />
         <activity android:name=".ui.user.OpenVipActivity" />
+        <activity android:name=".wxapi.WXPayEntryActivity" />
 
     </application>
 

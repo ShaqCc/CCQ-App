@@ -20,6 +20,7 @@ import com.ccq.app.ui.user.OpenVipActivity;
 import com.ccq.app.ui.user.SetWechatQRActivity;
 import com.ccq.app.ui.user.UserFragment;
 import com.ccq.app.utils.AppCache;
+import com.ccq.app.utils.statusbar.StatusBarUtils;
 import com.ccq.app.weidget.Toasty;
 
 import java.util.ArrayList;
@@ -54,7 +55,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
         initViewPager();
         initNavigation();
         getToolBar().setVisibility(View.GONE);
-//        StatusBarUtils.setStatusBarColor(this,getResources().getColor(R.color.secondary_text));
+        StatusBarUtils.setStatusBarColor(this,getResources().getColor(R.color.colorPrimary));
     }
 
 
