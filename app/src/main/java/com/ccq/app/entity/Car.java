@@ -30,7 +30,6 @@ public class Car implements Serializable{
     private int year;
     private String isshare;
     private java.util.List<PicImgBean> pic_img;
-
     /**
      *  获取车辆位置接口
      *  {
@@ -47,7 +46,73 @@ public class Car implements Serializable{
     private String detailAddress;
 
 
+    /**
+    /**
+     * 修改信息 新增字段
+     */
+    private String BrandName;
+    private String NumberName;
+    private String brandId;
+    private String numberId;
+    private String pic;
+    private String videoIds;
+    private List<VideoBean> videoList;
 
+    public String getVideoIds() {
+        return videoIds;
+    }
+
+    public void setVideoIds(String videoIds) {
+        this.videoIds = videoIds;
+    }
+
+    public String getBrandId() {
+        return brandId;
+    }
+
+    public void setBrandId(String brandId) {
+        this.brandId = brandId;
+    }
+
+    public String getNumberId() {
+        return numberId;
+    }
+
+    public void setNumberId(String numberId) {
+        this.numberId = numberId;
+    }
+
+    public List<VideoBean> getVideoList() {
+        return videoList;
+    }
+
+    public void setVideoList(List<VideoBean> videoList) {
+        this.videoList = videoList;
+    }
+
+    public String getPic() {
+        return pic;
+    }
+
+    public void setPic(String pic) {
+        this.pic = pic;
+    }
+
+    public String getBrandName() {
+        return BrandName;
+    }
+
+    public void setBrandName(String brandName) {
+        BrandName = brandName;
+    }
+
+    public String getNumberName() {
+        return NumberName;
+    }
+
+    public void setNumberName(String numberName) {
+        NumberName = numberName;
+    }
 
     public String getDetailAddress() {
         return detailAddress;
@@ -309,6 +374,37 @@ public class Car implements Serializable{
 
         public void setSavename(String savename) {
             this.savename = savename;
+        }
+    }
+
+    public class VideoBean implements Serializable{
+
+        private String id;
+        private String name;
+        private String osspath;
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getOsspath() {
+            return osspath;
+        }
+
+        public void setOsspath(String osspath) {
+            this.osspath = osspath;
         }
     }
 }

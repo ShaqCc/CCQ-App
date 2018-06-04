@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 import com.ccq.app.R;
 /** 
  * 图片显示时gridView适配器
@@ -26,6 +28,7 @@ public class GridViewPhotoAdapter extends BaseAdapter {
 	private List<String> paths;
     private int size;
 	private int width;
+	private boolean isFromLocal = true;// true 本地 | false 网络
 
 	public void setDeleteItemClickListener(DeleteItemClickListener deleteItemClickListener) {
 		this.deleteItemClickListener = deleteItemClickListener;
@@ -33,13 +36,15 @@ public class GridViewPhotoAdapter extends BaseAdapter {
 
 	private DeleteItemClickListener  deleteItemClickListener;
 
-	public GridViewPhotoAdapter(Context context, List<String> paths,int width) {
+	public GridViewPhotoAdapter(Context context, List<String> paths,int width,boolean isFromLocal) {
 		this.context = context;
 		this.paths = paths;
 		this.size = paths.size();
 		inflater = LayoutInflater.from(context);
 		this.width = width;
+		this.isFromLocal = isFromLocal;
 	}
+
 
 	@Override
 	public int getCount() {
@@ -83,14 +88,29 @@ public class GridViewPhotoAdapter extends BaseAdapter {
 			viewHolder.packageTextView.setVisibility(View.GONE);
 		} else {
 			String pathtemp = paths.get(position).toLowerCase();
-			if(pathtemp.contains(".jpg")||pathtemp.contains(".jpeg")||pathtemp.contains(".png")||pathtemp.contains(".bmp")){
-				viewHolder.simpleDraweeView.setImageURI(Uri.parse("file://" + paths.get(position)));
+
+			if(isFromLocal){
+				if(pathtemp.contains(".jpg")||pathtemp.contains(".jpeg")||pathtemp.contains(".png")||pathtemp.contains(".bmp")){
+					viewHolder.simpleDraweeView.setImageURI(Uri.parse("file://" + paths.get(position)));
+				}else{
+					MediaMetadataRetriever media = new MediaMetadataRetriever();
+					media.setDataSource(paths.get(position));
+					Bitmap bitmap = media.getFrameAtTime();
+					viewHolder.simpleDraweeView.setImageBitmap(bitmap);
+				}
 			}else{
-				MediaMetadataRetriever media = new MediaMetadataRetriever();
-				media.setDataSource(paths.get(position));
-				Bitmap bitmap = media.getFrameAtTime();
-				viewHolder.simpleDraweeView.setImageBitmap(bitmap);
+				if(pathtemp.contains(".jpg")||pathtemp.contains(".jpeg")||pathtemp.contains(".png")||pathtemp.contains(".bmp")){
+					Glide.with(context)
+							.load(paths.get(position) + "!300auto")
+							.into(viewHolder.simpleDraweeView);
+				}else{
+//					MediaMetadataRetriever media = new MediaMetadataRetriever();
+//					media.setDataSource(paths.get(position));
+//					Bitmap bitmap = media.getFrameAtTime();
+//					viewHolder.simpleDraweeView.setImageBitmap(bitmap);
+				}
 			}
+
 			if(position == 0){
 				viewHolder.leftTipTextView.setVisibility(View.VISIBLE);
 				viewHolder.packageTextView.setBackground(context.getResources().getDrawable(R.color.colorPrimary));
