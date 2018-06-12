@@ -1,7 +1,10 @@
 package com.ccq.app.ui.publish;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -94,27 +97,41 @@ public class BaseMapActivity extends Activity implements OnGetGeoCoderResultList
                         accuracyCircleFillColor, accuracyCircleStrokeColor));
 
         initParam();
-        if(isComfirm){
-            initListeners();
-            initGeoCoder();
+        initListeners();
+        initGeoCoder();
+        prepareLocationService();
+    }
+
+    private void prepareLocationService() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            String[] permissions = {
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.READ_PHONE_STATE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+            };
+
+            if (checkSelfPermission(permissions[0]) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(permissions, 0);
+            }
         }
     }
 
     private void initParam() {
         Intent intent = getIntent();
-        isOnlyShow = intent.getBooleanExtra("showMap",false);
-        if(isOnlyShow){
+        isOnlyShow = intent.getBooleanExtra("showMap", false);
+        if (isOnlyShow) {
             car = (Car) intent.getSerializableExtra("car");
-            if(!TextUtils.isEmpty(car.getLatitude()) && ! TextUtils.isEmpty(car.getLongitude())){
-                markLatitude =  Double.parseDouble(car.getLatitude());
+            if (!TextUtils.isEmpty(car.getLatitude()) && !TextUtils.isEmpty(car.getLongitude())) {
+                markLatitude = Double.parseDouble(car.getLatitude());
                 markLongitude = Double.parseDouble(car.getLongitude());
                 tvPoiName.setText(car.getName());
                 tvPoiAddress.setText(car.getDetailAddress());
                 activityMapTitlebarBtnRight.setVisibility(View.GONE);
                 zywz.setVisibility(View.GONE);
-                updateView(new LatLng(markLatitude,markLongitude));
+                updateView(new LatLng(markLatitude, markLongitude));
             }
-        }else {
+        } else {
             if (intent.hasExtra("latlng")) {
                 // 当用intent参数时，设置中心点为指定点
                 Bundle bundle = intent.getExtras();
@@ -222,14 +239,14 @@ public class BaseMapActivity extends Activity implements OnGetGeoCoderResultList
             markContent = result.getAddress() + result.getSematicDescription();
         }
 
-        if(isComfirm){
+        if (isComfirm) {
             Intent data = new Intent();
             data.putExtra("longitude", markLongitude);
             data.putExtra("latitude", markLatitude);
             data.putExtra("address", markContent);
             setResult(RESULT_OK, data);
             BaseMapActivity.this.finish();
-        }else{
+        } else {
             tvPoiName.setText(markContent);
         }
 

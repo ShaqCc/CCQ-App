@@ -13,6 +13,7 @@ import com.ccq.app.entity.Province;
 import com.ccq.app.entity.SubscribeUser;
 import com.ccq.app.entity.TypeBean;
 import com.ccq.app.entity.UserBean;
+import com.ccq.app.entity.WeixinPayBean;
 import com.ccq.app.entity.WxLoginResultBean;
 import com.ccq.app.entity.WxUserInfo;
 import com.ccq.app.entity.YearLimitBean;
@@ -236,7 +237,7 @@ public interface ApiService {
     Call<Object> getVipMoney(@Query("month") String month);
 
     @POST("/weixin/pay")
-    Call<Object> getWeiXinPay(@QueryMap Map<String, String> carParams);
+    Call<WeixinPayBean> getWeiXinPay(@QueryMap Map<String, String> carParams);
 
     /**
      * @param id 视频id

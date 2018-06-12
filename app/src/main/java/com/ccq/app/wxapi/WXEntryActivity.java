@@ -37,6 +37,7 @@ import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 import org.greenrobot.eventbus.EventBus;
 
+import jiguang.chat.model.Constant;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -104,7 +105,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
         switch (baseResp.errCode) {
             case BaseResp.ErrCode.ERR_OK:
                 result = "授权成功";
-                Toasty.success(this,result,Toast.LENGTH_SHORT).show();
+                Toasty.success(this, result, Toast.LENGTH_SHORT).show();
                 String code = ((SendAuth.Resp) baseResp).code;
                 loginProgress = new ProgressDialog(this);
                 loginProgress.setMessage(getString(R.string.wechat_login_ing));
@@ -113,30 +114,32 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                 break;
             case BaseResp.ErrCode.ERR_USER_CANCEL:
                 result = "授权取消";
-                Toasty.warning(this,result,Toast.LENGTH_SHORT).show();
+                Toasty.warning(this, result, Toast.LENGTH_SHORT).show();
                 finish();
                 break;
             case BaseResp.ErrCode.ERR_AUTH_DENIED:
                 result = "授权拒绝";
-                Toasty.warning(this,result,Toast.LENGTH_SHORT).show();
+                Toasty.warning(this, result, Toast.LENGTH_SHORT).show();
                 finish();
                 break;
             case BaseResp.ErrCode.ERR_UNSUPPORT:
                 result = "该版本不支持";
-                Toasty.error(this,result,Toast.LENGTH_SHORT).show();
+                Toasty.error(this, result, Toast.LENGTH_SHORT).show();
                 finish();
                 break;
             default:
                 result = "授权返回";
-                Toasty.info(this,result,Toast.LENGTH_SHORT).show();
+                Toasty.info(this, result, Toast.LENGTH_SHORT).show();
                 finish();
                 break;
         }
     }
+
     //获取微信登录access_token
     String accessTokenUrl = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code";
     //获取微信用户信息
     String wxUserUrl = "https://api.weixin.qq.com/sns/userinfo?access_token=%s&openid=%s&lang=zh_CN";
+
     private void getAccessToken(String code) {
 
         accessTokenUrl = String.format(accessTokenUrl, Constants.WX_APP_ID, Constants.WX_APPSECRET, code);
@@ -156,6 +159,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                             final String access_token = response.body().getAccess_token();
                             //openid
                             final String openid = response.body().getOpenid();
+                            SharedPreferencesUtils.setParam(WXEntryActivity.this, Constants.KEY_OPEN_ID, openid);
                             //获取系统内的用户信息
                             getUserInfoByUnionid(unionid, access_token, openid);
                         }
@@ -191,15 +195,15 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                             startActivity(new Intent(WXEntryActivity.this, MainActivity.class));
                             EventBus.getDefault().post(Constants.WX_LOGIN_SUCCESS);
                             String jiguang_name = response.body().getJiguang_name();
-                            if(TextUtils.isEmpty(jiguang_name)){
+                            if (TextUtils.isEmpty(jiguang_name)) {
                                 //注册登录极光
                                 JmessageUtils.registerIM(response.body());
-                            }else {
+                            } else {
                                 //登陆极光im
-                                JmessageUtils.loginIM(CcqApp.getAppContext(),jiguang_name,jiguang_name);
+                                JmessageUtils.loginIM(CcqApp.getAppContext(), jiguang_name, jiguang_name);
                             }
                             //登录完成
-                            if (loginProgress!=null) {
+                            if (loginProgress != null) {
                                 loginProgress.dismiss();
                             }
                             finish();
@@ -208,10 +212,10 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
 
                     @Override
                     public void onFailure(Call<UserBean> call, Throwable t) {
-                        if (loginProgress!=null) {
+                        if (loginProgress != null) {
                             loginProgress.dismiss();
                         }
-                        Toasty.error(WXEntryActivity.this,t.getMessage(),Toast.LENGTH_LONG).show();
+                        Toasty.error(WXEntryActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
                         finish();
                     }
                 });
@@ -230,7 +234,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                 .enqueue(new Callback<WxUserInfo>() {
                     @Override
                     public void onResponse(Call<WxUserInfo> call, Response<WxUserInfo> response) {
-                        if (loginProgress!=null) {
+                        if (loginProgress != null) {
                             loginProgress.dismiss();
                         }
                         //跳转到绑定手机页面
@@ -248,7 +252,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
 
                     @Override
                     public void onFailure(Call<WxUserInfo> call, Throwable t) {
-                        Toasty.error(WXEntryActivity.this,t.getMessage(),Toast.LENGTH_LONG).show();
+                        Toasty.error(WXEntryActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
                         finish();
                     }
                 });

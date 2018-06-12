@@ -8,6 +8,12 @@ android {
             storeFile file('../chanchequan_android.jks')
             storePassword 'chanchequan'
         }
+        debug {
+            keyAlias 'chanchequan'
+            keyPassword 'chanchequan'
+            storeFile file('C:/CCQ-workspace/chanche_2018520/CCQ-App/chanchequan_android.jks')
+            storePassword 'chanchequan'
+        }
     }
     compileSdkVersion 26
     defaultConfig {
@@ -41,7 +47,7 @@ android {
             signingConfig signingConfigs.config
         }
         debug {
-            signingConfig signingConfigs.config
+            signingConfig signingConfigs.debug
         }
     }
     buildToolsVersion '27.0.3'
@@ -112,7 +118,5 @@ dependencies {
     //    implementation project(':imagepicker')
     implementation 'com.google.android:flexbox:0.2.6'
     implementation files('libs/jdom.jar')
-
     //implementation 'io.github.mayubao:pay_library:1.0.0'
-
 }

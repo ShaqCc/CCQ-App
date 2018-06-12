@@ -145,11 +145,13 @@
 
                 <com.ccq.app.weidget.MyGridView
                     android:id="@+id/gridview_photo_video"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:cacheColorHint="#00000000"
                     android:listSelector="#00000000"
                     android:numColumns="3"
+                    android:horizontalSpacing="3dp"
+                    android:verticalSpacing="3dp"
                     android:fadingEdgeLength="0dp"
                     android:layout_margin="@dimen/paddingSmall"
                     android:fadeScrollbars="false"

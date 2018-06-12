@@ -23,11 +23,11 @@ public class HeaderInterceptor implements Interceptor {
         builder.addHeader("Upgrade-Insecure-Requests", "1");
         builder.addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
 
-        builder.addHeader("user", "web");
-        builder.addHeader("pass", "web");
+        builder.addHeader("user", "app");
+        builder.addHeader("pass", "app");
         String stemp = String.valueOf(System.currentTimeMillis());
         builder.addHeader("time", stemp);
-        builder.addHeader("auth", getMd5("webweb" + stemp));
+        builder.addHeader("auth", getMd5("appapp" + stemp));
 
         return chain.proceed(builder.build());
     }

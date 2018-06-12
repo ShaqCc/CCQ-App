@@ -11,7 +11,6 @@
     <!-- Required -->
     <uses-permission android:name="com.ccq.app.permission.JPUSH_MESSAGE" />
     <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
-    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <!-- Optional. Required for location feature -->
@@ -31,6 +30,8 @@
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
 
     <application
         tools:replace="android:icon,android:theme"
@@ -73,7 +74,8 @@
         <activity android:name=".ui.user.EditPublishActivity" />
         <activity android:name=".ui.user.SetWechatQRActivity" />
         <activity android:name=".ui.user.OpenVipActivity" />
-        <activity android:name=".wxapi.WXPayEntryActivity" />
+        <activity android:name=".wxapi.WXPayEntryActivity"
+            android:exported="true"/>
 
     </application>
 

@@ -13,11 +13,12 @@ import com.ccq.app.http.ApiParams;
 
 public class Constants {
     public static String WX_APP_ID = "wx1a2af6a07fd055a2";
-    public static String WX_MCH_ID = "1351167601"; //微信商户号
-    public static String WX_APPSECRET = "9ab4beba012874e989a35cf2d79b54fa";
+    public static String WX_MCH_ID = "1505799371"; //微信商户号
+    public static String WX_APPSECRET = "6ab15d631852825bc373143c5a2283e7";
     public static String WX_STATE = "ccq_wx_login";
 
     public static String KEY_UNIONID = "key_unionid";
+    public static String KEY_OPEN_ID = "key_openid";
 
     public static String JIGUANG_APP_KEY = "eb9dced406535d33bd0f637e";
     public static String JIGUANG_SECRET = "4678823d3cb258fd2539579a";
@@ -42,6 +43,7 @@ public class Constants {
      */
     public static final String WX_PAY_CALLBACK_URL = ApiParams.BASEURL+"/weixin/notify";
 
+    public static int PHOTO_WIDTH = 82;
 
 
 

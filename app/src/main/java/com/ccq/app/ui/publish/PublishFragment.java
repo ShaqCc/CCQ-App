@@ -3,8 +3,6 @@ package com.ccq.app.ui.publish;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -38,11 +36,11 @@ import com.ccq.app.http.ProgressCallBack;
 import com.ccq.app.http.RetrofitClient;
 import com.ccq.app.service.LocationService;
 import com.ccq.app.utils.AppCache;
+import com.ccq.app.utils.DensityUtils;
 import com.ccq.app.utils.FileUtil;
 import com.ccq.app.utils.ToastUtils;
 import com.ccq.app.weidget.ListDialog;
 import com.ccq.app.weidget.MyGridView;
-
 import com.qiniu.android.jpush.utils.StringUtils;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
@@ -78,7 +76,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static android.app.Activity.RESULT_OK;
-import static com.ccq.app.ui.publish.CheckListAdapter.*;
+import static com.ccq.app.ui.publish.CheckListAdapter.ListItemClickListener;
 
 /****************************************
  * 功能说明:  发布
@@ -112,29 +110,29 @@ public class PublishFragment extends BaseFragment {
 
     Unbinder unbinder;
     @BindView(R.id.gridview_photo_video)
-    MyGridView gridviewPhotoVideo;
+    MyGridView gridView;
     @BindView(R.id.scrollView_content)
     ScrollView scrollViewContent;
     private LocationService locationService;
 
     GridViewPhotoAdapter gridViewAdapter;
 
-    private ArrayList<String>  mMultiSelectPath = new ArrayList<>();
-    private ArrayList<String>  photoPath = new ArrayList<>();
-    private ArrayList<String>  videoPath = new ArrayList<>();
+    private ArrayList<String> mMultiSelectPath = new ArrayList<>();
+    private ArrayList<String> photoPath = new ArrayList<>();
+    private ArrayList<String> videoPath = new ArrayList<>();
     private List<String> carAgeList = new ArrayList<>();
     private AlertDialog alert;
     private CheckListAdapter checkListAdapter;
 
-    private LatLng point=null;//位置标记
+    private LatLng point = null;//位置标记
 
     private String selectCarAge;
-    private final int REQUEST_MAP_LOCATE_CODE = 1001 ;
-    private final int REQUEST_BRAND_MODEL_CODE = 1002 ;
-    private static final int RESULT_LOAD_IMAGE = 1003;
-    private static final int RESULT_LOAD_VIDEO = 1004;
+    public final int REQUEST_MAP_LOCATE_CODE = 1001;
+    public final int REQUEST_BRAND_MODEL_CODE = 1002;
+    public static final int RESULT_LOAD_IMAGE = 1003;
+    public static final int RESULT_LOAD_VIDEO = 1004;
 
-    private String locAddress="";
+    private String locAddress = "";
 
     private BrandBean brandBean = new BrandBean();
     private BrandModelBean brandModelBean = new BrandModelBean();
@@ -147,7 +145,9 @@ public class PublishFragment extends BaseFragment {
     private String videoids;
 
     private Car car;
-    private Map<String,String> imgInfoMap;
+    private Map<String, String> imgInfoMap;
+    private boolean isLocal;
+    private ChooseMediaAdapter mediaAdapter;
 
     @Override
     protected int inflateContentView() {
@@ -161,14 +161,27 @@ public class PublishFragment extends BaseFragment {
 
     @Override
     protected void initView(View rootView) {
+        car = (Car) get().getIntent().getSerializableExtra("bean");
+        if (car!=null) {
+            //修改的
+            isLocal = false;
+            initCarInfo();
+        } else {
+            //发布的
+            isLocal = true;
+//            setGridViewAdapter(isLocal);
+            //init GridView
+            initGridView();
+        }
+        //图片选择配置
         setImageSetting();
-        setGridViewAdapter(true);
-        if(AppCache.getUserBean()!=null) etUserPhone.setText(AppCache.getUserBean().getMobile());
+        //手机号
+        if (AppCache.getUserBean() != null) etUserPhone.setText(AppCache.getUserBean().getMobile());
 
-        gridviewPhotoVideo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(position == mMultiSelectPath.size()){
+                if (position == mMultiSelectPath.size()) {
                     //选照片
 //                    Intent intentPic = new Intent(
 //                            Intent.ACTION_GET_CONTENT);
@@ -176,11 +189,10 @@ public class PublishFragment extends BaseFragment {
 //                    intentPic.setType("image/*");
 //                    startActivityForResult(intentPic,
 //                            RESULT_LOAD_IMAGE);
-
                     Intent intent = new Intent(get(), ImageGridActivity.class);
                     startActivityForResult(intent, RESULT_LOAD_IMAGE);
 
-                }else if(position == mMultiSelectPath.size() +1){
+                } else if (position == mMultiSelectPath.size() + 1) {
                     //视频
                     Intent intentPic = new Intent(
                             Intent.ACTION_GET_CONTENT);
@@ -188,26 +200,33 @@ public class PublishFragment extends BaseFragment {
                     intentPic.setType("video/*");
                     startActivityForResult(intentPic,
                             RESULT_LOAD_VIDEO);
-                 }else {
+                } else {
                     //显示图片
 
 
                 }
             }
         });
-     }
+    }
+
+    /**
+     * 初始化列表
+     */
+    private void initGridView() {
+        gridView.setColumnWidth(DensityUtils.dp2px(get(), 82));
+        mediaAdapter = new ChooseMediaAdapter(new ArrayList<String>() , get());
+        gridView.setAdapter(mediaAdapter);
+    }
 
     @Override
     public void initData() {
         apiService = RetrofitClient.getInstance().getApiService();
-        car = (Car) get().getIntent().getSerializableExtra("bean");
         getBDlocation();
         getNianFen();
-        initCarInfo();
     }
 
     private void initCarInfo() {
-        if(car !=null){
+        if (car != null) {
 //            map.put("address",btnCarLocation.getText().toString());
 //            map.put("content",etDescription.getText().toString());
 //            map.put("imglist",TextUtils.isEmpty(imgids)?"":imgids);
@@ -223,11 +242,11 @@ public class PublishFragment extends BaseFragment {
 
             btnCarLocation.setText(car.getAddress());
             etDescription.setText(car.getContent());
-            if(!TextUtils.isEmpty(car.getLatitude()) && !TextUtils.isEmpty(car.getLongitude())){
-                point = new LatLng(Double.parseDouble(car.getLatitude()),Double.parseDouble(car.getLongitude()));
+            if (!TextUtils.isEmpty(car.getLatitude()) && !TextUtils.isEmpty(car.getLongitude())) {
+                point = new LatLng(Double.parseDouble(car.getLatitude()), Double.parseDouble(car.getLongitude()));
             }
 
-            btnBandModel.setText(car.getBrandName()+car.getNumberName());
+            btnBandModel.setText(car.getBrandName() + car.getNumberName());
             etUserPhone.setText(car.getPhone());
             etCarPrice.setText(String.valueOf(car.getPrice()));
             btnCarAge.setText(String.valueOf(car.getYear()));
@@ -241,30 +260,28 @@ public class PublishFragment extends BaseFragment {
             String[] imageIds = car.getPic().split(",");
             imgInfoMap = new HashMap<>();
 
-            if(imgBeans!=null){
+            if (imgBeans != null) {
 
-                for (int i=0; i<imgBeans.size();i++){
+                for (int i = 0; i < imgBeans.size(); i++) {
                     Car.PicImgBean img = imgBeans.get(i);
                     mMultiSelectPath.add(img.getSavename());
-                    imgInfoMap.put(img.getSavename(),img.getId());
+                    imgInfoMap.put(img.getSavename(), img.getId());
                 }
 
             }
 
-            if(videoBeans!=null){
-                for (int i=0; i<videoBeans.size();i++){
+            if (videoBeans != null) {
+                for (int i = 0; i < videoBeans.size(); i++) {
                     Car.VideoBean video = videoBeans.get(i);
                     mMultiSelectPath.add(video.getOsspath());
-                    imgInfoMap.put(video.getOsspath(),video.getId());
+                    imgInfoMap.put(video.getOsspath(), video.getId());
                 }
             }
-
             setGridViewAdapter(false);
-
         }
     }
 
-    public void initYearList(){
+    public void initYearList() {
         checkListAdapter = new CheckListAdapter(getActivity(), carAgeList);
     }
 
@@ -313,19 +330,19 @@ public class PublishFragment extends BaseFragment {
     /**
      * 检查是否登录，和 今日是否可上报（最多3次）
      */
-    private void sendCheck(){
-        if(AppCache.getUserBean()==null){
-            ToastUtils.show(get(),"请先登录");
-            return ;
+    private void sendCheck() {
+        if (AppCache.getUserBean() == null) {
+            ToastUtils.show(get(), "请先登录");
+            return;
         }
 
         apiService.sendCheck(AppCache.getUserBean().getUserid()).enqueue(new Callback<Object>() {
             @Override
             public void onResponse(Call<Object> call, Response<Object> response) {
-                Map<String,Object> map = (Map<String, Object>) response.body();
-                if(0.0== (Double)map.get("code")) {
+                Map<String, Object> map = (Map<String, Object>) response.body();
+                if (0.0 == (Double) map.get("code")) {
                     uploadFile();
-                }else{
+                } else {
                     ToastUtils.show(get(), (String) map.get("message"));
                 }
             }
@@ -338,34 +355,34 @@ public class PublishFragment extends BaseFragment {
 
     }
 
-    private void uploadFile(){
+    private void uploadFile() {
 
-        if(!validate()){
-            return ;
+        if (!validate()) {
+            return;
         }
 
         Observable.create(
                 new ObservableOnSubscribe<Boolean>() {
                     @Override
                     public void subscribe(final ObservableEmitter<Boolean> emitter) throws Exception {
-                        if (!emitter.isDisposed()){
-                            try{
+                        if (!emitter.isDisposed()) {
+                            try {
                                 //访问网络操作
-                                if(photoPath!=null && photoPath.size()>0){
-                                    for (String path: photoPath){
+                                if (photoPath != null && photoPath.size() > 0) {
+                                    for (String path : photoPath) {
                                         uploadImg(path);
                                     }
                                 }
 
-                                if(videoPath!=null && videoPath.size() >0){
-                                    for (String path: videoPath){
+                                if (videoPath != null && videoPath.size() > 0) {
+                                    for (String path : videoPath) {
                                         uploadVideo(path);
                                     }
                                 }
                                 emitter.onNext(true);
                                 emitter.onComplete();
 
-                            }catch (IOException ioe){
+                            } catch (IOException ioe) {
                                 emitter.onError(ioe);
                             }
 
@@ -378,15 +395,15 @@ public class PublishFragment extends BaseFragment {
 
                     @Override
                     public void onSubscribe(Disposable d) {
-                        if(d.isDisposed()){
+                        if (d.isDisposed()) {
                         }
                     }
 
                     @Override
                     public void onNext(Boolean boo) {
-                        if(boo){
-                            imgids = StringUtils.join(imgidList.toArray(new String[imgidList.size()]),",");
-                            videoids = StringUtils.join(videoidList.toArray(new String[videoidList.size()]),",");
+                        if (boo) {
+                            imgids = StringUtils.join(imgidList.toArray(new String[imgidList.size()]), ",");
+                            videoids = StringUtils.join(videoidList.toArray(new String[videoidList.size()]), ",");
                         }
                     }
 
@@ -418,14 +435,14 @@ public class PublishFragment extends BaseFragment {
 //        submitData();
     }
 
-    private void getNianFen(){
+    private void getNianFen() {
         apiService.getCarNianFenList().enqueue(new Callback<List<Object>>() {
             @Override
             public void onResponse(Call<List<Object>> call, Response<List<Object>> response) {
-                if(response!=null && response.body()!=null){
+                if (response != null && response.body() != null) {
                     List<Object> list = response.body();
-                    if(list.size()>0){
-                        for (Object obj : list){
+                    if (list.size() > 0) {
+                        for (Object obj : list) {
                             com.google.gson.jpush.JsonObject returnData = new com.google.gson.jpush.JsonParser().parse(obj.toString()).getAsJsonObject();
                             String year = returnData.get("name").getAsString();
                             carAgeList.add(year);
@@ -449,132 +466,129 @@ public class PublishFragment extends BaseFragment {
         MultipartBody.Part body = MultipartBody.Part.createFormData("filename", file.getName(), requestFile);
 
         Call<Object> result = apiService.uploadImages(body);
-            Response<Object> response = result.execute();
-            Map<String,Object> map = (Map<String, Object>) response.body();
-            if(0.0== (Double)map.get("code")) {
-                imgidList.add(String.valueOf(map.get("imageid")));
-            }
+        Response<Object> response = result.execute();
+        Map<String, Object> map = (Map<String, Object>) response.body();
+        if (0.0 == (Double) map.get("code")) {
+            imgidList.add(String.valueOf(map.get("imageid")));
+        }
 
     }
 
-    private void  uploadVideo(String path) throws IOException{
+    private void uploadVideo(String path) throws IOException {
         File file = new File(path);
         RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-        MultipartBody.Part body  = MultipartBody.Part.createFormData("filename", file.getName(), requestFile);
+        MultipartBody.Part body = MultipartBody.Part.createFormData("filename", file.getName(), requestFile);
 
         Call<Object> result = apiService.uploadVideos(body);
-            Response<Object> response = result.execute();
-            Map<String,Object> map = (Map<String, Object>) response.body();
-            if(0.0== (Double)map.get("code")) {
-                videoidList.add(String.valueOf(map.get("imageid")));
-            }
+        Response<Object> response = result.execute();
+        Map<String, Object> map = (Map<String, Object>) response.body();
+        if (0.0 == (Double) map.get("code")) {
+            videoidList.add(String.valueOf(map.get("imageid")));
+        }
     }
 
-    private boolean validate(){
-        if(brandModelBean==null){
-            ToastUtils.show(get(),"请选择品牌型号");
+    private boolean validate() {
+        if (brandModelBean == null) {
+            ToastUtils.show(get(), "请选择品牌型号");
             return false;
         }
-        if(TextUtils.isEmpty(btnCarAge.getText())){
-            ToastUtils.show(get(),"请选择车龄");
+        if (TextUtils.isEmpty(btnCarAge.getText())) {
+            ToastUtils.show(get(), "请选择车龄");
             return false;
         }
-        if(TextUtils.isEmpty(etUserPhone.getText())){
-            ToastUtils.show(get(),"请输入手机号码");
+        if (TextUtils.isEmpty(etUserPhone.getText())) {
+            ToastUtils.show(get(), "请输入手机号码");
             return false;
         }
-        if(mMultiSelectPath == null || mMultiSelectPath.size()< 4 ||mMultiSelectPath.size()>18){
-            ToastUtils.show(get(),"请上传4-18张图片");
+        if (mMultiSelectPath == null || mMultiSelectPath.size() < 4 || mMultiSelectPath.size() > 18) {
+            ToastUtils.show(get(), "请上传4-18张图片");
             return false;
         }
         return true;
     }
 
-    private void submitData(){
-        HashMap<String,Object> map = new HashMap<>();
-        map.put("address",btnCarLocation.getText().toString());
-        map.put("content",etDescription.getText().toString());
-        map.put("imglist",TextUtils.isEmpty(imgids)?"":imgids);
-        map.put("videolist",TextUtils.isEmpty(videoids)?"":videoids);
-        map.put("latitude",String.valueOf(point.latitude));
-        map.put("longitude",String.valueOf(point.longitude));
-        map.put("number",brandModelBean.getId());
-        map.put("phone",etUserPhone.getText().toString());
-        map.put("pinpai",brandBean.getId());
-        map.put("price",etCarPrice.getText().toString());
-        map.put("userid",AppCache.getUserBean().getUserid());
-        map.put("year",btnCarAge.getText().toString());
+    private void submitData() {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("address", btnCarLocation.getText().toString());
+        map.put("content", etDescription.getText().toString());
+        map.put("imglist", TextUtils.isEmpty(imgids) ? "" : imgids);
+        map.put("videolist", TextUtils.isEmpty(videoids) ? "" : videoids);
+        map.put("latitude", String.valueOf(point.latitude));
+        map.put("longitude", String.valueOf(point.longitude));
+        map.put("number", brandModelBean.getId());
+        map.put("phone", etUserPhone.getText().toString());
+        map.put("pinpai", brandBean.getId());
+        map.put("price", etCarPrice.getText().toString());
+        map.put("userid", AppCache.getUserBean().getUserid());
+        map.put("year", btnCarAge.getText().toString());
 
         apiService.addCarInfo(map).enqueue(new Callback<Object>() {
             @Override
             public void onResponse(Call<Object> call, Response<Object> response) {
-                Map<String,Object> map = (Map<String, Object>) response.body();
+                Map<String, Object> map = (Map<String, Object>) response.body();
                 String message = (String) map.get("message");
-                if(0.0 == (Double) map.get("code")) {
+                if (0.0 == (Double) map.get("code")) {
                     message = "发布成功";
                 }
-                ToastUtils.show(get(),message);
+                ToastUtils.show(get(), message);
             }
 
             @Override
             public void onFailure(Call<Object> call, Throwable t) {
-                if(t!=null){
-                    Log.e("sssss====",t.getCause().toString());
+                if (t != null) {
+                    Log.e("sssss====", t.getCause().toString());
                 }
             }
         });
 
     }
 
-    private void setGridViewAdapter(final boolean isFromLocal){
-        Bitmap bm = BitmapFactory.decodeResource(this.getResources(),R.drawable.icon_add_photo);
-        gridviewPhotoVideo.setColumnWidth( (int)(bm.getWidth()* 1.5));
-        gridviewPhotoVideo.setHorizontalSpacing(1);
-        gridviewPhotoVideo.setStretchMode(GridView.NO_STRETCH);
-        gridViewAdapter = new GridViewPhotoAdapter(getActivity(),mMultiSelectPath,bm.getWidth(),isFromLocal);
-        gridviewPhotoVideo.setAdapter(gridViewAdapter);
+    private void setGridViewAdapter(final boolean isFromLocal) {
+        gridView.setColumnWidth(DensityUtils.dp2px(get(), 82));
+        gridView.setStretchMode(GridView.NO_STRETCH);
+        gridViewAdapter = new GridViewPhotoAdapter(getActivity(), mMultiSelectPath, isFromLocal);
+        gridView.setAdapter(gridViewAdapter);
         gridViewAdapter.setDeleteItemClickListener(new GridViewPhotoAdapter.DeleteItemClickListener() {
             @Override
             public void onListItemClickListener(int position) {
                 //删除图片
                 String deletePath = mMultiSelectPath.get(position);
 
-                if(imgInfoMap.containsKey(deletePath)){
+                if (imgInfoMap.containsKey(deletePath)) {
                     deleteFileFromService(deletePath);
-                }else{
-                    if(photoPath.size()>0 && photoPath.contains(deletePath)){
+                } else {
+                    if (photoPath.size() > 0 && photoPath.contains(deletePath)) {
                         photoPath.remove(deletePath);
                     }
-                    if(videoPath.size()>0 && videoPath.contains(deletePath)){
+                    if (videoPath.size() > 0 && videoPath.contains(deletePath)) {
                         videoPath.remove(deletePath);
                     }
                     mMultiSelectPath.remove(deletePath);
                 }
-
-                setGridViewAdapter(isFromLocal);
+                gridViewAdapter.refresh(mMultiSelectPath,isLocal);
             }
         });
     }
 
 
-    private void deleteFileFromService(final String deletePath){
+    private void deleteFileFromService(final String deletePath) {
         Call<Object> call;
-        if(deletePath.endsWith("jpg") || deletePath.endsWith("jpeg")||deletePath.endsWith("png")||deletePath.endsWith("bmp")){
+        if (deletePath.endsWith("jpg") || deletePath.endsWith("jpeg") || deletePath.endsWith("png") || deletePath.endsWith("bmp")) {
             call = apiService.delCarImg(imgInfoMap.get(deletePath));
-        }else{
-            call = apiService.delCarVideo(AppCache.getUserBean().getUserid(),imgInfoMap.get(deletePath));
+        } else {
+            call = apiService.delCarVideo(AppCache.getUserBean().getUserid(), imgInfoMap.get(deletePath));
         }
-        HttpClient.getInstance(get()).sendRequest(call, new ProgressCallBack<Object>(get(),true,"正在删除") {
+        HttpClient.getInstance(get()).sendRequest(call, new ProgressCallBack<Object>(get(), true, "正在删除") {
             @Override
             protected void onSuccess(Object response) {
                 super.onSuccess(response);
-                if (response!=null){
-                    Map<String,Object> map = (Map<String, Object>) response;
-                    if(0.0 == (Double)map.get("code")){
-                        if(photoPath.size()>0 && photoPath.contains(deletePath)){
+                if (response != null) {
+                    Map<String, Object> map = (Map<String, Object>) response;
+                    if (0.0 == (Double) map.get("code")) {
+                        if (photoPath.size() > 0 && photoPath.contains(deletePath)) {
                             photoPath.remove(deletePath);
                         }
-                        if(videoPath.size()>0 && videoPath.contains(deletePath)){
+                        if (videoPath.size() > 0 && videoPath.contains(deletePath)) {
                             videoPath.remove(deletePath);
                         }
                         mMultiSelectPath.remove(deletePath);
@@ -585,7 +599,7 @@ public class PublishFragment extends BaseFragment {
             @Override
             protected void onFailure(Object response) {
                 super.onFailure(response);
-                ToastUtil.shortToast(get(),"删除失败");
+                ToastUtil.shortToast(get(), "删除失败");
             }
 
             @Override
@@ -595,15 +609,15 @@ public class PublishFragment extends BaseFragment {
         });
     }
 
-    public void showBrandSelectDialog(){
+    public void showBrandSelectDialog() {
 
         Intent intent = new Intent();
         intent.setClass(get(), BrandModelSelectActivity.class);
-        startActivityForResult(intent,REQUEST_BRAND_MODEL_CODE);
+        startActivityForResult(intent, REQUEST_BRAND_MODEL_CODE);
 
     }
 
-    public void getBDlocation(){
+    public void getBDlocation() {
         locationService = ((CcqApp) getActivity().getApplication()).locationService;
         //获取locationservice实例，建议应用中只初始化1个location实例，然后使用，可以参考其他示例的activity，都是通过此种方式获取locationservice实例的
         locationService.registerListener(mListener);
@@ -616,7 +630,7 @@ public class PublishFragment extends BaseFragment {
 
     @Override
     public void onStop() {
-        if(locationService!=null){
+        if (locationService != null) {
             locationService.unregisterListener(mListener); //注销掉监听
             locationService.stop(); //停止定位服务
         }
@@ -642,17 +656,17 @@ public class PublishFragment extends BaseFragment {
 
     };
 
-    private void selectLocationAtMap(){
+    private void selectLocationAtMap() {
         Intent intent = new Intent();
         intent.setClass(get(), BaseMapActivity.class);
-        if(point!=null){
-            intent.putExtra("latlng",point);
-            intent.putExtra("address",locAddress);
+        if (point != null) {
+            intent.putExtra("latlng", point);
+            intent.putExtra("address", locAddress);
         }
-        startActivityForResult(intent,REQUEST_MAP_LOCATE_CODE);
+        startActivityForResult(intent, REQUEST_MAP_LOCATE_CODE);
     }
 
-    private void showSelectDialog( ) {
+    private void showSelectDialog() {
         int selectPosition = carAgeList.indexOf(selectCarAge);
         final ListDialog mdialog = new ListDialog(get());
         alert = new AlertDialog.Builder(get()).create();
@@ -661,7 +675,7 @@ public class PublishFragment extends BaseFragment {
         checkListAdapter.setListItemClickListener(new ListItemClickListener() {
             @Override
             public void onListItemClickListener(int position) {
-                selectCarAge = carAgeList.get( position);
+                selectCarAge = carAgeList.get(position);
                 btnCarAge.setText(selectCarAge);
                 alert.dismiss();
             }
@@ -673,24 +687,24 @@ public class PublishFragment extends BaseFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if (resultCode == ImagePicker.RESULT_CODE_ITEMS) {
+        if (requestCode == RESULT_LOAD_IMAGE && resultCode == ImagePicker.RESULT_CODE_ITEMS) {
             ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
-            if(images!=null && images.size()>0){
-                for (ImageItem item : images){
+            if (images != null && images.size() > 0) {
+                for (ImageItem item : images) {
                     String path = item.path;
                     mMultiSelectPath.add(path);
                     photoPath.add(path);
                 }
-                setGridViewAdapter(true);
+                mediaAdapter.refresh(mMultiSelectPath);
             }
         }
 
         if (resultCode == RESULT_OK) {
-            switch (requestCode){
-                case  REQUEST_MAP_LOCATE_CODE:
-                    point=new LatLng(data.getDoubleExtra("latitude",0), data.getDoubleExtra("longitude",0));
-                    locAddress=data.getStringExtra("address");
-                    btnCarLocation.setText(TextUtils.isEmpty(locAddress)?"已标记":locAddress);
+            switch (requestCode) {
+                case REQUEST_MAP_LOCATE_CODE:
+                    point = new LatLng(data.getDoubleExtra("latitude", 0), data.getDoubleExtra("longitude", 0));
+                    locAddress = data.getStringExtra("address");
+                    btnCarLocation.setText(TextUtils.isEmpty(locAddress) ? "已标记" : locAddress);
                     break;
                 case REQUEST_BRAND_MODEL_CODE:
                     brandBean = (BrandBean) data.getSerializableExtra("brand");
@@ -699,25 +713,31 @@ public class PublishFragment extends BaseFragment {
                     break;
                 case RESULT_LOAD_IMAGE:
 
-                    try{
+                    try {
                         ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
-                    }catch(Exception e){
+                        if (images != null && images.size()>0) {
+                            for (int i = 0; i < images.size(); i++) {
+                                ImageItem imageItem = images.get(i);
+                                mMultiSelectPath.add(imageItem.path);
+                            }
+                            mediaAdapter.refresh(mMultiSelectPath);
+                        }
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
 
                     Uri photoUri = data.getData();
-                    String filename = FileUtil.getFileName(get(), photoUri);
                     String filepathtemp = FileUtil.getPath(get(), photoUri);
-                    mMultiSelectPath.add(filepathtemp.toString());
-                    photoPath.add(filepathtemp.toString());
-                    setGridViewAdapter(true);
+                    mMultiSelectPath.add(filepathtemp);
+                    photoPath.add(filepathtemp);
+                    gridViewAdapter.refresh(mMultiSelectPath,isLocal);
                     break;
                 case RESULT_LOAD_VIDEO:
                     Uri videoUri = data.getData();
                     String vPath = FileUtil.getPath(get(), videoUri);
-                    mMultiSelectPath.add(vPath.toString());
-                    videoPath.add(vPath.toString());
-                    setGridViewAdapter(true);
+                    mMultiSelectPath.add(vPath);
+                    videoPath.add(vPath);
+                    gridViewAdapter.refresh(mMultiSelectPath,isLocal);
                     break;
             }
         }
@@ -725,7 +745,7 @@ public class PublishFragment extends BaseFragment {
     }
 
 
-    private void setImageSetting(){
+    private void setImageSetting() {
         ImagePicker imagePicker = ImagePicker.getInstance();
         imagePicker.setImageLoader(new PicassoImageLoader());   //设置图片加载器
         imagePicker.setShowCamera(true);  //显示拍照按钮

@@ -1,8 +1,12 @@
 package com.ccq.app.ui;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
@@ -21,13 +25,11 @@ import com.ccq.app.ui.user.SetWechatQRActivity;
 import com.ccq.app.ui.user.UserFragment;
 import com.ccq.app.utils.AppCache;
 import com.ccq.app.utils.statusbar.StatusBarUtils;
-import com.ccq.app.weidget.Toasty;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import jiguang.chat.activity.fragment.ConversationListFragment;
 
 
 public class MainActivity extends BaseActivity<MainPresenter> implements MainView {
@@ -44,6 +46,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
     private MainFragmentAdapter mFragmentAdapter;
     private MessageFragment conversationListFragment;
 
+
     @Override
     protected int inflateContentView() {
         return R.layout.activity_main_ccp;
@@ -55,8 +58,26 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
         initViewPager();
         initNavigation();
         getToolBar().setVisibility(View.GONE);
-        StatusBarUtils.setStatusBarColor(this,getResources().getColor(R.color.colorPrimary));
+        StatusBarUtils.setStatusBarColor(this, getResources().getColor(R.color.colorPrimary));
+        //定位服务开启
+        prepareLocationService();
     }
+
+    private void prepareLocationService() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            String[] permissions = {
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.READ_PHONE_STATE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+            };
+
+            if (checkSelfPermission(permissions[0]) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(permissions, 0);
+            }
+        }
+    }
+
 
 
     private void initViewPager() {
