@@ -1,14 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:background="@color/white"
     style="@style/NavPage">
-    
+	<include layout="@layout/base_title_bar"/>
+	<ImageView
+		android:layout_width="100dp"
+		android:layout_marginTop="80dp"
+		android:layout_height="wrap_content"
+		android:src="@drawable/wepay_logo"/>
 	<TextView
-	    android:layout_width="fill_parent"
-	 	android:layout_height="fill_parent"
+		android:id="@+id/pay_result_tv"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
 		android:gravity="center"
-	 	android:textColor="#ff000000"
-	 	android:textSize="20dp"
-	 	android:text="这个界面用于显示第三方app通过微信支付的结果"/>
+		android:textSize="15sp"
+		android:textColor="#444"
+		android:text="等待支付结果中...."/>
+	<Button
+		android:id="@+id/btn_back"
+		android:background="@drawable/btn_style_one"
+		android:layout_width="match_parent"
+		android:layout_height="50dip"
+		android:textColor="@color/white"
+		android:layout_marginRight="@dimen/paddingSmall"
+		android:layout_marginLeft="@dimen/paddingSmall"
+		android:layout_marginBottom="@dimen/padding"
+		android:layout_marginTop="100dp"
+		android:gravity="center"
+		android:textSize="@dimen/LargeTextSize"
+		android:text="支付中..." />
 	
 </LinearLayout>
