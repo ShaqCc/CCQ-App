@@ -20,6 +20,10 @@ import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
+import org.greenrobot.eventbus.EventBus;
+
+import jiguang.chat.model.Constant;
+
 
 public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
 
@@ -42,10 +46,10 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
                 String text = btAction.getText().toString();
                 if (!TextUtils.isEmpty(text)) {
                     if (text.equals("返回")) {
-                        setResult(66);
+                        EventBus.getDefault().post(Constants.PAY_RESULT_SUCCESS);
                         finish();
                     } else if (text.equals("重新支付")) {
-                        setResult(-123);
+                        EventBus.getDefault().post(Constants.PAY_RESULT_CANCEL);
                         finish();
                     }
                 }
@@ -87,10 +91,6 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
                     break;
 
             }
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(R.string.app_tip);
-            builder.setMessage(getString(R.string.pay_result_callback_msg, String.valueOf(resp.errCode)));
-            builder.show();
         }
     }
 }

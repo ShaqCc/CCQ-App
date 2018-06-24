@@ -2,18 +2,18 @@ package com.ccq.app.ui.publish;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -35,6 +35,7 @@ import com.ccq.app.http.HttpClient;
 import com.ccq.app.http.ProgressCallBack;
 import com.ccq.app.http.RetrofitClient;
 import com.ccq.app.service.LocationService;
+import com.ccq.app.ui.MainActivity;
 import com.ccq.app.utils.AppCache;
 import com.ccq.app.utils.DensityUtils;
 import com.ccq.app.utils.FileUtil;
@@ -64,7 +65,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import jiguang.chat.utils.ToastUtil;
-import jiguang.chat.utils.imagepicker.ImageGridActivity;
 import jiguang.chat.utils.imagepicker.ImageLoader;
 import jiguang.chat.utils.imagepicker.ImagePicker;
 import jiguang.chat.utils.imagepicker.bean.ImageItem;
@@ -115,7 +115,7 @@ public class PublishFragment extends BaseFragment {
     ScrollView scrollViewContent;
     private LocationService locationService;
 
-    GridViewPhotoAdapter gridViewAdapter;
+//    GridViewPhotoAdapter gridViewAdapter;
 
     private ArrayList<String> mMultiSelectPath = new ArrayList<>();
     private ArrayList<String> photoPath = new ArrayList<>();
@@ -148,6 +148,8 @@ public class PublishFragment extends BaseFragment {
     private Map<String, String> imgInfoMap;
     private boolean isLocal;
     private ChooseMediaAdapter mediaAdapter;
+    private ProgressDialog loading;
+    private Handler mHandler = new Handler();
 
     @Override
     protected int inflateContentView() {
@@ -169,44 +171,12 @@ public class PublishFragment extends BaseFragment {
         } else {
             //发布的
             isLocal = true;
-//            setGridViewAdapter(isLocal);
-            //init GridView
             initGridView();
         }
         //图片选择配置
         setImageSetting();
         //手机号
         if (AppCache.getUserBean() != null) etUserPhone.setText(AppCache.getUserBean().getMobile());
-
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (position == mMultiSelectPath.size()) {
-                    //选照片
-//                    Intent intentPic = new Intent(
-//                            Intent.ACTION_GET_CONTENT);
-//                    intentPic.addCategory(Intent.CATEGORY_OPENABLE);
-//                    intentPic.setType("image/*");
-//                    startActivityForResult(intentPic,
-//                            RESULT_LOAD_IMAGE);
-                    Intent intent = new Intent(get(), ImageGridActivity.class);
-                    startActivityForResult(intent, RESULT_LOAD_IMAGE);
-
-                } else if (position == mMultiSelectPath.size() + 1) {
-                    //视频
-                    Intent intentPic = new Intent(
-                            Intent.ACTION_GET_CONTENT);
-                    intentPic.addCategory(Intent.CATEGORY_OPENABLE);
-                    intentPic.setType("video/*");
-                    startActivityForResult(intentPic,
-                            RESULT_LOAD_VIDEO);
-                } else {
-                    //显示图片
-
-
-                }
-            }
-        });
     }
 
     /**
@@ -227,19 +197,6 @@ public class PublishFragment extends BaseFragment {
 
     private void initCarInfo() {
         if (car != null) {
-//            map.put("address",btnCarLocation.getText().toString());
-//            map.put("content",etDescription.getText().toString());
-//            map.put("imglist",TextUtils.isEmpty(imgids)?"":imgids);
-//            map.put("videolist",TextUtils.isEmpty(videoids)?"":videoids);
-//            map.put("latitude",point.latitude);
-//            map.put("longitude",point.longitude);
-//            map.put("number",brandModelBean.getId());
-//            map.put("phone",etUserPhone.getText().toString());
-//            map.put("pinpai",brandBean.getId());
-//            map.put("price",etCarPrice.getText().toString());
-//            map.put("userid",AppCache.getUserBean().getUserid());
-//            map.put("year",btnCarAge.getText().toString());
-
             btnCarLocation.setText(car.getAddress());
             etDescription.setText(car.getContent());
             if (!TextUtils.isEmpty(car.getLatitude()) && !TextUtils.isEmpty(car.getLongitude())) {
@@ -277,7 +234,6 @@ public class PublishFragment extends BaseFragment {
                     imgInfoMap.put(video.getOsspath(), video.getId());
                 }
             }
-            setGridViewAdapter(false);
         }
     }
 
@@ -322,6 +278,9 @@ public class PublishFragment extends BaseFragment {
                 tvFold.setVisibility(View.GONE);
                 break;
             case R.id.btn_submit:
+                loading = new ProgressDialog(get());
+                loading.setMessage("图片上传中...");
+                loading.show();
                 sendCheck();
                 break;
         }
@@ -416,23 +375,7 @@ public class PublishFragment extends BaseFragment {
                         submitData();
                     }
                 });
-//
-//        if(photoPath!=null && photoPath.size()>0){
-//            for (String path: photoPath){
-//                uploadImg(path);
-//            }
-//        }
-//
-//        if(videoPath!=null && videoPath.size() >0){
-//            for (String path: videoPath){
-//                uploadVideo(path);
-//            }
-//        }
-//
-//        imgids = StringUtils.join(imgidList.toArray(new String[imgidList.size()]),",");
-//        videoids = StringUtils.join(videoidList.toArray(new String[videoidList.size()]),",");
-//
-//        submitData();
+
     }
 
     private void getNianFen() {
@@ -530,11 +473,17 @@ public class PublishFragment extends BaseFragment {
                 if (0.0 == (Double) map.get("code")) {
                     message = "发布成功";
                 }
+                dismissLoading();
                 ToastUtils.show(get(), message);
+                //重置页面
+                reset();
+                //跳转到首页
+                ((MainActivity)getActivity()).setCurrentTab(0);
             }
 
             @Override
             public void onFailure(Call<Object> call, Throwable t) {
+                dismissLoading();
                 if (t != null) {
                     Log.e("sssss====", t.getCause().toString());
                 }
@@ -543,31 +492,28 @@ public class PublishFragment extends BaseFragment {
 
     }
 
-    private void setGridViewAdapter(final boolean isFromLocal) {
-        gridView.setColumnWidth(DensityUtils.dp2px(get(), 82));
-        gridView.setStretchMode(GridView.NO_STRETCH);
-        gridViewAdapter = new GridViewPhotoAdapter(getActivity(), mMultiSelectPath, isFromLocal);
-        gridView.setAdapter(gridViewAdapter);
-        gridViewAdapter.setDeleteItemClickListener(new GridViewPhotoAdapter.DeleteItemClickListener() {
+    private void dismissLoading() {
+        mHandler.post(new Runnable() {
             @Override
-            public void onListItemClickListener(int position) {
-                //删除图片
-                String deletePath = mMultiSelectPath.get(position);
-
-                if (imgInfoMap.containsKey(deletePath)) {
-                    deleteFileFromService(deletePath);
-                } else {
-                    if (photoPath.size() > 0 && photoPath.contains(deletePath)) {
-                        photoPath.remove(deletePath);
-                    }
-                    if (videoPath.size() > 0 && videoPath.contains(deletePath)) {
-                        videoPath.remove(deletePath);
-                    }
-                    mMultiSelectPath.remove(deletePath);
+            public void run() {
+                if (loading!=null && loading.isShowing()) {
+                    loading.dismiss();
                 }
-                gridViewAdapter.refresh(mMultiSelectPath,isLocal);
             }
         });
+    }
+
+    /**
+     * 重置页面
+     */
+    private void reset() {
+        btnBandModel.setText("");
+        btnCarAge.setText("");
+        etCarPrice.setText("");
+        mMultiSelectPath.clear();
+        photoPath.clear();
+        videoPath.clear();
+        mediaAdapter.refresh(mMultiSelectPath);
     }
 
 
@@ -686,7 +632,7 @@ public class PublishFragment extends BaseFragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
+        super.onActivityResult(requestCode,resultCode,data);
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == ImagePicker.RESULT_CODE_ITEMS) {
             ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
             if (images != null && images.size() > 0) {
@@ -697,6 +643,12 @@ public class PublishFragment extends BaseFragment {
                 }
                 mediaAdapter.refresh(mMultiSelectPath);
             }
+        } else if (requestCode == RESULT_LOAD_VIDEO && resultCode == RESULT_OK){
+            Uri videoUri = data.getData();
+            String vPath = FileUtil.getPath(get(), videoUri);
+            mMultiSelectPath.add(vPath);
+            videoPath.add(vPath);
+            mediaAdapter.refresh(mMultiSelectPath);
         }
 
         if (resultCode == RESULT_OK) {
@@ -710,34 +662,6 @@ public class PublishFragment extends BaseFragment {
                     brandBean = (BrandBean) data.getSerializableExtra("brand");
                     brandModelBean = (BrandModelBean) data.getSerializableExtra("model");
                     btnBandModel.setText(brandBean.getName() + "  " + brandModelBean.getName());
-                    break;
-                case RESULT_LOAD_IMAGE:
-
-                    try {
-                        ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
-                        if (images != null && images.size()>0) {
-                            for (int i = 0; i < images.size(); i++) {
-                                ImageItem imageItem = images.get(i);
-                                mMultiSelectPath.add(imageItem.path);
-                            }
-                            mediaAdapter.refresh(mMultiSelectPath);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                    Uri photoUri = data.getData();
-                    String filepathtemp = FileUtil.getPath(get(), photoUri);
-                    mMultiSelectPath.add(filepathtemp);
-                    photoPath.add(filepathtemp);
-                    gridViewAdapter.refresh(mMultiSelectPath,isLocal);
-                    break;
-                case RESULT_LOAD_VIDEO:
-                    Uri videoUri = data.getData();
-                    String vPath = FileUtil.getPath(get(), videoUri);
-                    mMultiSelectPath.add(vPath);
-                    videoPath.add(vPath);
-                    gridViewAdapter.refresh(mMultiSelectPath,isLocal);
                     break;
             }
         }
@@ -790,23 +714,6 @@ public class PublishFragment extends BaseFragment {
 }
 
 class PicassoImageLoader implements ImageLoader {
-
-//    @Override
-//    public void displayImage(Activity activity, String path, ImageView imageView, int width, int height) {
-//        Picasso.with(activity)//
-//                .load(Uri.fromFile(new File(path)))//
-//                .placeholder(R.mipmap.default_image)//
-//                .error(R.mipmap.default_image)//
-//                .resize(width, height)//
-//                .centerInside()//
-//                .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)//
-//                .into(imageView);
-//    }
-//
-//    @Override
-//    public void displayImagePreview(Activity activity, String path, ImageView imageView, int width, int height) {
-//
-//    }
 
     @Override
     public void displayImages(Activity activity, String path, ImageView imageView, int width, int height) {

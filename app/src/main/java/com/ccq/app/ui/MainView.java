@@ -1,5 +1,7 @@
 package com.ccq.app.ui;
 
+import android.app.Activity;
+
 /****************************************
  * 功能说明:  
  *
@@ -7,5 +9,5 @@ package com.ccq.app.ui;
  ****************************************/
 
 public interface MainView {
-
+    Activity get();
 }

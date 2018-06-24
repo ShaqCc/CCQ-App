@@ -1,14 +1,11 @@
 package com.ccq.app.ui.user;
 
-import android.graphics.Path;
-import android.os.AsyncTask;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
-import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.text.Html;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -24,28 +21,23 @@ import com.ccq.app.http.ProgressCallBack;
 import com.ccq.app.http.RetrofitClient;
 import com.ccq.app.utils.AppCache;
 import com.ccq.app.utils.Constants;
-import com.ccq.app.utils.PayCommonUtil;
 import com.ccq.app.utils.SharedPreferencesUtils;
 import com.ccq.app.utils.SystemUtil;
-import com.ccq.app.utils.Utils;
+import com.ccq.app.weidget.Toasty;
 import com.tencent.mm.opensdk.constants.Build;
 import com.tencent.mm.opensdk.modelpay.PayReq;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
-import org.jdom.JDOMException;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import jiguang.chat.model.Constant;
+import jiguang.chat.entity.Event;
 import jiguang.chat.utils.ToastUtil;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -103,6 +95,8 @@ public class OpenVipActivity extends BaseActivity {
         getMonthPayInfo("12");
         month = "12";
         api = WXAPIFactory.createWXAPI(this, Constants.WX_APP_ID);
+
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -157,13 +151,25 @@ public class OpenVipActivity extends BaseActivity {
         }
     }
 
+    @Subscribe
+    public void onPayResult(Integer code){
+        if (code == Constants.PAY_RESULT_SUCCESS) {
+            finish();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
     private void checkIsSupportPay() {
         boolean isPaySupported = api.getWXAppSupportAPI() >= Build.PAY_SUPPORTED_SDK_INT;
         if (!isPaySupported) {
             ToastUtil.shortToast(OpenVipActivity.this, "版本过低，不支持微信支付");
         } else {
             pay();
-//            sendPayInfo();
         }
 
     }
@@ -206,117 +212,6 @@ public class OpenVipActivity extends BaseActivity {
                         t.printStackTrace();
                     }
                 });
-    }
-
-
-    private void sendPayInfo() {
-
-        JSONObject signParams = new JSONObject();
-        try {
-            signParams.put("appid", Constants.WX_APP_ID);
-            signParams.put("mch_id", Constants.WX_MCH_ID);
-            signParams.put("nonce_str", Utils.getRandomString(30));
-            signParams.put("body", "铲车圈-会员充值");
-            signParams.put("out_trade_no", String.valueOf(System.currentTimeMillis()));
-            signParams.put("total_fee", "0.01");
-            signParams.put("spbill_create_ip", SystemUtil.getLocalIpAddress(OpenVipActivity.this));
-            signParams.put("notify_url", Constants.WX_PAY_CALLBACK_URL);
-            signParams.put("trade_type", "APP");
-
-            signParams.put("sign", Utils.createSign(signParams));
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        SortedMap<String, Object> parameterMap = new TreeMap<String, Object>();
-        parameterMap.put("appid", Constants.WX_APP_ID);
-        parameterMap.put("mch_id", Constants.WX_MCH_ID);
-        parameterMap.put("nonce_str", PayCommonUtil.getRandomString(32));
-        parameterMap.put("spbill_create_ip", SystemUtil.getLocalIpAddress(this));
-        parameterMap.put("out_trade_no", "ccq" + System.currentTimeMillis());
-        parameterMap.put("total_fee", "100");
-        parameterMap.put("body", "ccq_vip_recharge");
-        parameterMap.put("trade_type", "APP");
-        parameterMap.put("notify_url", Constants.WX_PAY_CALLBACK_URL);
-        String sign = PayCommonUtil.createSign(parameterMap);
-        parameterMap.put("sign", sign);
-        String requestXML = PayCommonUtil.getRequestXml(parameterMap);
-        System.out.println(requestXML);
-        new sendYZMTask(requestXML, parameterMap).execute();
-
-    }
-
-
-    class sendYZMTask extends AsyncTask<String, Integer, String> {
-
-        private String requestXML;
-        private Map<String, Object> params;
-
-        public sendYZMTask(String requestXML, SortedMap<String, Object> parameterMap) {
-            this.requestXML = requestXML;
-            this.params = parameterMap;
-        }
-
-        @Override
-        protected void onPreExecute() {
-
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            try {
-                String result = PayCommonUtil.httpsRequest(
-                        "https://api.mch.weixin.qq.com/pay/unifiedorder", "POST",
-                        requestXML);
-                return result;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            Log.e("---------------", result);
-            Map<String, String> map = null;
-            try {
-                map = PayCommonUtil.doXMLParse(result);
-
-                PayReq request = new PayReq();
-                TreeMap<String, Object> treeMap = new TreeMap<>();
-
-                treeMap.put("appid", Constants.WX_APP_ID);
-                treeMap.put("partnerid", Constants.WX_MCH_ID);
-                treeMap.put("prepayid", map.get("prepay_id"));
-                treeMap.put("noncestr", PayCommonUtil.getRandomString(32));
-                treeMap.put("package", "Sign=WXPay");
-                long l = System.currentTimeMillis();
-                treeMap.put("timeStamp", String.valueOf(l / 1000));
-                String sign = PayCommonUtil.createSign(treeMap);
-
-                request.appId = Constants.WX_APP_ID;
-
-                request.partnerId = Constants.WX_MCH_ID;
-
-                request.prepayId = map.get("prepay_id");
-
-                request.packageValue = "Sign=WXPay";
-
-                request.nonceStr = String.valueOf(treeMap.get("noncestr"));
-
-                request.timeStamp = String.valueOf(treeMap.get("timeStamp"));
-
-                request.sign = sign;
-
-                CcqApp.getWxApi().sendReq(request);
-            } catch (JDOMException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        }
     }
 
 

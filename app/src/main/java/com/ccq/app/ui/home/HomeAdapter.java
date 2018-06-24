@@ -3,6 +3,7 @@ package com.ccq.app.ui.home;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Rect;
+import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
@@ -12,18 +13,21 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.ccq.app.R;
 import com.ccq.app.base.CcqApp;
 import com.ccq.app.entity.Car;
 import com.ccq.app.ui.message.SingleChatActivity;
+import com.ccq.app.ui.reprot.ReportCarActivity;
 import com.ccq.app.ui.user.LoginActivity;
 import com.ccq.app.utils.AppCache;
 import com.ccq.app.utils.DensityUtils;
 import com.ccq.app.utils.JmessageUtils;
 import com.ccq.app.utils.Utils;
 import com.ccq.app.weidget.MyGridView;
+import com.ccq.app.weidget.Toasty;
 import com.previewlibrary.PhotoActivity;
 
 import java.util.List;
@@ -53,7 +57,7 @@ import me.drakeet.materialdialog.MaterialDialog;
  *
  **************************************************/
 
-public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickListener{
+public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickListener {
 
     private final int ITEM_COMMON = 1;
     private final int ITEM_FOOTER = 2;
@@ -78,7 +82,6 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
     }
 
 
-
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         context = (Activity) parent.getContext();
@@ -99,7 +102,7 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
 
             case ITEM_COMMON:
                 final CarHolder carHolder = (CarHolder) holder;
-                Car carBean = carList.get(position);
+                final Car carBean = carList.get(position);
                 //头像
                 Glide.with(context).load(carBean.getUserInfo().getHeadimgurl())
                         .placeholder(R.mipmap.ic_default_thumb).into(carHolder.itemIvHeader);
@@ -160,8 +163,37 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
                 carHolder.itemTvCall.setOnClickListener(this);
                 carHolder.itemTvCall.setTag(carBean);
                 carHolder.ivMoments.setOnClickListener(this);
+                carHolder.ivTip.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (isShowJubao) {
+                            carHolder.btJubao.setVisibility(View.GONE);
+                        } else {
+                            carHolder.btJubao.setVisibility(View.VISIBLE);
+                        }
+                        isShowJubao = !isShowJubao;
+                    }
+                });
+                carHolder.btJubao.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //举报
+                        if (AppCache.getUserBean() == null || TextUtils.isEmpty(AppCache.getUserBean().getUserid())) {
+                            Toasty.info(context, "请先登录", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Intent intent = new Intent();
+                            intent.setClass(context, ReportCarActivity.class);
+                            intent.putExtra("car", carBean);
+                            context.startActivity(intent);
+                        }
+                    }
+                });
                 break;
         }
+    }
+
+    private void jubao(Car carBean) {
+
     }
 
 
@@ -176,19 +208,19 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
                     Utils.call(context, car.getPhone());
                 break;
             case R.id.item_tv_message:
-                if(AppCache.getUserBean()==null){
+                if (AppCache.getUserBean() == null) {
                     context.startActivity(new Intent(context, LoginActivity.class));
                     return;
                 }
                 UserInfo myInfo = JMessageClient.getMyInfo();
-                if(myInfo==null){
-                    ToastUtil.shortToast(context,"IM未登录");
+                if (myInfo == null) {
+                    ToastUtil.shortToast(context, "IM未登录");
                     JmessageUtils.registerIM(AppCache.getUserBean());
                     return;
                 }
                 String userName = car.getUserInfo().getJiguang_name();
-                if(TextUtils.isEmpty(userName)){
-                    ToastUtil.shortToast(context,"该用户未注册IM聊天系统");
+                if (TextUtils.isEmpty(userName)) {
+                    ToastUtil.shortToast(context, "该用户未注册IM聊天系统");
                     return;
                 }
 //                mTargetId = intent.getStringExtra(TARGET_ID);
@@ -206,7 +238,7 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
                 Conversation conv = JMessageClient.getSingleConversation(userName, CcqApp.jmappkey);
                 //如果会话为空，使用EventBus通知会话列表添加新会话
                 if (conv == null) {
-                    conv = Conversation.createSingleConversation(userName,  CcqApp.jmappkey);
+                    conv = Conversation.createSingleConversation(userName, CcqApp.jmappkey);
                     EventBus.getDefault().post(new Event.Builder()
                             .setType(EventType.createConversation)
                             .setConversation(conv)
@@ -225,17 +257,10 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
                         });
                 dialog.show();
                 break;
-            case R.id.item_car_iv_tip:
-                //todo
-                break;
         }
     }
 
-
-
-    public interface OnFilterListener {
-        void onFilter();
-    }
+    private boolean isShowJubao = false;
 
     private void computeBoundsBackward(MyGridView gridView) {
         PictureAdapter adapter = (PictureAdapter) gridView.getAdapter();
@@ -259,7 +284,7 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
 
     @Override
     public int getItemViewType(int position) {
-        if (position+1 == getItemCount())
+        if (position + 1 == getItemCount())
             return ITEM_FOOTER;
 
         else return ITEM_COMMON;
@@ -289,6 +314,10 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
         TextView itemTvMessage;
         @BindView(R.id.item_car_iv_moments)
         ImageView ivMoments;
+        @BindView(R.id.item_car_info_tv_jubao)
+        TextView btJubao;
+        @BindView(R.id.item_car_iv_tip)
+        ImageView ivTip;
 
         CarHolder(View itemView) {
             super(itemView);

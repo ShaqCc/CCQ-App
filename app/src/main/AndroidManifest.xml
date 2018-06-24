@@ -76,6 +76,7 @@
         <activity android:name=".ui.user.OpenVipActivity" />
         <activity android:name=".wxapi.WXPayEntryActivity"
             android:exported="true"/>
+        <activity android:name=".ui.reprot.ReportCarActivity" />
 
     </application>
 

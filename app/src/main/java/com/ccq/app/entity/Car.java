@@ -284,7 +284,7 @@ public class Car implements Serializable{
         this.pic_img = pic_img;
     }
 
-    public class UserInfoBean {
+    public class UserInfoBean implements Serializable {
         /**
          * userid : 169
          * mobile : 18600175665

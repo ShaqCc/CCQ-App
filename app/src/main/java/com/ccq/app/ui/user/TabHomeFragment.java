@@ -7,30 +7,21 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.ccq.app.R;
 import com.ccq.app.base.BaseFragment;
 import com.ccq.app.base.BasePresenter;
-import com.ccq.app.entity.BaseBean;
 import com.ccq.app.entity.Car;
-import com.ccq.app.entity.SubscribeUser;
 import com.ccq.app.http.ApiService;
 import com.ccq.app.http.HttpClient;
 import com.ccq.app.http.ProgressCallBack;
 import com.ccq.app.http.RetrofitClient;
 import com.ccq.app.ui.publish.BaseMapActivity;
-import com.ccq.app.ui.publish.PublishFragment;
 import com.ccq.app.ui.user.adapter.MyPublishListAdapter;
 import com.ccq.app.utils.AppCache;
 import com.ccq.app.utils.ToastUtils;
-import com.ccq.app.utils.ViewState;
-
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.HashMap;

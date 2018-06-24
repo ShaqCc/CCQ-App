@@ -10,17 +10,21 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.ccq.app.R;
 import com.ccq.app.base.BaseFragment;
 import com.ccq.app.entity.BannerBean;
 import com.ccq.app.entity.BrandBean;
 import com.ccq.app.entity.Car;
 import com.ccq.app.entity.TypeBean;
+import com.ccq.app.entity.UserBean;
 import com.ccq.app.entity.YearLimitBean;
 import com.ccq.app.http.ApiParams;
+import com.ccq.app.ui.MainActivity;
 import com.ccq.app.ui.city.ProvinceActivity;
 import com.ccq.app.ui.home.adapter.BrandAdapter;
 import com.ccq.app.ui.home.adapter.OrderAdapter;
@@ -44,6 +48,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import butterknife.BindInt;
 import butterknife.BindView;
 import butterknife.OnClick;
 
@@ -83,6 +88,18 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
     View tagAge;
     @BindView(R.id.tag_order)
     View tagOrder;
+    @BindView(R.id.user_layout)
+    View userLayout;
+    @BindView(R.id.user_iv_header)
+    ImageView ivHeader;
+    @BindView(R.id.tv_userName)
+    TextView tvUserName;
+    @BindView(R.id.icon_vip_logo)
+    ImageView iconVipLogo;
+    @OnClick(R.id.user_iv_header)
+    public void gotoUserPage(){
+        ((MainActivity)getHostActivity()).setCurrentTab(3);
+    }
 
 
     private HomeAdapter homeAdapter;
@@ -248,6 +265,30 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
         orderStringArray = getResources().getStringArray(R.array.order_array);
         List<String> list = Arrays.asList(orderStringArray);
         orderAdapter = new OrderAdapter(list);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //更新会员信息
+        mPresenter.updateUser();
+    }
+
+    @Override
+    public void updateUser(UserBean bean) {
+        if (bean!=null){
+            userLayout.setVisibility(View.VISIBLE);
+            Glide.with(get()).load(bean.getHeadimgurl()).into(ivHeader);
+            tvUserName.setText(bean.getNickname());
+            if (bean.getVip() == 1){
+                iconVipLogo.setImageResource(R.drawable.icon_vip_enable);
+            } else {
+                iconVipLogo.setImageResource(R.drawable.icon_no_vip);
+            }
+        } else {
+            userLayout.setVisibility(View.GONE);
+            iconVipLogo.setImageResource(R.drawable.icon_no_vip);
+        }
     }
 
     /**

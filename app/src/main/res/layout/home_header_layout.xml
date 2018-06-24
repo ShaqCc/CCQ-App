@@ -17,6 +17,36 @@
             android:layout_height="match_parent" />
 
         <include layout="@layout/include_home_action_layout" />
+
+        <LinearLayout
+            android:id="@+id/user_layout"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="bottom"
+            android:layout_marginBottom="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_gravity="bottom|right"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/tv_userName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="请登录"
+                android:layout_marginRight="9dp"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textSize_common"
+                android:textStyle="bold" />
+            <ImageView
+                android:id="@+id/user_iv_header"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@color/white"
+                android:padding="1dp"
+                android:src="@drawable/icon_no_login" />
+
+
+        </LinearLayout>
     </FrameLayout>
 
 

@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:background="@color/white"
-              android:orientation="horizontal"
-              android:paddingLeft="16dp"
-              android:paddingRight="16dp"
-              android:paddingTop="16dp">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="horizontal"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="16dp">
 
     <ImageView
         android:id="@+id/item_car_iv_header"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:background="#ccc"/>
+        android:background="#ccc" />
 
     <LinearLayout
         android:layout_width="0dp"
@@ -29,7 +29,7 @@
             android:maxLines="1"
             android:text="辽宁工程机械"
             android:textColor="#0067a4"
-            android:textSize="@dimen/textSize_common"/>
+            android:textSize="@dimen/textSize_common" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -46,7 +46,7 @@
                 android:singleLine="true"
                 android:textColor="@color/primary_text"
                 android:textSize="@dimen/textSize_common"
-                tools:text="徐工50G装在机械2013年"/>
+                tools:text="徐工50G装在机械2013年" />
 
             <TextView
                 android:id="@+id/item_car_tv_car_price"
@@ -58,15 +58,14 @@
                 android:paddingRight="4dp"
                 android:textColor="@color/white"
                 android:textSize="@dimen/textSize_common"
-                tools:text="10万"/>
+                tools:text="10万" />
 
             <ImageView
                 android:id="@+id/item_car_iv_moments"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:layout_marginLeft="6dp"
-                android:src="@drawable/ic_moments"
-                />
+                android:src="@drawable/ic_moments" />
         </LinearLayout>
 
         <com.ccq.app.weidget.MyGridView
@@ -75,7 +74,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:numColumns="3"
-            android:verticalSpacing="2dp"/>
+            android:verticalSpacing="2dp" />
 
         <TextView
             android:id="@+id/item_car_tv_car_info"
@@ -84,7 +83,7 @@
             android:layout_marginTop="4dp"
             android:textColor="@color/secondary_text"
             android:textSize="@dimen/textSize_secondary"
-            tools:text="徐工50G装在机械2013年徐工50G装在机械2013年徐工50G装在机械2013年徐工50G装在机械2013年"/>
+            tools:text="徐工50G装在机械2013年徐工50G装在机械2013年徐工50G装在机械2013年徐工50G装在机械2013年" />
 
         <TextView
             android:id="@+id/item_car_tv_car_location"
@@ -95,7 +94,7 @@
             android:gravity="center_vertical"
             android:text="上海·上海市"
             android:textColor="#5683dc"
-            android:textSize="@dimen/textSize_secondary"/>
+            android:textSize="@dimen/textSize_secondary" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -110,7 +109,7 @@
                 android:layout_height="wrap_content"
                 android:text="1小时前"
                 android:textColor="@color/secondary_text"
-                android:textSize="@dimen/textSize_secondary"/>
+                android:textSize="@dimen/textSize_secondary" />
 
             <TextView
                 android:id="@+id/item_tv_call"
@@ -125,7 +124,7 @@
                 android:paddingTop="2dp"
                 android:text="打电话"
                 android:textColor="@color/white"
-                android:textSize="@dimen/textSize_secondary"/>
+                android:textSize="@dimen/textSize_secondary" />
 
             <TextView
                 android:id="@+id/item_tv_message"
@@ -139,16 +138,36 @@
                 android:paddingTop="2dp"
                 android:text="发消息"
                 android:textColor="@color/primary_text"
-                android:textSize="@dimen/textSize_secondary"/>
+                android:textSize="@dimen/textSize_secondary" />
 
-            <ImageView
-                android:id="@+id/item_car_iv_tip"
+            <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_height="20dp"
                 android:layout_weight="1"
-                android:scaleType="fitEnd"
-                android:src="@drawable/ic_message_32"
-                />
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/item_car_iv_tip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_alignParentRight="true"
+                    android:scaleType="fitEnd"
+                    android:src="@drawable/ic_message_32" />
+
+                <TextView
+                    android:id="@+id/item_car_info_tv_jubao"
+                    android:layout_width="46dp"
+                    android:visibility="gone"
+                    android:layout_height="match_parent"
+                    android:layout_toLeftOf="@+id/item_car_iv_tip"
+                    android:background="#333333"
+                    android:gravity="center"
+                    android:text="举报"
+                    android:textColor="@color/white"
+                    android:textSize="12sp" />
+
+            </RelativeLayout>
+
 
         </LinearLayout>
 
@@ -156,7 +175,7 @@
             android:layout_width="match_parent"
             android:layout_height="1px"
             android:layout_marginTop="10dp"
-            android:background="@color/divider"/>
+            android:background="@color/divider" />
     </LinearLayout>
 
 

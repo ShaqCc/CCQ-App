@@ -3,6 +3,10 @@ package com.ccq.app.ui.publish;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.media.MediaMetadataRetriever;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,14 +92,25 @@ public class ChooseMediaAdapter extends BaseAdapter {
         View tvFirstPage = inflate.findViewById(R.id.pakage_tv);
         View tvLeftFeng = inflate.findViewById(R.id.left_tips_textview);
         if (getItemViewType(position) == TYPE_NORMAL) {
+            final String mediaPath = mediaList.get(position);
             //图片
             btDelete.setVisibility(View.VISIBLE);
             tvFirstPage.setVisibility(View.VISIBLE);
-            Glide.with(mActivity).load(mediaList.get(position));
+
+            if (mediaPath.contains(".jpg") || mediaPath.contains(".jpeg") || mediaPath.contains(".png") || mediaPath.contains(".bmp")) {
+                Glide.with(mActivity).load(mediaPath).into(ivPic);
+            } else {
+                MediaMetadataRetriever media = new MediaMetadataRetriever();
+                media.setDataSource(mediaPath);
+                Bitmap bitmap = media.getFrameAtTime();
+                ivPic.setImageBitmap(bitmap);
+            }
             if (position == 0) {
                 tvLeftFeng.setVisibility(View.VISIBLE);
+                tvFirstPage.setBackgroundColor(Color.parseColor("#15B427"));
             } else {
                 tvLeftFeng.setVisibility(View.GONE);
+                tvFirstPage.setBackgroundColor(Color.parseColor("#88000000"));
             }
             //删除图片
             btDelete.setOnClickListener(new View.OnClickListener() {
@@ -113,7 +128,7 @@ public class ChooseMediaAdapter extends BaseAdapter {
                 public void onClick(View view) {
                     if (position > 0) {
                         String first = mediaList.get(0);
-                        mediaList.set(0, mediaList.get(position));
+                        mediaList.set(0, mediaPath);
                         mediaList.set(position, first);
                         notifyDataSetChanged();
                     }
@@ -129,7 +144,6 @@ public class ChooseMediaAdapter extends BaseAdapter {
                 public void onClick(View view) {
                     Intent intent = new Intent(mActivity, ImageGridActivity.class);
                     mActivity.startActivityForResult(intent, PublishFragment.RESULT_LOAD_IMAGE);
-                    Toasty.info(view.getContext(), "选择图片。。。").show();
                 }
             });
         } else {

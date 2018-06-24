@@ -1,18 +1,28 @@
 package com.ccq.app.ui.home;
 
+import android.support.annotation.NonNull;
+import android.text.TextUtils;
+import android.widget.Toast;
+
 import com.ccq.app.base.BasePresenter;
 import com.ccq.app.entity.BannerBean;
 import com.ccq.app.entity.BrandBean;
 import com.ccq.app.entity.Car;
 import com.ccq.app.entity.TypeBean;
+import com.ccq.app.entity.UserBean;
 import com.ccq.app.entity.YearLimitBean;
 import com.ccq.app.http.ApiParams;
+import com.ccq.app.utils.AppCache;
+import com.ccq.app.utils.Constants;
+import com.ccq.app.utils.SharedPreferencesUtils;
 import com.ccq.app.utils.ToastUtils;
+import com.ccq.app.weidget.Toasty;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import jiguang.chat.utils.photovideo.takevideo.utils.SPUtils;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -144,4 +154,23 @@ public class HomePresenter extends BasePresenter<IHomeView> {
         });
     }
 
+
+
+    void updateUser() {
+        String userid = (String) SharedPreferencesUtils.getParam(mView.get(), Constants.USER_ID, "");
+        if (!TextUtils.isEmpty(userid)) {
+            apiService.getUser(userid).enqueue(new Callback<UserBean>() {
+                @Override
+                public void onResponse(Call<UserBean> call, @NonNull Response<UserBean> response) {
+                    AppCache.setUserBean(response.body());
+                    mView.updateUser(response.body());
+                }
+
+                @Override
+                public void onFailure(Call<UserBean> call, Throwable t) {
+                    Toasty.warning(mView.get(), "更新用户信息失败" + t.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+    }
 }

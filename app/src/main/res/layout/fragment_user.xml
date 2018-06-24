@@ -53,6 +53,7 @@
             android:paddingTop="4dp">
 
             <ImageView
+                android:id="@+id/usercenter_icon_vip"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:src="@drawable/icon_no_vip" />

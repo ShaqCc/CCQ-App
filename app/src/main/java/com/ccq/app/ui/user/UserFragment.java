@@ -89,6 +89,8 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
     ViewPager vpMyInfo;
     @BindView(R.id.user_pagerTabStrip)
     SlidingTabLayout pagerTabStrip;
+    @BindView(R.id.usercenter_icon_vip)
+    ImageView iconVipLogo;
 
     private ProgressDialog dialogProgress;
 
@@ -161,6 +163,11 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
                             if (getActivity() != null && response.isSuccessful() && userBean != null) {
                                 AppCache.setUserBean(userBean);
                                 Glide.with(get()).load(userBean.getHeadimgurl()).into(ivHeader);
+                                if (userBean.getVip() == 1){
+                                    iconVipLogo.setImageResource(R.drawable.icon_vip_enable);
+                                } else {
+                                    iconVipLogo.setImageResource(R.drawable.icon_no_vip);
+                                }
                                 setView();
                                 getData();
                             }

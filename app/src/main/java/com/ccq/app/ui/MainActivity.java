@@ -1,12 +1,12 @@
 package com.ccq.app.ui;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
@@ -45,6 +45,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
     private final String[] fragmentTitles = new String[]{"首页", "发布", "消息", "我的"};
     private MainFragmentAdapter mFragmentAdapter;
     private MessageFragment conversationListFragment;
+    private Fragment currentFragment;
 
 
     @Override
@@ -116,6 +117,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
         mNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
             @Override
             public boolean onTabSelected(int position, boolean wasSelected) {
+                currentFragment = mFragments.get(position);
                 if (position == mMainViewpager.getCurrentItem())
                     return false;
                 else {
@@ -149,6 +151,12 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
                 }
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        currentFragment.onActivityResult(requestCode,resultCode,data);
     }
 
     @Override
@@ -209,7 +217,6 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
 
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -217,14 +224,21 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
             conversationListFragment.sortConvList();
     }
 
+    public void setCurrentTab(int index){
+        if (index>=0 && index < 4){
+           mNavigation.setCurrentItem(index,true);
+        }
+    }
+
+
     @Override
     protected MainPresenter createPresenter() {
         return new MainPresenter(this);
     }
 
-
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    public Activity get() {
+        return this;
     }
+
 }

@@ -8,6 +8,7 @@
 
 
     <FrameLayout
+        android:id="@+id/select_erweima"
         android:layout_width="300dp"
         android:layout_height="240dp"
         android:layout_marginTop="@dimen/padding"
@@ -16,12 +17,6 @@
         android:background="@drawable/bg_edittext_corner"
         >
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/bg_edittext_corner"
-            />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -29,6 +24,14 @@
             android:layout_gravity="center"
             android:textColor="@color/colorPrimaryDark"
             />
+        <ImageView
+            android:id="@+id/iv_user_erweima"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerInside"
+            android:background="@drawable/bg_edittext_corner"
+            />
+
 
     </FrameLayout>
 

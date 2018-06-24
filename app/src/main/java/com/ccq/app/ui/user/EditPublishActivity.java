@@ -11,16 +11,13 @@ import com.ccq.app.R;
 import com.ccq.app.base.BaseActivity;
 import com.ccq.app.base.BasePresenter;
 import com.ccq.app.entity.Car;
-import com.ccq.app.http.ApiService;
 import com.ccq.app.http.RetrofitClient;
 import com.ccq.app.ui.publish.PublishFragment;
 import com.ccq.app.utils.AppCache;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;

@@ -5,6 +5,7 @@ import com.ccq.app.entity.BannerBean;
 import com.ccq.app.entity.BrandBean;
 import com.ccq.app.entity.Car;
 import com.ccq.app.entity.TypeBean;
+import com.ccq.app.entity.UserBean;
 import com.ccq.app.entity.YearLimitBean;
 
 import java.util.List;
@@ -21,4 +22,5 @@ public interface IHomeView extends IBaseView{
     void showBrandList(List<BrandBean> list);
     void showTypeList(List<TypeBean.NumberListBean> list);
     void showYearList(List<YearLimitBean> list);
+    void updateUser(UserBean bean);
 }

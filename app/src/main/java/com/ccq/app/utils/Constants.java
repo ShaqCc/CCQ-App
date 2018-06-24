@@ -46,5 +46,8 @@ public class Constants {
     public static int PHOTO_WIDTH = 82;
 
 
+    public final static int PAY_RESULT_SUCCESS = 66;//支付成功
+    public final static int PAY_RESULT_CANCEL = -123;//支付取消
+    public final static int PAY_RESULT_FAILURE = -444;//支付失败
 
 }

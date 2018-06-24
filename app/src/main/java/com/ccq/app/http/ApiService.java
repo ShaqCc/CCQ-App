@@ -82,25 +82,27 @@ public interface ApiService {
     Call<UserBean> getUserByUniondId(@Query("unionid") String unionid);
 
     @GET("/user/bind")
-    Call<BindResultBaen> bindUserInfo(@Query("unionid") String unionid, @Query("mobile")String mobile,
-                                      @Query("code")String code, @Query("headimg")String headimg, @Query("longitude")String longtitude,
-                                      @Query("latitude")String latitude, @Query("nickname")String nickName);
+    Call<BindResultBaen> bindUserInfo(@Query("unionid") String unionid, @Query("mobile") String mobile,
+                                      @Query("code") String code, @Query("headimg") String headimg, @Query("longitude") String longtitude,
+                                      @Query("latitude") String latitude, @Query("nickname") String nickName);
 
     @GET("/user/info")
-    Call<UserBean> getUser(@Query("userid")String userid);
+    Call<UserBean> getUser(@Query("userid") String userid);
 
 
-    @GET("/mobile/code")//发送验证码
+    @GET("/mobile/code")
+//发送验证码
     Call<BaseBean> sendMobileCode(@Query("phone") String phone);
 
-    @GET("/mobile/check")//验证验证码
+    @GET("/mobile/check")
+//验证验证码
     Call<Object> checkMobilCode(@Query("phone") String phone, @Query("code") String code);
 
     @GET("/car/brand")
     Call<List<BrandBean>> getBrandList();
 
     @GET("/car/tonnage")
-    Call<List<TypeBean>> getCarTypeList(@Query("brandid")String brandId);
+    Call<List<TypeBean>> getCarTypeList(@Query("brandid") String brandId);
 
     @GET("/car/year")
     Call<List<YearLimitBean>> getCarYearList();
@@ -112,6 +114,7 @@ public interface ApiService {
 
     /**
      * 车辆图片上传
+     *
      * @param file
      * @return
      */
@@ -129,6 +132,7 @@ public interface ApiService {
 
     /**
      * 修改车辆信息
+     *
      * @param user
      * @return
      */
@@ -163,12 +167,12 @@ public interface ApiService {
     Call<Object> setUserSubRemove(@QueryMap Map<String, String> carParams);
 
 
-
     @POST("/user/subscribe/count")
     Call<Object> getSubscribeCount(@Query("userid") String userid);
 
     /**
      * 发布信息前检测
+     *
      * @param userid
      * @return
      */
@@ -177,40 +181,45 @@ public interface ApiService {
 
     /**
      * 修改车辆状态
+     *
      * @param userid
      * @return
      */
     @POST("/car/status")
-    Call<Object> setCarStatus(@Query("userid") String userid,@Query("carid") String carid);
+    Call<Object> setCarStatus(@Query("userid") String userid, @Query("carid") String carid);
 
     /**
      * 删除车辆信息
+     *
      * @param userid
      * @return
      */
     @POST("/car/remove")
-    Call<Object> deleteCar(@Query("userid") String userid,@Query("carid") String carid);
+    Call<Object> deleteCar(@Query("userid") String userid, @Query("carid") String carid);
 
-     /**
+    /**
      * 刷新车辆信息
+     *
      * @param userid
      * @return
      */
     @POST("/car/ref")
-    Call<Object> refreshCarInfo(@Query("userid") String userid,@Query("carid") String carid);
+    Call<Object> refreshCarInfo(@Query("userid") String userid, @Query("carid") String carid);
 
 
     /**
      * 修改个人简介
+     *
      * @param userid
      * @return
      */
     @POST("/user/info/setcontent")
-    Call<Object> editUserIntro(@Query("userid") String userid,@Query("content") String content);
+    Call<Object> editUserIntro(@Query("userid") String userid, @Query("content") String content);
 
 
     /**
      * 生成分享二维码
+     *
      * @param userid
      * @return
      */
@@ -222,7 +231,7 @@ public interface ApiService {
 
     //极光上传用户图片
     @POST
-    Call<Object> jIMUpload(@Url String url, @Field("type")String type,@Part MultipartBody.Part file);
+    Call<Object> jIMUpload(@Url String url, @Field("type") String type, @Part MultipartBody.Part file);
 
 
     @POST("/car/addr")
@@ -230,7 +239,7 @@ public interface ApiService {
 
 
     @POST("/car/info")
-    Call<Object> getCarInfo(@Query("userid") String userid,@Query("carid") String carid);
+    Call<Object> getCarInfo(@Query("userid") String userid, @Query("carid") String carid);
 
 
     @POST("/vip/money")
@@ -244,17 +253,22 @@ public interface ApiService {
      * @return
      */
     @POST("/car/video/remove")
-    Call<Object> delCarVideo(@Query("userid") String userid,@Query("id") String id);
+    Call<Object> delCarVideo(@Query("userid") String userid, @Query("id") String id);
 
     /**
-     *
-     * @param cid  图片id
+     * @param cid 图片id
      * @return
      */
     @POST("/car/delimg")
     Call<Object> delCarImg(@Query("cid") String cid);
 
+    @POST("/user/info/saveerweima")
+    Call<Object> saveUserErWeiMa(@Query("userid") String userid, @Query("erweima")String url);
 
+    @POST("/car/report")
+    Call<Object> reportCar(@Query("userid")String userid,@Query("carid")String carid,
+                           @Query("cateid")String cateid,@Query("content")String content,
+                           @Query("typeid")String typeid);
 
 //    ------------------------------------微信登陆相关接口-----------------------------------------------
 
