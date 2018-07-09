@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
@@ -23,7 +24,7 @@ import com.ccq.app.entity.Car;
 import com.ccq.app.entity.TypeBean;
 import com.ccq.app.entity.UserBean;
 import com.ccq.app.entity.YearLimitBean;
-import com.ccq.app.http.ApiParams;
+import com.ccq.app.http.HomeCarParams;
 import com.ccq.app.ui.MainActivity;
 import com.ccq.app.ui.city.ProvinceActivity;
 import com.ccq.app.ui.home.adapter.BrandAdapter;
@@ -34,7 +35,7 @@ import com.ccq.app.ui.user.OpenVipActivity;
 import com.ccq.app.utils.DialogUtils;
 import com.ccq.app.utils.GlideImageLoader;
 import com.ccq.app.utils.RequestCode;
-import com.ccq.app.utils.ViewState;
+import com.ccq.app.weidget.RecycleViewDivider;
 import com.ccq.app.weidget.RecyclerViewHeader;
 import com.ccq.app.weidget.Toasty;
 import com.youth.banner.Banner;
@@ -43,6 +44,7 @@ import com.youth.banner.WeakHandler;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,10 +53,11 @@ import java.util.List;
 import butterknife.BindInt;
 import butterknife.BindView;
 import butterknife.OnClick;
+import jiguang.chat.pickerimage.utils.ScreenUtil;
 
 /****************************************
  * 功能说明:  首页
- *
+
  * Author: Created by bayin on 2018/3/26.
  ****************************************/
 
@@ -79,15 +82,13 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
     @BindView(R.id.banner_rb_order)
     CheckBox bannerRbOrder;
     @BindView(R.id.tag_province)
-    View tagProvince;
+    View tagCity;
     @BindView(R.id.tag_brand)
     View tagBrand;
     @BindView(R.id.tag_type)
     View tagType;
     @BindView(R.id.tag_age)
     View tagAge;
-    @BindView(R.id.tag_order)
-    View tagOrder;
     @BindView(R.id.user_layout)
     View userLayout;
     @BindView(R.id.user_iv_header)
@@ -96,9 +97,34 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
     TextView tvUserName;
     @BindView(R.id.icon_vip_logo)
     ImageView iconVipLogo;
+    @BindView(R.id.home_head_ll_tag_parent)
+    View llTagParent;
+    private TextView tvCity;
+    @BindView(R.id.home_checkbox_parent)
+    View homeCheckBoxParent;
+
+
     @OnClick(R.id.user_iv_header)
-    public void gotoUserPage(){
-        ((MainActivity)getHostActivity()).setCurrentTab(3);
+    public void gotoUserPage() {
+        ((MainActivity) getHostActivity()).setCurrentTab(3);
+    }
+
+    @OnClick(R.id.home_head_tv_reset_tags)
+    public void resetTags() {
+        bannerRbCity.setText("全国");
+        HomeCarParams.getInstance().resetTags();
+        HomeCarParams.getInstance().resetParams();
+        refreshHomeData();
+    }
+
+    /**
+     * 刷新首页数据
+     */
+    private void refreshHomeData() {
+        homeSrl.setRefreshing(true);
+        updateTags();
+        ACTION_TYPE = ACTION_REFRESH;
+        mPresenter.filterCar(HomeCarParams.getInstance().getParams());
     }
 
 
@@ -115,7 +141,9 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
         @Override
         public void onDismiss() {
             resetCheckBoxState();
-            updateTags();
+            WindowManager.LayoutParams attributes = getActivity().getWindow().getAttributes();
+            attributes.alpha = 1f;
+            getActivity().getWindow().setAttributes(attributes);
         }
     };
     private String[] orderStringArray;
@@ -124,54 +152,53 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
      * 设置tag
      */
     private void updateTags() {
-        //城市
-        String cityName = ApiParams.getCityName();
-        if (!TextUtils.isEmpty(cityName)) {
-            tagProvince.setVisibility(View.VISIBLE);
-            tvCity.setText(cityName);
+        if (TextUtils.isEmpty(HomeCarParams.getInstance().getCarTypeName()) &&
+                TextUtils.isEmpty(HomeCarParams.getInstance().getCarBrandName()) &&
+                TextUtils.isEmpty(HomeCarParams.getInstance().getCarUseTime()) &&
+                TextUtils.isEmpty(HomeCarParams.getInstance().getCityName())) {
+            //为空，隐藏tag
+            llTagParent.setVisibility(View.GONE);
         } else {
-            tagProvince.setVisibility(View.GONE);
-        }
-        //品牌
-        String brandName = ApiParams.getBrandName();
-        if (!TextUtils.isEmpty(brandName)) {
-            tagBrand.setVisibility(View.VISIBLE);
-            tvBrand.setText(brandName);
-        } else {
-            tagBrand.setVisibility(View.GONE);
-        }
-        //型号
-        String typeName = ApiParams.getTypeName();
-        if (!TextUtils.isEmpty(typeName)) {
-            tagType.setVisibility(View.VISIBLE);
-            tvType.setText(typeName);
-        } else {
-            tagType.setVisibility(View.GONE);
-        }
-        //车龄
-        String age = ApiParams.getAge();
-        if (!TextUtils.isEmpty(age)) {
-            tagAge.setVisibility(View.VISIBLE);
-            tvAge.setText(age);
-        } else {
-            tagAge.setVisibility(View.GONE);
-        }
-        //排序方式
-        String orderFunc = ApiParams.getOrderFunc();
-        if (!TextUtils.isEmpty(orderFunc)) {
-            tagOrder.setVisibility(View.VISIBLE);
-            tvOrder.setText(orderFunc);
-        } else {
-            tagOrder.setVisibility(View.GONE);
+            llTagParent.setVisibility(View.VISIBLE);
+            //城市
+            String cityName = HomeCarParams.getInstance().getCityName();
+            if (!TextUtils.isEmpty(cityName)) {
+                tagCity.setVisibility(View.VISIBLE);
+                tvCity.setText(cityName);
+            } else {
+                tagCity.setVisibility(View.GONE);
+            }
+            //品牌
+            String brandName = HomeCarParams.getInstance().getCarBrandName();
+            if (!TextUtils.isEmpty(brandName)) {
+                tagBrand.setVisibility(View.VISIBLE);
+                tvBrand.setText(brandName);
+            } else {
+                tagBrand.setVisibility(View.GONE);
+            }
+            //型号
+            String typeName = HomeCarParams.getInstance().getCarTypeName();
+            if (!TextUtils.isEmpty(typeName)) {
+                tagType.setVisibility(View.VISIBLE);
+                tvType.setText(typeName);
+            } else {
+                tagType.setVisibility(View.GONE);
+            }
+            //车龄
+            String age = HomeCarParams.getInstance().getCarUseTime();
+            if (!TextUtils.isEmpty(age)) {
+                tagAge.setVisibility(View.VISIBLE);
+                tvAge.setText(age);
+            } else {
+                tagAge.setVisibility(View.GONE);
+            }
         }
     }
 
     private OrderAdapter orderAdapter;
-    private TextView tvCity;
     private TextView tvBrand;
     private TextView tvType;
     private TextView tvAge;
-    private TextView tvOrder;
 
     @Override
     protected int inflateContentView() {
@@ -188,6 +215,7 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
 
         final LinearLayoutManager manager = new LinearLayoutManager(getHostActivity());
         homeRecyclerView.setLayoutManager(manager);
+        homeRecyclerView.addItemDecoration(new RecycleViewDivider(get(), LinearLayoutManager.HORIZONTAL, R.drawable.shape_divide_line_1px));
         homeAdapter = new HomeAdapter(dataList);
         homeRecyclerView.setAdapter(homeAdapter);
         homeHeader.attachTo(homeRecyclerView);
@@ -227,36 +255,29 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
             }
         });
         //init tags
-        tvCity = tagProvince.findViewById(R.id.tag_tv_content);
-//        View ivDeleteCity = tagProvince.findViewById(R.id.tag_iv_delete);
-        tagProvince.setOnClickListener(this);
+        tvCity = tagCity.findViewById(R.id.tag_tv_content);
+        tagCity.setOnClickListener(this);
         tvBrand = tagBrand.findViewById(R.id.tag_tv_content);
-//        View ivDeleteBrand = tagBrand.findViewById(R.id.tag_iv_delete);
         tagBrand.setOnClickListener(this);
         tvType = tagType.findViewById(R.id.tag_tv_content);
-//        View ivDeleteType = tagType.findViewById(R.id.tag_iv_delete);
         tagType.setOnClickListener(this);
         tvAge = tagAge.findViewById(R.id.tag_tv_content);
-//        View ivDeleteAge = tagAge.findViewById(R.id.tag_iv_delete);
         tagAge.setOnClickListener(this);
-        tvOrder = tagOrder.findViewById(R.id.tag_tv_content);
-//        View ivDeleteOrder = tagOrder.findViewById(R.id.tag_iv_delete);
-        tagOrder.setOnClickListener(this);
         EventBus.getDefault().register(this);
     }
 
     private void refresh() {
         pageIndex = 1;
-        ApiParams.setPage(pageIndex);
+        HomeCarParams.getInstance().put("page", "1");
         ACTION_TYPE = ACTION_REFRESH;
         initData();
     }
 
     private void loadMore() {
         pageIndex++;
-        ApiParams.setPage(pageIndex);
+        HomeCarParams.getInstance().put("page", String.valueOf(pageIndex));
         ACTION_TYPE = ACTION_LOADMORE;
-        mPresenter.filterCar(ApiParams.getCarMap());
+        mPresenter.filterCar(HomeCarParams.getInstance().getParams());
     }
 
     @Override
@@ -276,11 +297,11 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
 
     @Override
     public void updateUser(UserBean bean) {
-        if (bean!=null){
+        if (bean != null) {
             userLayout.setVisibility(View.VISIBLE);
             Glide.with(get()).load(bean.getHeadimgurl()).into(ivHeader);
             tvUserName.setText(bean.getNickname());
-            if (bean.getVip() == 1){
+            if (bean.getVip() == 1) {
                 iconVipLogo.setImageResource(R.drawable.icon_vip_enable);
             } else {
                 iconVipLogo.setImageResource(R.drawable.icon_no_vip);
@@ -330,16 +351,23 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
     public void showCarList(List<Car> cars) {
         isInit = true;
         homeSrl.setRefreshing(false);
-
-        if (cars != null && cars.size() > 0) {
-            if (ACTION_TYPE == ACTION_REFRESH) {
-                dataList.clear();
+        if (ACTION_TYPE == ACTION_REFRESH) {
+            //刷新
+            dataList.clear();
+            if (cars == null || cars.isEmpty()) {
+                //do nothing
+            } else {
+                dataList.addAll(cars);
             }
-            dataList.addAll(cars);
-        }
-        if (dataList.size() > 0) {
-            setViewState(ViewState.STATE_CONTENT);
             homeAdapter.refresh(dataList);
+        } else {
+            //加载更多
+            if (cars == null || cars.isEmpty()) {
+                Toasty.info(get(), "没有更多数据啦！").show();
+            } else {
+                dataList.addAll(cars);
+                homeAdapter.refresh(dataList);
+            }
         }
     }
 
@@ -355,9 +383,10 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
                     new DialogUtils.OnPopItemClickListener<BrandBean>() {
                         @Override
                         public void OnPopItemClick(BrandBean bean, int position) {
-                            ApiParams.setBrandid(bean.getId());
-                            ApiParams.setBrandName(bean.getName());
-                            mPresenter.filterCar(ApiParams.getCarMap());
+                            HomeCarParams.getInstance().put("brandid", bean.getId());
+                            HomeCarParams.getInstance().setCarBrandName(bean.getName());
+                            //刷新
+                            refreshHomeData();
                         }
                     }, dismissListener);
         }
@@ -376,13 +405,12 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
                 TypeBean.NumberListBean type = (TypeBean.NumberListBean) o;
                 if (type.isSub()) {
                     //子列表
-                    ApiParams.setTon(type.getTid());
-                    ApiParams.setNumberid(type.getId());
-                } else {
-                    //一级列表
-                    ApiParams.setTon(type.getId());
+                    HomeCarParams.getInstance().put("numberid", type.getId());
                 }
-                mPresenter.filterCar(ApiParams.getCarMap());
+                HomeCarParams.getInstance().put("tonnageid", type.getId());
+                HomeCarParams.getInstance().setCarTypeName(type.getName());
+                //刷新
+                refreshHomeData();
             }
         }, dismissListener);
     }
@@ -398,9 +426,10 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
             @Override
             public void OnPopItemClick(Object o, int position) {
                 YearLimitBean year = (YearLimitBean) o;
-                ApiParams.setYearid(year.getId());
-                ApiParams.setAge(year.getName());
-                mPresenter.filterCar(ApiParams.getCarMap());
+                HomeCarParams.getInstance().put("yearid", year.getId());
+                HomeCarParams.getInstance().setCarUseTime(year.getName());
+                //刷新
+                refreshHomeData();
             }
         }, dismissListener);
     }
@@ -409,10 +438,9 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
     public void onCitySelected(Integer code) {
         if (code == RequestCode.SET_CITY) {
             pageIndex = 1;
-            ApiParams.setPage(pageIndex);
-            ACTION_TYPE = ACTION_REFRESH;
-            updateTags();
-            mPresenter.filterCar(ApiParams.getCarMap());
+            HomeCarParams.getInstance().put("page", "1");
+            bannerRbCity.setText(HomeCarParams.getInstance().getCityName());
+            refreshHomeData();
         }
     }
 
@@ -445,33 +473,49 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
                 ProvinceActivity.launch(get(), new Bundle());
                 break;
             case R.id.banner_rb_brand:
+                //品牌
                 resetCheckBoxState();
                 bannerRbBrand.setChecked(true);
+                scrollToTop();
                 mPresenter.chooseBrand();
                 break;
             case R.id.banner_rb_size:
+                //型号
                 resetCheckBoxState();
                 bannerRbSize.setChecked(true);
+                scrollToTop();
                 mPresenter.chooseType();
                 break;
             case R.id.banner_rb_age:
+                //年限
                 resetCheckBoxState();
                 bannerRbAge.setChecked(true);
+                scrollToTop();
                 mPresenter.chooseYear();
                 break;
             case R.id.banner_rb_order:
+                //排序
                 resetCheckBoxState();
                 bannerRbOrder.setChecked(true);
+                scrollToTop();
                 DialogUtils.showListPopWindow(get(), homeHeader, orderAdapter, new DialogUtils.OnPopItemClickListener() {
                     @Override
                     public void OnPopItemClick(Object o, int position) {
-                        ApiParams.setOrder(String.valueOf(position));
-                        ApiParams.setOrderFunc(orderStringArray[position]);
-                        mPresenter.filterCar(ApiParams.getCarMap());
+                        HomeCarParams.getInstance().put("order", String.valueOf(position));
+                        HomeCarParams.getInstance().setOrderName(orderStringArray[position]);
+                        homeSrl.setRefreshing(true);
+                        mPresenter.filterCar(HomeCarParams.getInstance().getParams());
                     }
                 }, dismissListener);
                 break;
         }
+    }
+
+    private void scrollToTop() {
+        int statusBarHeight = ScreenUtil.getStatusBarHeight(get());
+        int[] loc = new int[2];
+        homeCheckBoxParent.getLocationOnScreen(loc);
+        homeRecyclerView.scrollBy(0, loc[1] - statusBarHeight);
     }
 
     /**
@@ -514,22 +558,30 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tag_province:
-                ApiParams.removeCity();
+                HomeCarParams.getInstance().delete("provinceid");
+                HomeCarParams.getInstance().delete("cityid");
+                HomeCarParams.getInstance().setCityName("");
+                bannerRbCity.setText("全国");
                 break;
             case R.id.tag_brand:
-                ApiParams.removeBrand();
+                HomeCarParams.getInstance().delete("brandid");
+                HomeCarParams.getInstance().setCarBrandName("");
                 break;
             case R.id.tag_type:
-                ApiParams.removeType();
+                HomeCarParams.getInstance().delete("numberid");
+                HomeCarParams.getInstance().delete("tonnageid");
+                HomeCarParams.getInstance().setCarTypeName("");
                 break;
             case R.id.tag_age:
-                ApiParams.removeAge();
-                break;
-            case R.id.tag_order:
-                ApiParams.removeOrderFunc();
+                HomeCarParams.getInstance().delete("yearid");
+                HomeCarParams.getInstance().setCarUseTime("");
                 break;
         }
         updateTags();
-        mPresenter.filterCar(ApiParams.getCarMap());
+        ACTION_TYPE = ACTION_REFRESH;
+        pageIndex = 1;
+        HomeCarParams.getInstance().put("page", "1");
+        homeSrl.setRefreshing(true);
+        mPresenter.filterCar(HomeCarParams.getInstance().getParams());
     }
 }

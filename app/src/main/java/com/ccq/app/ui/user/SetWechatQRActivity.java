@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.ccq.app.R;
 import com.ccq.app.base.BaseActivity;
 import com.ccq.app.base.BasePresenter;
+import com.ccq.app.http.ApiService;
 import com.ccq.app.http.RetrofitClient;
 import com.ccq.app.utils.AppCache;
 import com.ccq.app.weidget.Toasty;
@@ -23,12 +24,15 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Observable;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import jiguang.chat.utils.imagepicker.ImageGridActivity;
 import jiguang.chat.utils.imagepicker.ImagePicker;
 import jiguang.chat.utils.imagepicker.bean.ImageItem;
@@ -48,6 +52,7 @@ public class SetWechatQRActivity extends BaseActivity {
     private String imagePath;
     private ProgressDialog dialog;
     private Handler handler = new Handler();
+    private ApiService apiService;
 
     @OnClick(R.id.btn_open_vip)
     public void openVip() {
@@ -63,6 +68,8 @@ public class SetWechatQRActivity extends BaseActivity {
     @OnClick(R.id.btn_submit)
     public void upload() {
 
+        apiService = RetrofitClient.getInstance().getApiService();
+
         if (TextUtils.isEmpty(imagePath)) {
             Toasty.error(this, "请选择二维码图片", Toast.LENGTH_LONG).show();
         } else {
@@ -70,39 +77,98 @@ public class SetWechatQRActivity extends BaseActivity {
             dialog.setMessage("上传图片中...");
             dialog.show();
 
+            uploadFile();
+        }
+    }
 
-            io.reactivex.Observable.create(new ObservableOnSubscribe<Object>() {
-                @Override
-                public void subscribe(ObservableEmitter<Object> emitter) throws Exception {
-                    if (!emitter.isDisposed()) {
-                        File file = new File(imagePath);
-                        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-                        MultipartBody.Part body = MultipartBody.Part.createFormData("filename", file.getName(), requestFile);
-                        Response<Object> response = RetrofitClient.getInstance().getApiService().uploadImages(body).execute();
-                        Map<String, Object> map = (Map<String, Object>) response.body();
-                        if (0.0 == (Double) map.get("code")) {
-                            String imageid = String.valueOf(map.get("imageid"));
-                            RetrofitClient.getInstance().getApiService().saveUserErWeiMa(AppCache.getUserBean().getUserid(), imageid)
-                                    .enqueue(new Callback<Object>() {
-                                        @Override
-                                        public void onResponse(Call<Object> call, Response<Object> response) {
-                                            Toasty.success(getCurrentActivity(), "上传成功！").show();
-                                            dismissDialog();
-                                        }
+    private String imageUploadId;//上传服务器返回的id
 
-                                        @Override
-                                        public void onFailure(Call<Object> call, Throwable t) {
-                                            dismissDialog();
-                                            Toasty.error(getCurrentActivity(), t.getMessage()).show();
-                                        }
-                                    });
+    private void uploadImg(String path) throws IOException {
+
+        File file = new File(path);
+        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        MultipartBody.Part body = MultipartBody.Part.createFormData("filename", file.getName(), requestFile);
+
+        Call<Object> result = apiService.uploadImages(body);
+        Response<Object> response = result.execute();
+        Map<String, Object> map = (Map<String, Object>) response.body();
+        if (0.0 == (Double) map.get("code")) {
+            imageUploadId = String.valueOf(map.get("imageid"));
+        }
+
+    }
+
+    private void uploadFile() {
+        io.reactivex.Observable.create(
+                new ObservableOnSubscribe<Boolean>() {
+                    @Override
+                    public void subscribe(final ObservableEmitter<Boolean> emitter) throws Exception {
+                        if (!emitter.isDisposed()) {
+                            try {
+                                //访问网络操作
+                                if (imagePath != null) {
+                                    uploadImg(imagePath);
+                                }
+//                                emitter.onNext(true);
+                                emitter.onComplete();
+
+                            } catch (IOException ioe) {
+                                emitter.onError(ioe);
+                            }
+
                         }
                     }
-                }
-            });
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Boolean>() {
 
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        if (d.isDisposed()) {
+                        }
+                    }
 
-        }
+                    @Override
+                    public void onNext(Boolean boo) {
+//                        if (boo) {
+//                            imgids = StringUtils.join(imgidList.toArray(new String[imgidList.size()]), ",");
+//                            videoids = StringUtils.join(videoidList.toArray(new String[videoidList.size()]), ",");
+//                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        submitData();
+                    }
+                });
+
+    }
+
+    private void submitData() {
+        apiService.saveUserErWeiMa(AppCache.getUserBean().getUserid(), imageUploadId)
+                .enqueue(new Callback<Object>() {
+                    @Override
+                    public void onResponse(Call<Object> call, Response<Object> response) {
+                        Map<String, Object> map = (Map<String, Object>) response.body();
+                        String message = (String) map.get("message");
+                        if (0.0 == (Double) map.get("code")) {
+                            message = "上传成功，赶快发布信息试试吧！";
+                        }
+                        dismissDialog();
+                        Toasty.success(getCurrentActivity(), message, Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFailure(Call<Object> call, Throwable t) {
+                        dismissDialog();
+                        Toasty.error(getCurrentActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private void dismissDialog() {

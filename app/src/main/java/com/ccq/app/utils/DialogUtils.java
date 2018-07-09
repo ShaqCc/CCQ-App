@@ -9,6 +9,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
@@ -42,6 +43,10 @@ public class DialogUtils {
             }
         });
         popupWindow.showAsDropDown(view);
+        //背景变灰
+        WindowManager.LayoutParams attributes = activity.getWindow().getAttributes();
+        attributes.alpha = 0.3f;
+        activity.getWindow().setAttributes(attributes);
         popupWindow.setOnDismissListener(dismissListener);
     }
 
@@ -58,13 +63,15 @@ public class DialogUtils {
         popupWindow.setOutsideTouchable(false);
         popupWindow.setTouchable(true);
         popupWindow.setFocusable(true);
-        popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        popupWindow.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#00000000")));
         popupWindow.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
-        popupWindow.setHeight(SystemUtil.getScreenHeight(activity)/2);
+        popupWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         View contentView = LayoutInflater.from(activity).inflate(R.layout.pop_list_layout, null, false);
         popupWindow.setContentView(contentView);
         listview = contentView.findViewById(R.id.pop_listview);
-
+//        ViewGroup.LayoutParams layoutParams = listview.getLayoutParams();
+//        layoutParams.height = SystemUtil.getScreenHeight(activity)/2;
+//        listview.setLayoutParams(layoutParams);
 
         // 按下android回退物理键 PopipWindow消失解决
         contentView.setOnKeyListener(new View.OnKeyListener() {

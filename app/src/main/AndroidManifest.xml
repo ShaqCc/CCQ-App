@@ -77,6 +77,7 @@
         <activity android:name=".wxapi.WXPayEntryActivity"
             android:exported="true"/>
         <activity android:name=".ui.reprot.ReportCarActivity" />
+        <activity android:name=".ui.ImageWatchActivity" />
 
     </application>
 

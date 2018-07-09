@@ -11,7 +11,7 @@ import com.ccq.app.entity.Car;
 import com.ccq.app.entity.TypeBean;
 import com.ccq.app.entity.UserBean;
 import com.ccq.app.entity.YearLimitBean;
-import com.ccq.app.http.ApiParams;
+import com.ccq.app.http.HomeCarParams;
 import com.ccq.app.utils.AppCache;
 import com.ccq.app.utils.Constants;
 import com.ccq.app.utils.SharedPreferencesUtils;
@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import jiguang.chat.utils.photovideo.takevideo.utils.SPUtils;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -57,7 +56,7 @@ public class HomePresenter extends BasePresenter<IHomeView> {
         });
 
         //获取车辆列表
-        filterCar(ApiParams.getCarMap());
+        filterCar(HomeCarParams.getInstance().getParams());
 
     }
 
@@ -96,7 +95,7 @@ public class HomePresenter extends BasePresenter<IHomeView> {
     }
 
     public void chooseType() {
-        apiService.getCarTypeList(ApiParams.getBrandid()).enqueue(new Callback<List<TypeBean>>() {
+        apiService.getCarTypeList(HomeCarParams.getInstance().getValue("brandid")).enqueue(new Callback<List<TypeBean>>() {
             @Override
             public void onResponse(Call<List<TypeBean>> call, Response<List<TypeBean>> response) {
                 List<TypeBean> typeList = response.body();

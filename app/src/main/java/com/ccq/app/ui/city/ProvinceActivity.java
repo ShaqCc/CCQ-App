@@ -16,7 +16,8 @@ import android.widget.TextView;
 import com.ccq.app.R;
 import com.ccq.app.base.BaseActivity;
 import com.ccq.app.entity.Province;
-import com.ccq.app.http.ApiParams;
+import com.ccq.app.http.HomeCarParams;
+import com.ccq.app.statusbar.Eyes;
 import com.ccq.app.utils.ItemDivideLine;
 import com.ccq.app.utils.OnListItemClickListener;
 import com.ccq.app.utils.RequestCode;
@@ -54,11 +55,22 @@ public class ProvinceActivity extends BaseActivity<ProvincePresenter> implements
     @BindView(R.id.drawlayout_right_title)
     TextView drawlayoutRightTitle;
 
-    @OnClick(R.id.choose_country)
-    public void chooseCountry(View view){
+    @OnClick(R.id.drawlayout_right_title)
+    public void chooseProvice(View view) {
         //set result
-        ApiParams.setCityid("");
-        ApiParams.setCityName("");
+        HomeCarParams.getInstance().delete("cityid");
+        HomeCarParams.getInstance().put("provinceid", String.valueOf(provinceID));
+        HomeCarParams.getInstance().setCityName(drawlayoutRightTitle.getText().toString());
+        EventBus.getDefault().post(RequestCode.SET_CITY);
+        finish();
+    }
+
+    //全國
+    @OnClick(R.id.choose_country)
+    public void chooseCountry(View view) {
+        //set result
+        HomeCarParams.getInstance().delete("cityid");
+        HomeCarParams.getInstance().delete("provinceid");
         EventBus.getDefault().post(RequestCode.SET_CITY);
         finish();
     }
@@ -100,7 +112,7 @@ public class ProvinceActivity extends BaseActivity<ProvincePresenter> implements
         super.initView();
         setToolBarTitle("选择城市");
         setBackIconVisible(true);
-
+        Eyes.setStatusBarColor(this,getResources().getColor(R.color.colorPrimary));
         mMainManager = new LinearLayoutManager(this);
         mMainRecyclerView.setLayoutManager(mMainManager);
         mProviceAdapter = new ProvinceAdapter(mProvinceData);
@@ -205,9 +217,9 @@ public class ProvinceActivity extends BaseActivity<ProvincePresenter> implements
             @Override
             public void onCityClicked(Province.CityBean city) {
                 //set result
-                ApiParams.setCityName(city.getName());
-                ApiParams.setCityid(String.valueOf(city.getId()));
-                ApiParams.setProvinceid(String.valueOf(provinceID));
+                HomeCarParams.getInstance().setCityName(city.getName());
+                HomeCarParams.getInstance().put("cityid", String.valueOf(city.getId()));
+                HomeCarParams.getInstance().put("provinceid", String.valueOf(provinceID));
                 EventBus.getDefault().post(RequestCode.SET_CITY);
                 finish();
             }

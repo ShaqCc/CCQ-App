@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.ccq.app.R;
 import com.ccq.app.entity.TypeBean;
+import com.ccq.app.http.HomeCarParams;
 
 import java.util.List;
 
@@ -24,6 +25,7 @@ public class TypeAdapter extends BaseFilterAdapter<TypeBean.NumberListBean> {
 
     public TypeAdapter(List<TypeBean.NumberListBean> list) {
         super(list);
+        selectedWord = HomeCarParams.getInstance().getCarTypeName();
     }
 
     @Override
@@ -39,16 +41,27 @@ public class TypeAdapter extends BaseFilterAdapter<TypeBean.NumberListBean> {
     public View getView(int i, View view, ViewGroup viewGroup) {
         Context context = viewGroup.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
+        String name = list.get(i).getName();
         switch (getItemViewType(i)){
             case 0:
                 view = inflater.inflate(R.layout.item_city, viewGroup, false);
                 TextView tvName = view.findViewById(R.id.item_city_text);
-                tvName.setText(list.get(i).getName());
+                if (selectedWord!=null && selectedWord.equals(name)){
+                    tvName.setSelected(true);
+                }else {
+                    tvName.setSelected(false);
+                }
+                tvName.setText(name);
                 break;
             case 2:
                 view = inflater.inflate(R.layout.item_secondary_text, viewGroup, false);
                 TextView tvSecondName = view.findViewById(R.id.item_tv_info);
-                tvSecondName.setText(list.get(i).getName());
+                if (selectedWord!=null && selectedWord.equals(name)){
+                    tvSecondName.setSelected(true);
+                }else {
+                    tvSecondName.setSelected(false);
+                }
+                tvSecondName.setText(name);
                 break;
         }
         return view;

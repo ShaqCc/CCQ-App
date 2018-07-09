@@ -24,6 +24,7 @@ import com.ccq.app.base.BasePresenter;
 import com.ccq.app.entity.UserBean;
 import com.ccq.app.http.ApiService;
 import com.ccq.app.http.RetrofitClient;
+import com.ccq.app.ui.ImageWatchActivity;
 import com.ccq.app.ui.user.adapter.MyFragmentAdapter;
 import com.ccq.app.utils.AppCache;
 import com.ccq.app.utils.Constants;
@@ -98,8 +99,9 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
     public void login() {
         UserBean userBean = AppCache.getUserBean();
         if (userBean != null) {
-            //todo
-            Toasty.info(get(), "查看头像开发中...").show();
+            ArrayList<String> objects = new ArrayList<>();
+            objects.add(userBean.getHeadimgurl());
+            ImageWatchActivity.launch(get(), objects, 0);
         } else {
             startActivity(new Intent(get(), LoginActivity.class));
         }
@@ -130,7 +132,16 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
             Glide.with(get()).load(userBean.getHeadimgurl()).into(ivHeader);
             setView();
             getData();
+        } else {
+            resetUserInfo();
         }
+    }
+
+    private void resetUserInfo() {
+        ivHeader.setImageResource(R.drawable.icon_no_login);
+        tvName.setText("请登录");
+        tvPhone.setText("手机号");
+        tvLocation.setText("当前位置");
     }
 
     private void showProgress(String msg) {
@@ -163,7 +174,7 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
                             if (getActivity() != null && response.isSuccessful() && userBean != null) {
                                 AppCache.setUserBean(userBean);
                                 Glide.with(get()).load(userBean.getHeadimgurl()).into(ivHeader);
-                                if (userBean.getVip() == 1){
+                                if (userBean.getVip() == 1) {
                                     iconVipLogo.setImageResource(R.drawable.icon_vip_enable);
                                 } else {
                                     iconVipLogo.setImageResource(R.drawable.icon_no_vip);
@@ -184,7 +195,6 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
     }
 
 
-
     public void setView() {
         UserBean userBean = AppCache.getUserBean();
         tvName.setText(userBean.getNickname());
@@ -195,14 +205,14 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
 //        llyoutMyAttention.setVisibility(View.VISIBLE);
         fragments.add(new TabHomeFragment());
         fragments.add(new TabIntroFragment());
-        adapter = new MyFragmentAdapter(getActivity().getSupportFragmentManager(),fragments,titles);
+        adapter = new MyFragmentAdapter(getActivity().getSupportFragmentManager(), fragments, titles);
 
         vpMyInfo.setAdapter(adapter);
         pagerTabStrip.setDistributeEvenly(true);
         pagerTabStrip.setCustomTabView(R.layout.custorm_tab_layout, R.id.tv_tab);
         pagerTabStrip.setSelectedIndicatorColors(getActivity().getResources().getColor(R.color.colorPrimary));
         pagerTabStrip.setTitleTextColor(getResources().getColor(R.color.black_de), getResources().getColor(R.color.text_black_color));
-        pagerTabStrip.setTabStripWidth(ScreenUtil.getDisplayWidth()/ 2);
+        pagerTabStrip.setTabStripWidth(ScreenUtil.getDisplayWidth() / 2);
         pagerTabStrip.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

@@ -78,10 +78,6 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     //底部导航按钮
     implementation project(':bottombar-lib')
-    //UI适配
-    //    implementation 'com.yan:inflaterauto:2.0.17'
-    //    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
-    //    annotationProcessor 'com.yan:inflaterauto-compiler:2.0.17'
     //butter knife
     implementation 'com.jakewharton:butterknife:8.4.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
@@ -95,18 +91,11 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:3.8.1'
     implementation project(':banner-lib')
     //图片查看器
-    implementation 'com.ycjiang:imgepreviewlibrary:1.0.1'
+//    implementation 'com.ycjiang:imgepreviewlibrary:1.0.1'
     implementation project(':dialog-lib')
     implementation project(':index-lib')
     //微信登录，支付，分享，收藏，统计
     implementation 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:1.0.2'
-    implementation project(':tag-lib')
-    //    implementation 'org.greenrobot:eventbus:3.1.1'
-    //极光推送的包下有这几个库
-    //    implementation 'com.squareup.picasso:picasso:2.5.2'
-    //    implementation files('libs/jcore-android-1.1.9.jar')
-    //    implementation files('libs/jmessage-android_v2.5.0.jar')
-    //    implementation project(':chatinput')
     implementation project(':messagelist')
     implementation 'com.android.support:multidex:1.0.3'
     //权限
@@ -115,8 +104,9 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxjava:2.x.x'
     //极光
     implementation project(':chatapp')
-    //    implementation project(':imagepicker')
     implementation 'com.google.android:flexbox:0.2.6'
     implementation files('libs/jdom.jar')
     //implementation 'io.github.mayubao:pay_library:1.0.0'
+    implementation 'com.github.bumptech.glide:glide:4.7.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
 }

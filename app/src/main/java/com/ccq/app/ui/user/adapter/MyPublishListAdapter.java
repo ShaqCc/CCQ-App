@@ -13,13 +13,10 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.ccq.app.R;
 import com.ccq.app.entity.Car;
-import com.previewlibrary.PhotoActivity;
-import com.previewlibrary.ThumbViewInfo;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
 
 /**
  * Created by littlemax on 2018/5/2.
@@ -83,13 +80,13 @@ public class  MyPublishListAdapter extends RecyclerView.Adapter<MyPublishListAda
             public void onClick(View v) {
                 List<com.ccq.app.entity.Car.PicImgBean> imgBeans = Car.getPic_img();
                 Rect rect = computeBounds(holder.itemInfoImage);
-                ArrayList<ThumbViewInfo> mThumbList = new ArrayList<>();
-                for(com.ccq.app.entity.Car.PicImgBean bean : imgBeans){
-                    ThumbViewInfo viewInfo = new ThumbViewInfo(bean.getSavename()+ "!auto");
-                    viewInfo.setBounds(rect);
-                    mThumbList.add(viewInfo);
-                }
-                PhotoActivity.startActivity((Activity) context ,mThumbList, 0);
+//                ArrayList<ThumbViewInfo> mThumbList = new ArrayList<>();
+//                for(com.ccq.app.entity.Car.PicImgBean bean : imgBeans){
+//                    ThumbViewInfo viewInfo = new ThumbViewInfo(bean.getSavename()+ "!auto");
+//                    viewInfo.setBounds(rect);
+//                    mThumbList.add(viewInfo);
+//                }
+//                PhotoActivity.startActivity((Activity) context ,mThumbList, 0);
             }
         });
 

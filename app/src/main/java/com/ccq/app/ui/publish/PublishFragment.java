@@ -278,9 +278,6 @@ public class PublishFragment extends BaseFragment {
                 tvFold.setVisibility(View.GONE);
                 break;
             case R.id.btn_submit:
-                loading = new ProgressDialog(get());
-                loading.setMessage("图片上传中...");
-                loading.show();
                 sendCheck();
                 break;
         }
@@ -319,6 +316,9 @@ public class PublishFragment extends BaseFragment {
         if (!validate()) {
             return;
         }
+        loading = new ProgressDialog(get());
+        loading.setMessage("图片上传中...");
+        loading.show();
 
         Observable.create(
                 new ObservableOnSubscribe<Boolean>() {

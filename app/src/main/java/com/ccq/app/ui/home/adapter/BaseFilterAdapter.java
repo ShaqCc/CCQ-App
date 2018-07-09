@@ -1,12 +1,6 @@
 package com.ccq.app.ui.home.adapter;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.TextView;
-
-import com.ccq.app.R;
 
 import java.util.List;
 
@@ -17,7 +11,7 @@ import java.util.List;
  */
 public abstract class BaseFilterAdapter<T> extends BaseAdapter{
     protected List<T> list;
-
+    protected String selectedWord = "";
     public BaseFilterAdapter(List<T> list) {
         this.list = list;
     }

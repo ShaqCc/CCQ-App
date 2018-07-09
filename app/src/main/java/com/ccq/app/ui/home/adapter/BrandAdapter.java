@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.ccq.app.R;
 import com.ccq.app.entity.BrandBean;
+import com.ccq.app.http.HomeCarParams;
 
 import java.util.List;
 
@@ -16,9 +17,9 @@ import java.util.List;
  * 描述：
  */
 public class BrandAdapter extends BaseFilterAdapter<BrandBean> {
-
     public BrandAdapter(List<BrandBean> list) {
         super(list);
+        selectedWord = HomeCarParams.getInstance().getCarBrandName();
     }
 
 
@@ -27,7 +28,13 @@ public class BrandAdapter extends BaseFilterAdapter<BrandBean> {
         view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.item_city, viewGroup, false);
         TextView text = view.findViewById(R.id.item_city_text);
-        text.setText(list.get(i).getName());
+        String name = list.get(i).getName();
+        text.setText(name);
+        if (selectedWord!=null && selectedWord.equals(name)) {
+            text.setSelected(true);
+        } else {
+            text.setSelected(false);
+        }
         return view;
     }
 }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
+import android.view.View;
 
 import com.ccq.app.base.CcqApp;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
@@ -106,6 +107,24 @@ public class Utils {
         }
         //将承载的字符转换成字符串
         return sb.toString();
+    }
+    public static void fitsSystemWindows(boolean isTranslucentStatus, View view) {
+        if (isTranslucentStatus) {
+            view.getLayoutParams().height = calcStatusBarHeight(view.getContext());
+        }
+    }
+
+    public static int calcStatusBarHeight(Context context) {
+        int statusHeight = -1;
+        try {
+            Class<?> clazz = Class.forName("com.android.internal.R$dimen");
+            Object object = clazz.newInstance();
+            int height = Integer.parseInt(clazz.getField("status_bar_height").get(object).toString());
+            statusHeight = context.getResources().getDimensionPixelSize(height);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return statusHeight;
     }
 
     //请求xml组装

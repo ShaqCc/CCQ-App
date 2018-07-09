@@ -6,8 +6,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.ccq.app.R;
-import com.ccq.app.entity.BrandBean;
 import com.ccq.app.entity.YearLimitBean;
+import com.ccq.app.http.HomeCarParams;
 
 import java.util.List;
 
@@ -20,6 +20,7 @@ public class YearAdapter extends BaseFilterAdapter<YearLimitBean> {
 
     public YearAdapter(List<YearLimitBean> list) {
         super(list);
+        selectedWord = HomeCarParams.getInstance().getCarUseTime();
     }
 
 
@@ -28,7 +29,13 @@ public class YearAdapter extends BaseFilterAdapter<YearLimitBean> {
         view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.item_city, viewGroup, false);
         TextView text = view.findViewById(R.id.item_city_text);
-        text.setText(list.get(i).getName());
+        String name = list.get(i).getName();
+        if (selectedWord != null && selectedWord.equals(name)) {
+            text.setSelected(true);
+        } else {
+            text.setSelected(false);
+        }
+        text.setText(name);
         return view;
     }
 }

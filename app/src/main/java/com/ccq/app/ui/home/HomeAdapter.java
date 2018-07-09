@@ -2,34 +2,33 @@ package com.ccq.app.ui.home;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Rect;
-import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baidu.mapapi.model.LatLng;
 import com.bumptech.glide.Glide;
 import com.ccq.app.R;
 import com.ccq.app.base.CcqApp;
 import com.ccq.app.entity.Car;
 import com.ccq.app.ui.message.SingleChatActivity;
+import com.ccq.app.ui.publish.BaseMapActivity;
 import com.ccq.app.ui.reprot.ReportCarActivity;
 import com.ccq.app.ui.user.LoginActivity;
 import com.ccq.app.utils.AppCache;
 import com.ccq.app.utils.DensityUtils;
 import com.ccq.app.utils.JmessageUtils;
 import com.ccq.app.utils.Utils;
-import com.ccq.app.weidget.MyGridView;
+import com.ccq.app.weidget.MainCarImageLayout;
 import com.ccq.app.weidget.Toasty;
-import com.previewlibrary.PhotoActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -38,13 +37,9 @@ import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.model.Conversation;
 import cn.jpush.im.android.api.model.UserInfo;
 import cn.jpush.im.android.eventbus.EventBus;
-import cn.jpush.im.api.BasicCallback;
-import jiguang.chat.activity.ChatActivity;
-import jiguang.chat.activity.PersonalActivity;
 import jiguang.chat.application.JGApplication;
 import jiguang.chat.entity.Event;
 import jiguang.chat.entity.EventType;
-import jiguang.chat.utils.ThreadUtil;
 import jiguang.chat.utils.ToastUtil;
 import me.drakeet.materialdialog.MaterialDialog;
 
@@ -60,10 +55,15 @@ import me.drakeet.materialdialog.MaterialDialog;
 public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickListener {
 
     private final int ITEM_COMMON = 1;
-    private final int ITEM_FOOTER = 2;
+    private final int ITEM_EMPTY = 2;
+
+    public static int STATUS_EMPTY = 0;
+    public static int STATUS_DATA = 1;
 
     private List<Car> carList;
     private Activity context;
+
+    private int dataStatus = STATUS_DATA;
 
 
     public HomeAdapter(List<Car> list) {
@@ -72,7 +72,13 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
 
 
     public void refresh(List<Car> list) {
-        this.carList = list;
+        if (list != null && !list.isEmpty()) {
+            dataStatus = STATUS_DATA;
+            this.carList = list;
+        } else {
+            dataStatus = STATUS_EMPTY;
+            this.carList.clear();
+        }
         notifyDataSetChanged();
     }
 
@@ -86,8 +92,8 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         context = (Activity) parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-        if (viewType == ITEM_FOOTER) {
-            View inflate = inflater.inflate(R.layout.loadmore_layout, parent, false);
+        if (viewType == ITEM_EMPTY) {
+            View inflate = inflater.inflate(R.layout.item_no_data, parent, false);
             return new FooterHolder(inflate);
         } else {
             View inflate = inflater.inflate(R.layout.item_car_layout, parent, false);
@@ -104,12 +110,11 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
                 final CarHolder carHolder = (CarHolder) holder;
                 final Car carBean = carList.get(position);
                 //头像
-                Glide.with(context).load(carBean.getUserInfo().getHeadimgurl())
-                        .placeholder(R.mipmap.ic_default_thumb).into(carHolder.itemIvHeader);
+                Glide.with(context).load(carBean.getUserInfo().getHeadimgurl()).into(carHolder.itemIvHeader);
                 //用户昵称
                 carHolder.itemTvUserName.setText(carBean.getUserInfo().getNickname());
                 //车辆名称
-                carHolder.itemTvCarName.setText(String.format("%s  %s年", carBean.getName(), carBean.getYear()));
+                carHolder.itemTvCarName.setText(String.format("%s%s年", carBean.getName(), carBean.getYear()));
                 //车辆价格
                 try {
                     String price = carBean.getPrice();
@@ -140,16 +145,10 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
                     carHolder.itemGridview.setVisibility(View.GONE);
                 } else {
                     carHolder.itemGridview.setVisibility(View.VISIBLE);
-                    final PictureAdapter adapter = new PictureAdapter(carBean.getPic_img(), carBean.getPic_img_count());
-                    carHolder.itemGridview.setAdapter(adapter);
-                    //准备图片数据
-                    carHolder.itemGridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            computeBoundsBackward(carHolder.itemGridview);
-                            PhotoActivity.startActivity(context, adapter.getThumbList(), position);
-                        }
-                    });
+                    carHolder.itemGridview.setIsShowAll(false);
+                    List<String> urlList = getImageUrlList(carBean.getPic_img());
+                    carHolder.itemGridview.setUrlList(urlList);
+
                 }
                 //是否分享
                 if (carBean.getIsshare().equals("1")) {
@@ -163,18 +162,20 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
                 carHolder.itemTvCall.setOnClickListener(this);
                 carHolder.itemTvCall.setTag(carBean);
                 carHolder.ivMoments.setOnClickListener(this);
+                carHolder.itemTvCarLocation.setTag(carBean);
+                carHolder.itemTvCarLocation.setOnClickListener(this);
                 carHolder.ivTip.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         if (isShowJubao) {
-                            carHolder.btJubao.setVisibility(View.GONE);
+                            carHolder.tvReport.setVisibility(View.GONE);
                         } else {
-                            carHolder.btJubao.setVisibility(View.VISIBLE);
+                            carHolder.tvReport.setVisibility(View.VISIBLE);
                         }
                         isShowJubao = !isShowJubao;
                     }
                 });
-                carHolder.btJubao.setOnClickListener(new View.OnClickListener() {
+                carHolder.tvReport.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         //举报
@@ -192,10 +193,13 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
         }
     }
 
-    private void jubao(Car carBean) {
-
+    private List<String> getImageUrlList(List<Car.PicImgBean> pic_img) {
+        ArrayList<String> result = new ArrayList<>();
+        for (int i = 0; i < pic_img.size(); i++) {
+            result.add(pic_img.get(i).getSavename() + "!auto");
+        }
+        return result;
     }
-
 
     private String htmlInfo = "你可以添加分享号微信好友查看信息<br/><font color='red'>*注意<br/>请勿分享年限不实车辆<br/>请勿分享与二手装载机无关信息</font>";
 
@@ -257,37 +261,40 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
                         });
                 dialog.show();
                 break;
+            case R.id.item_car_tv_car_location:
+                selectLocationAtMap(car.getLatitude(), car.getLongitude(), car.getAddress());
+                break;
         }
+    }
+
+    private void selectLocationAtMap(String lat, String longit, String address) {
+        Intent intent = new Intent();
+        intent.setClass(context, BaseMapActivity.class);
+        LatLng point;
+        if (!TextUtils.isEmpty(lat) && !TextUtils.isEmpty(longit)) {
+            point = new LatLng(Double.parseDouble(lat), Double.parseDouble(longit));
+            intent.putExtra("latlng", point);
+        }
+        intent.putExtra("address", address);
+        context.startActivity(intent);
     }
 
     private boolean isShowJubao = false;
 
-    private void computeBoundsBackward(MyGridView gridView) {
-        PictureAdapter adapter = (PictureAdapter) gridView.getAdapter();
-        for (int i = gridView.getFirstVisiblePosition(); i < adapter.getCount(); i++) {
-            View itemView = gridView.getChildAt(i);
-            Rect bounds = new Rect();
-            if (itemView != null) {
-                ImageView thumbView = itemView.findViewById(R.id.imageview);
-                thumbView.getGlobalVisibleRect(bounds);
-            }
-            adapter.getThumbList().get(i).setBounds(bounds);
-        }
-    }
-
 
     @Override
     public int getItemCount() {
-        if (carList != null && carList.size() > 0) return carList.size() + 1;
-        return 0;
+        if (dataStatus == STATUS_DATA) {
+            if (carList != null && carList.size() > 0) return carList.size();
+        }
+        return 1;
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (position + 1 == getItemCount())
-            return ITEM_FOOTER;
-
-        else return ITEM_COMMON;
+        if (dataStatus == STATUS_EMPTY) {
+            return ITEM_EMPTY;
+        } else return ITEM_COMMON;
     }
 
 
@@ -301,7 +308,7 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
         @BindView(R.id.item_car_tv_car_price)
         TextView itemTvCarPrice;
         @BindView(R.id.item_car_gridview)
-        MyGridView itemGridview;
+        MainCarImageLayout itemGridview;
         @BindView(R.id.item_car_tv_car_info)
         TextView itemTvCarInfo;
         @BindView(R.id.item_car_tv_car_location)
@@ -314,10 +321,10 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
         TextView itemTvMessage;
         @BindView(R.id.item_car_iv_moments)
         ImageView ivMoments;
-        @BindView(R.id.item_car_info_tv_jubao)
-        TextView btJubao;
         @BindView(R.id.item_car_iv_tip)
         ImageView ivTip;
+        @BindView(R.id.item_car_tv_report)
+        TextView tvReport;
 
         CarHolder(View itemView) {
             super(itemView);

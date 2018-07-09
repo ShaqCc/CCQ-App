@@ -1,11 +1,13 @@
 package com.ccq.app.ui.home.adapter;
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.ccq.app.R;
+import com.ccq.app.http.HomeCarParams;
 
 import java.util.List;
 
@@ -19,7 +21,6 @@ import java.util.List;
  **************************************************/
 
 public class OrderAdapter extends BaseFilterAdapter<String> {
-
     public OrderAdapter(List<String> list) {
         super(list);
     }
@@ -29,7 +30,14 @@ public class OrderAdapter extends BaseFilterAdapter<String> {
         view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.item_city, viewGroup, false);
         TextView text = view.findViewById(R.id.item_city_text);
-        text.setText(list.get(i));
+        String name = list.get(i);
+        text.setText(name);
+        String orderName = HomeCarParams.getInstance().getOrderName();
+        if (orderName.equals(name)) {
+            text.setSelected(true);
+        } else {
+            text.setSelected(false);
+        }
         return view;
     }
 }

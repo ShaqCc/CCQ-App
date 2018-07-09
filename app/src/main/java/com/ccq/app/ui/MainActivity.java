@@ -24,6 +24,8 @@ import com.ccq.app.ui.user.OpenVipActivity;
 import com.ccq.app.ui.user.SetWechatQRActivity;
 import com.ccq.app.ui.user.UserFragment;
 import com.ccq.app.utils.AppCache;
+import com.ccq.app.utils.Constants;
+import com.ccq.app.utils.SharedPreferencesUtils;
 import com.ccq.app.utils.statusbar.StatusBarUtils;
 
 import java.util.ArrayList;
@@ -183,10 +185,10 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
                         }
                         break;
                     case 2:
-                        //非会员或过期提醒
-                        if (AppCache.getUserBean().getVip() == 0) {
-                            showComfirmDialog("此功能只有会员可用，是否开通会员", 1);
-                        }
+                        //退出登录
+                        SharedPreferencesUtils.setParam(getCurrentActivity(), Constants.USER_ID,"");
+                        AppCache.setUserBean(null);
+                        ((BaseFragment)mFragments.get(3)).initData();
                         break;
                 }
             }

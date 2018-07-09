@@ -1,7 +1,5 @@
 package com.ccq.app.ui.publish;
 
-import java.util.List;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
@@ -11,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -20,7 +17,7 @@ import com.ccq.app.R;
 import com.ccq.app.utils.Constants;
 import com.ccq.app.utils.DensityUtils;
 
-import jiguang.chat.model.Constant;
+import java.util.List;
 
 /**
  * 图片显示时gridView适配器
