@@ -1,6 +1,7 @@
 package com.ccq.app.ui.home;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -17,6 +18,7 @@ import com.bumptech.glide.Glide;
 import com.ccq.app.R;
 import com.ccq.app.base.CcqApp;
 import com.ccq.app.entity.Car;
+import com.ccq.app.http.RetrofitClient;
 import com.ccq.app.ui.message.SingleChatActivity;
 import com.ccq.app.ui.publish.BaseMapActivity;
 import com.ccq.app.ui.reprot.ReportCarActivity;
@@ -24,12 +26,14 @@ import com.ccq.app.ui.user.LoginActivity;
 import com.ccq.app.utils.AppCache;
 import com.ccq.app.utils.DensityUtils;
 import com.ccq.app.utils.JmessageUtils;
+import com.ccq.app.utils.ToastUtils;
 import com.ccq.app.utils.Utils;
 import com.ccq.app.weidget.MainCarImageLayout;
 import com.ccq.app.weidget.Toasty;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,6 +46,9 @@ import jiguang.chat.entity.Event;
 import jiguang.chat.entity.EventType;
 import jiguang.chat.utils.ToastUtil;
 import me.drakeet.materialdialog.MaterialDialog;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**************************************************
  *
@@ -262,21 +269,48 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
                 dialog.show();
                 break;
             case R.id.item_car_tv_car_location:
-                selectLocationAtMap(car.getLatitude(), car.getLongitude(), car.getAddress());
+                getCarLocation(String.valueOf(car.getId()));
                 break;
         }
     }
 
-    private void selectLocationAtMap(String lat, String longit, String address) {
-        Intent intent = new Intent();
-        intent.setClass(context, BaseMapActivity.class);
-        LatLng point;
-        if (!TextUtils.isEmpty(lat) && !TextUtils.isEmpty(longit)) {
-            point = new LatLng(Double.parseDouble(lat), Double.parseDouble(longit));
-            intent.putExtra("latlng", point);
-        }
-        intent.putExtra("address", address);
-        context.startActivity(intent);
+    private void getCarLocation(String carid) {
+        final ProgressDialog dialog = new ProgressDialog(context);
+        dialog.setMessage("请稍后...");
+        dialog.show();
+
+        RetrofitClient.getInstance().getApiService()
+                .getCarAddress(carid).enqueue(new Callback<Object>() {
+            @Override
+            public void onResponse(Call<Object> call, Response<Object> response) {
+                Map<String, Object> map = (Map<String, Object>) response.body();
+                if (0.0 == (Double) map.get("code")) {
+                    if (dialog.isShowing()) {
+                        dialog.dismiss();
+                    }
+                    String address = (String) map.get("address");
+                    String latitude = map.get("latitude").toString();
+                    String longitude = map.get("longitude").toString();
+
+                    Intent i = new Intent(context, BaseMapActivity.class);
+                    LatLng point = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
+                    i.putExtra("latlng", point);
+                    i.putExtra("address", address);
+                    context.startActivity(i);
+
+                } else {
+                    if (dialog.isShowing()) {
+                        dialog.dismiss();
+                    }
+                    ToastUtils.show(context, (String) map.get("message"));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Object> call, Throwable t) {
+
+            }
+        });
     }
 
     private boolean isShowJubao = false;
