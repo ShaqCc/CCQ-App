@@ -1,13 +1,12 @@
 package com.ccq.app.ui.user;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,14 +20,19 @@ import com.bumptech.glide.Glide;
 import com.ccq.app.R;
 import com.ccq.app.base.BaseFragment;
 import com.ccq.app.base.BasePresenter;
+import com.ccq.app.base.CcqApp;
 import com.ccq.app.entity.UserBean;
 import com.ccq.app.http.ApiService;
 import com.ccq.app.http.RetrofitClient;
 import com.ccq.app.ui.ImageWatchActivity;
+import com.ccq.app.ui.message.SingleChatActivity;
 import com.ccq.app.ui.user.adapter.MyFragmentAdapter;
 import com.ccq.app.utils.AppCache;
 import com.ccq.app.utils.Constants;
+import com.ccq.app.utils.JmessageUtils;
 import com.ccq.app.utils.SharedPreferencesUtils;
+import com.ccq.app.utils.ToastUtils;
+import com.ccq.app.utils.Utils;
 import com.ccq.app.weidget.SlidingTabLayout;
 import com.ccq.app.weidget.Toasty;
 import com.google.gson.jpush.JsonObject;
@@ -39,13 +43,24 @@ import com.tencent.mm.opensdk.openapi.IWXAPIEventHandler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.model.Conversation;
+import cn.jpush.im.android.api.model.UserInfo;
+import cn.jpush.im.android.eventbus.EventBus;
+import jiguang.chat.application.JGApplication;
+import jiguang.chat.entity.Event;
+import jiguang.chat.entity.EventType;
 import jiguang.chat.pickerimage.utils.ScreenUtil;
+import jiguang.chat.utils.ToastUtil;
+import okhttp3.internal.Util;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -72,6 +87,14 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
     Button btnInviteAttation;
     @BindView(R.id.btn_vip_setting)
     LinearLayout btnUserVip;
+    @BindView(R.id.tv_subscribe)
+    TextView tvSubscribe;
+    @BindView(R.id.tv_sms)
+    TextView tvSms;
+    @BindView(R.id.tv_tel)
+    TextView tvTel;
+    @BindView(R.id.user_opt)
+    LinearLayout userOpt;
 
     private MyFragmentAdapter adapter;
 
@@ -95,9 +118,15 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
 
     private ProgressDialog dialogProgress;
 
+    public boolean isMine = true;//用户资料信息
+
+    private UserBean userBean;
+
     @OnClick(R.id.user_iv_header)
     public void login() {
-        UserBean userBean = AppCache.getUserBean();
+        if(userBean == null){
+            userBean = AppCache.getUserBean();
+        }
         if (userBean != null) {
             ArrayList<String> objects = new ArrayList<>();
             objects.add(userBean.getHeadimgurl());
@@ -123,11 +152,41 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
     @Override
     protected void initView(View rootView) {
 //        EventBus.getDefault().register(this);
+        userBean = (UserBean) get().getIntent().getSerializableExtra("bean");
+        if(userBean!=null){
+            isMine = false;
+            userOpt.setVisibility(View.VISIBLE);
+            layoutMySubscribe.setClickable(false);
+            layoutMySubscribe.setFocusable(false);
+            layoutMySubscribeFans.setClickable(false);
+            layoutMySubscribeFans.setFocusable(false);
+            btnInviteAttation.setVisibility(View.GONE);
+        }
     }
 
     @Override
     public void initData() {
-        UserBean userBean = AppCache.getUserBean();
+        if(userBean==null){
+            userBean = AppCache.getUserBean();
+        }else{
+            RetrofitClient.getInstance().getApiService().checkSubscribe(AppCache.getUserBean().getUserid(),userBean.getUserid()).enqueue(new Callback<Object>() {
+
+                @Override
+                public void onResponse(Call<Object> call, Response<Object> response) {
+                    Map<String, Object> map = (Map<String, Object>) response.body();
+                    if (0.0 == (Double) map.get("code")) {
+                        tvSubscribe.setText("已关注");
+                    }else{
+                        tvSubscribe.setText("未关注");
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Object> call, Throwable t) {
+
+                }
+            });
+        }
         if (userBean != null) {
             Glide.with(get()).load(userBean.getHeadimgurl()).into(ivHeader);
             setView();
@@ -162,47 +221,50 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
     @Override
     public void onResume() {
         super.onResume();
-        String unionId = (String) SharedPreferencesUtils.getParam(get(), Constants.KEY_UNIONID, "");
-        if (!TextUtils.isEmpty(unionId)) {
-            showProgress("刷新中...");
-            RetrofitClient.getInstance().getApiService().getUserByUniondId(unionId)
-                    .enqueue(new Callback<UserBean>() {
-                        @Override
-                        public void onResponse(Call<UserBean> call, Response<UserBean> response) {
-                            dismiss();
-                            UserBean userBean = response.body();
-                            if (getActivity() != null && response.isSuccessful() && userBean != null) {
-                                AppCache.setUserBean(userBean);
-                                Glide.with(get()).load(userBean.getHeadimgurl()).into(ivHeader);
-                                if (userBean.getVip() == 1) {
-                                    iconVipLogo.setImageResource(R.drawable.icon_vip_enable);
-                                } else {
-                                    iconVipLogo.setImageResource(R.drawable.icon_no_vip);
+        if(isMine){
+            String unionId = (String) SharedPreferencesUtils.getParam(get(), Constants.KEY_UNIONID, "");
+            if (!TextUtils.isEmpty(unionId)) {
+                showProgress("刷新中...");
+                RetrofitClient.getInstance().getApiService().getUserByUniondId(unionId)
+                        .enqueue(new Callback<UserBean>() {
+                            @Override
+                            public void onResponse(Call<UserBean> call, Response<UserBean> response) {
+                                dismiss();
+                                UserBean userBean = response.body();
+                                if (getActivity() != null && response.isSuccessful() && userBean != null) {
+                                    AppCache.setUserBean(userBean);
+                                    Glide.with(get()).load(userBean.getHeadimgurl()).into(ivHeader);
+                                    if (userBean.getVip() == 1) {
+                                        iconVipLogo.setImageResource(R.drawable.icon_vip_enable);
+                                    } else {
+                                        iconVipLogo.setImageResource(R.drawable.icon_no_vip);
+                                    }
+                                    setView();
+                                    getData();
                                 }
-                                setView();
-                                getData();
+                                Toasty.success(get(), "更新成功！").show();
                             }
-                            Toasty.success(get(), "更新成功！").show();
-                        }
 
-                        @Override
-                        public void onFailure(Call<UserBean> call, Throwable t) {
-                            dismiss();
-                            Toasty.error(get(), t.getMessage()).show();
-                        }
-                    });
+                            @Override
+                            public void onFailure(Call<UserBean> call, Throwable t) {
+                                dismiss();
+                                Toasty.error(get(), t.getMessage()).show();
+                            }
+                        });
+            }
         }
     }
 
-
     public void setView() {
-        UserBean userBean = AppCache.getUserBean();
+        if(userBean==null){
+            userBean = AppCache.getUserBean();
+        }
         tvName.setText(userBean.getNickname());
         tvPhone.setText(userBean.getMobile());
         tvLocation.setText(userBean.getProvinceName() + "·" + userBean.getCityName());
 
 //        llyoutMyInfo.setVisibility(View.VISIBLE);
-//        llyoutMyAttention.setVisibility(View.VISIBLE);
+        llyoutMyAttention.setVisibility(View.VISIBLE);
         fragments.add(new TabHomeFragment());
         fragments.add(new TabIntroFragment());
         adapter = new MyFragmentAdapter(getActivity().getSupportFragmentManager(), fragments, titles);
@@ -234,7 +296,7 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
 
     public void getData() {
         ApiService apiService = RetrofitClient.getInstance().getApiService();
-        apiService.getSubscribeCount(AppCache.getUserBean().getUserid()).enqueue(new Callback<Object>() {
+        apiService.getSubscribeCount(userBean.getUserid()).enqueue(new Callback<Object>() {
             @Override
             public void onResponse(Call<Object> call, Response<Object> response) {
                 if (response != null && response.body() != null) {
@@ -301,7 +363,7 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
         unbinder.unbind();
     }
 
-    @OnClick({R.id.layout_my_subscribe, R.id.layout_my_subscribe_fans, R.id.btn_vip_setting, R.id.btn_invite_attation})
+    @OnClick({R.id.layout_my_subscribe, R.id.layout_my_subscribe_fans, R.id.btn_vip_setting, R.id.btn_invite_attation,R.id.tv_sms,R.id.tv_tel,R.id.tv_subscribe})
     public void onViewClicked(View view) {
         switch (view.getId()) {
 //            case R.id.layout_home:
@@ -327,7 +389,121 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
                 break;
             case R.id.btn_invite_attation:
 
+
+
+                break;
+            case R.id.tv_sms:
+                if (AppCache.getUserBean() == null) {
+                    get().startActivity(new Intent(get(), LoginActivity.class));
+                    return;
+                }
+                UserInfo myInfo = JMessageClient.getMyInfo();
+                if (myInfo == null) {
+                    ToastUtil.shortToast(get(), "IM未登录");
+                    JmessageUtils.registerIM(AppCache.getUserBean());
+                    return;
+                }
+                String userName = userBean.getJiguang_name();
+                if (TextUtils.isEmpty(userName)) {
+                    ToastUtil.shortToast(get(), "该用户未注册IM聊天系统");
+                    return;
+                }
+//                mTargetId = intent.getStringExtra(TARGET_ID);
+//                mTargetAppKey = intent.getStringExtra(TARGET_APP_KEY);
+//                mTitle = intent.getStringExtra(JGApplication.CONV_TITLE);
+
+//                String userName = JmessageUtils.getUserName(car.getUserInfo().getUserid() + "");
+                Intent intent = new Intent(get(), SingleChatActivity.class);
+                intent.putExtra(JGApplication.CONV_TITLE, AppCache.getUserBean().getNickname());
+                intent.putExtra(JGApplication.TARGET_ID, userName);
+                intent.putExtra(JGApplication.TARGET_APP_KEY, CcqApp.jmappkey);
+                startActivity(intent);
+
+
+                Conversation conv = JMessageClient.getSingleConversation(userName, CcqApp.jmappkey);
+                //如果会话为空，使用EventBus通知会话列表添加新会话
+                if (conv == null) {
+                    conv = Conversation.createSingleConversation(userName, CcqApp.jmappkey);
+                    EventBus.getDefault().post(new Event.Builder()
+                            .setType(EventType.createConversation)
+                            .setConversation(conv)
+                            .build());
+                }
+
+                break;
+            case R.id.tv_tel:
+                Utils.call(get(),userBean.getMobile());
+
+                break;
+
+            case R.id.tv_subscribe:
+                //订阅
+                if("未关注".equals(tvSubscribe.getText())) {
+                    RetrofitClient.getInstance().getApiService().setUserSubAdd(AppCache.getUserBean().getUserid(), userBean.getUserid()).enqueue(new Callback<Object>() {
+
+                        @Override
+                        public void onResponse(Call<Object> call, Response<Object> response) {
+                            Map<String, Object> map = (Map<String, Object>) response.body();
+                            if (0.0 == (Double) map.get("code")) {
+                                ToastUtils.show(get(), "设置成功");
+                                tvSubscribe.setText("已关注");
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Object> call, Throwable t) {
+
+                        }
+                    });
+                }else{
+                    showDialog("是否要取消关注");
+
+                }
                 break;
         }
     }
+
+
+
+    private void showDialog(String message){
+        AlertDialog.Builder builder = new AlertDialog.Builder(get());
+        builder.setTitle("操作提示：");
+        builder.setMessage(message);
+        builder.setCancelable(true);
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                HashMap map = new HashMap<>();
+                map.put("userid", AppCache.getUserBean().getUserid());
+                map.put("subuser", userBean.getUserid());
+                RetrofitClient.getInstance().getApiService().setUserSubRemove(map).enqueue(new Callback() {
+                    @Override
+                    public void onResponse(Call call, Response response) {
+                        Map<String, Object> map = (Map<String, Object>) response.body();
+                        if (0.0 == (Double) map.get("code")) {
+                            ToastUtils.show(get(), "设置成功");
+                            tvSubscribe.setText("未关注");
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(Call call, Throwable t) {
+
+                    }
+                });
+                dialog.dismiss();
+            }
+        });
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builder.show();
+
+    }
+
 }

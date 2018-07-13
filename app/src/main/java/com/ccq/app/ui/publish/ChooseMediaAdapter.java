@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.media.MediaMetadataRetriever;
+import android.media.ThumbnailUtils;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +20,7 @@ import com.ccq.app.R;
 import com.ccq.app.weidget.Toasty;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 import jiguang.chat.utils.imagepicker.ImageGridActivity;
@@ -40,10 +43,12 @@ public class ChooseMediaAdapter extends BaseAdapter {
     private final int TYPE_NORMAL = 0;
 
     private Activity mActivity;
+    private boolean islocal;
 
-    public ChooseMediaAdapter(List<String> mediaList, Activity activity) {
+    public ChooseMediaAdapter(List<String> mediaList, Activity activity,boolean islocal) {
         this.mediaList = mediaList;
         this.mActivity = activity;
+        this.islocal = islocal;
     }
 
     public void refresh(List<String> list) {
@@ -97,12 +102,22 @@ public class ChooseMediaAdapter extends BaseAdapter {
             tvFirstPage.setVisibility(View.VISIBLE);
 
             if (mediaPath.contains(".jpg") || mediaPath.contains(".jpeg") || mediaPath.contains(".png") || mediaPath.contains(".bmp")) {
-                Glide.with(mActivity).load(mediaPath).into(ivPic);
+                if(islocal){
+                    Glide.with(mActivity).load(mediaPath).into(ivPic);
+                }else{
+                    Glide.with(mActivity).load(mediaPath + "!300auto").into(ivPic);
+                }
+
             } else {
-                MediaMetadataRetriever media = new MediaMetadataRetriever();
-                media.setDataSource(mediaPath);
-                Bitmap bitmap = media.getFrameAtTime();
-                ivPic.setImageBitmap(bitmap);
+                if(islocal){
+                    MediaMetadataRetriever media = new MediaMetadataRetriever();
+                    media.setDataSource(mediaPath);
+                    Bitmap bitmap = media.getFrameAtTime();
+                    ivPic.setImageBitmap(bitmap);
+                }else{
+                    createVideoThumbnail(mediaPath ,MediaStore.Images.Thumbnails.MICRO_KIND);
+                }
+
             }
             if (position == 0) {
                 tvLeftFeng.setVisibility(View.VISIBLE);
@@ -146,6 +161,7 @@ public class ChooseMediaAdapter extends BaseAdapter {
                 }
             });
         } else {
+
             btDelete.setVisibility(View.GONE);
             tvFirstPage.setVisibility(View.GONE);
             tvType.setText("视频");
@@ -166,4 +182,59 @@ public class ChooseMediaAdapter extends BaseAdapter {
         }
         return inflate;
     }
+
+
+    public static Bitmap createVideoThumbnail(String filePath,int kind){
+        Bitmap bitmap = null;
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        try {
+            if (filePath.startsWith("http://")
+                    || filePath.startsWith("https://")
+                    || filePath.startsWith("widevine://")) {
+                retriever.setDataSource(filePath,new Hashtable<String,String>());
+            }else {
+                retriever.setDataSource(filePath);
+            }
+            bitmap =retriever.getFrameAtTime(-1);
+        } catch (IllegalArgumentException ex) {
+            // Assume this is a corrupt video file
+            ex.printStackTrace();
+        } catch (RuntimeException ex) {
+            // Assume this is a corrupt video file.
+            ex.printStackTrace();
+        } finally {
+            try {
+                retriever.release();
+            } catch (RuntimeException ex) {
+                // Ignore failures while cleaning up.
+                ex.printStackTrace();
+            }
+        }
+
+        if (bitmap==null) {
+            return null;
+        }
+
+        if (kind== MediaStore.Images.Thumbnails.MINI_KIND) {
+            // Scale down the bitmap if it's too large.
+            int width= bitmap.getWidth();
+            int height= bitmap.getHeight();
+            int max =Math.max(width, height);
+            if(max >512) {
+                float scale=512f / max;
+                int w =Math.round(scale * width);
+                int h =Math.round(scale * height);
+                bitmap = Bitmap.createScaledBitmap(bitmap,w, h, true);
+            }
+        } else if (kind== MediaStore.Images.Thumbnails.MICRO_KIND) {
+            bitmap = ThumbnailUtils.extractThumbnail(bitmap,
+                    96,
+                    96,
+                    ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
+        }
+        return bitmap;
+    }
+
+
+
 }

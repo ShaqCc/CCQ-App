@@ -58,6 +58,8 @@ public class TabIntroFragment extends BaseFragment {
     Unbinder unbinder;
     String defaultInfo = "我是%s，我来自%s，我的联系方式是：%s，如有业务请与我联系我吧";
 
+    UserBean userBean;
+
     @Override
     protected int inflateContentView() {
         return R.layout.fragment_my_intro;
@@ -75,7 +77,12 @@ public class TabIntroFragment extends BaseFragment {
 
     @Override
     public void initData() {
-        UserBean userBean = AppCache.getUserBean();
+        userBean = (UserBean) get().getIntent().getSerializableExtra("bean");
+        if(userBean==null){
+            userBean = AppCache.getUserBean();
+        }else{
+            tvMyinfoEdit.setVisibility(View.GONE);
+        }
         if (userBean != null) {
             String content = String.format(defaultInfo, userBean.getNickname(), userBean.getProvinceName() + userBean.getCityName(), userBean.getMobile());
             if (TextUtils.isEmpty(userBean.getContent())) {

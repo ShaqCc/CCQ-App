@@ -161,7 +161,7 @@ public interface ApiService {
     Call<Object> setUserSubRemind(@QueryMap Map<String, String> carParams);
 
     @POST("/user/subscribe/add")
-    Call<Object> setUserSubAdd(@QueryMap Map<String, String> carParams);
+    Call<Object> setUserSubAdd(@Query("userid")String userid,@Query("subuser")String subuser);
 
     @POST("/user/subscribe/remove")
     Call<Object> setUserSubRemove(@QueryMap Map<String, String> carParams);
@@ -269,6 +269,12 @@ public interface ApiService {
     Call<Object> reportCar(@Query("userid")String userid,@Query("carid")String carid,
                            @Query("cateid")String cateid,@Query("content")String content,
                            @Query("typeid")String typeid);
+
+
+
+    @POST("/user/subscribe/check")
+    Call<Object> checkSubscribe(@Query("userid")String userid,@Query("subuser")String subuser);
+
 
 //    ------------------------------------微信登陆相关接口-----------------------------------------------
 

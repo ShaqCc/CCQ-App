@@ -15,6 +15,8 @@ import com.ccq.app.http.RetrofitClient;
 import com.ccq.app.ui.publish.PublishFragment;
 import com.ccq.app.utils.AppCache;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -73,7 +75,14 @@ public class EditPublishActivity extends BaseActivity {
                     car.setNumberName((String) maps.get("NumberName"));
                     car.setBrandName((String) maps.get("BrandName"));
                     car.setPic((String) maps.get("pic"));
-                    car.setVideoIds((String) maps.get("videoList"));
+//                    List<Map<String,Object>>  imageMapsList  = (List<Map<String, Object>>) maps.get("pic_img");
+//                    List<Map<String,Object>>  videoMapsList  = (List<Map<String, Object>>) maps.get("videoList");
+
+//                    car.setPic_img(setPhoto(imageMapsList));
+//                    car.setVideoList(setVideo(videoMapsList));
+//                    car.setPic_img((List<Car.PicImgBean>) maps.get("pic_img"));
+//                    car.setVideoList((List<Car.VideoBean>) maps.get("videoList"));
+
                     car.setBrandId( maps.get("b_id").toString());
                     car.setNumberId(maps.get("n_id").toString());
                     showPage();
@@ -93,5 +102,30 @@ public class EditPublishActivity extends BaseActivity {
         finish();
     }
 
+    private List<Car.PicImgBean> setPhoto(List<Map<String,Object>>  imageMapsList){
+
+        List<Car.PicImgBean>  imglist = new ArrayList<>();
+        for(Map<String,Object> map : imageMapsList){
+            Car.PicImgBean bean = new Car.PicImgBean();
+            bean.setId((String) map.get("id"));
+            bean.setSavename((String) map.get("savename"));
+            imglist.add(bean);
+        }
+
+        return imglist;
+    }
+
+
+    private List<Car.VideoBean> setVideo(List<Map<String,Object>>  videoMapsList){
+        List<Car.VideoBean>  imglist = new ArrayList<>();
+        for(Map<String,Object> map : videoMapsList){
+            Car.VideoBean  bean = new Car.VideoBean();
+            bean.setId((String) map.get("id"));
+            bean.setName((String) map.get("savename"));
+            bean.setOsspath((String) map.get("osspath"));
+            imglist.add(bean);
+        }
+        return imglist;
+    }
 
 }

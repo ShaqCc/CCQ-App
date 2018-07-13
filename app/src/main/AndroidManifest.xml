@@ -78,6 +78,10 @@
             android:exported="true"/>
         <activity android:name=".ui.reprot.ReportCarActivity" />
         <activity android:name=".ui.ImageWatchActivity" />
+        <activity android:name=".ui.user.UserInfoActivity" />
+
+
+
 
     </application>
 

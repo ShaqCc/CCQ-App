@@ -1,5 +1,7 @@
 package com.ccq.app.entity;
 
+import java.io.Serializable;
+
 /**************************************************
  *
  * 作者：巴银
@@ -9,7 +11,7 @@ package com.ccq.app.entity;
  *
  **************************************************/
 
-public class UserBean {
+public class UserBean implements Serializable {
 
     /**
      * addtime : 1522309141

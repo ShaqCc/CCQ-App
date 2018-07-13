@@ -14,6 +14,7 @@ import com.ccq.app.R;
 import com.ccq.app.base.BaseFragment;
 import com.ccq.app.base.BasePresenter;
 import com.ccq.app.entity.Car;
+import com.ccq.app.entity.UserBean;
 import com.ccq.app.http.ApiService;
 import com.ccq.app.http.HttpClient;
 import com.ccq.app.http.ProgressCallBack;
@@ -50,7 +51,7 @@ public class TabHomeFragment extends BaseFragment {
     Unbinder unbinder;
     private ApiService apiService;
     MyPublishListAdapter adapter;
-
+    UserBean userBean;
     List<Car> carList = new ArrayList<>();
 
     Car editCar;
@@ -163,7 +164,7 @@ public class TabHomeFragment extends BaseFragment {
                         removeCar();
                         break;
                     case 3:
-                        if (AppCache.getUserBean().isBusiness() || AppCache.getUserBean().isMember()) {
+                        if (userBean.isBusiness() || userBean.isMember()) {
                             refreshCar();
                         } else {
                             AlertDialog.Builder alertbuild = new AlertDialog.Builder(get());
@@ -199,7 +200,7 @@ public class TabHomeFragment extends BaseFragment {
      */
     private void changeStatu() {
         apiService = RetrofitClient.getInstance().getApiService();
-        apiService.setCarStatus(AppCache.getUserBean().getUserid(), String.valueOf(editCar.getId())).enqueue(new Callback<Object>() {
+        apiService.setCarStatus(userBean.getUserid(), String.valueOf(editCar.getId())).enqueue(new Callback<Object>() {
             @Override
             public void onResponse(Call<Object> call, Response<Object> response) {
                 Object obj = response.body();
@@ -223,7 +224,7 @@ public class TabHomeFragment extends BaseFragment {
      */
     private void removeCar() {
         apiService = RetrofitClient.getInstance().getApiService();
-        apiService.deleteCar(AppCache.getUserBean().getUserid(), String.valueOf(editCar.getId())).enqueue(new Callback<Object>() {
+        apiService.deleteCar(userBean.getUserid(), String.valueOf(editCar.getId())).enqueue(new Callback<Object>() {
             @Override
             public void onResponse(Call<Object> call, Response<Object> response) {
                 Object obj = response.body();
@@ -247,7 +248,7 @@ public class TabHomeFragment extends BaseFragment {
      */
     private void refreshCar() {
         apiService = RetrofitClient.getInstance().getApiService();
-        apiService.refreshCarInfo(AppCache.getUserBean().getUserid(), String.valueOf(editCar.getId())).enqueue(new Callback<Object>() {
+        apiService.refreshCarInfo(userBean.getUserid(), String.valueOf(editCar.getId())).enqueue(new Callback<Object>() {
             @Override
             public void onResponse(Call<Object> call, Response<Object> response) {
                 Object obj = response.body();
@@ -277,12 +278,16 @@ public class TabHomeFragment extends BaseFragment {
 
     @Override
     public void initData() {
-        if (AppCache.getUserBean() == null) {
+        userBean = (UserBean) get().getIntent().getSerializableExtra("bean");
+        if(userBean==null){
+            userBean = AppCache.getUserBean();
+        }
+        if (userBean==null) {
             return;
         }
         apiService = RetrofitClient.getInstance().getApiService();
         HashMap carMap = new HashMap<>();
-        carMap.put("userid", AppCache.getUserBean().getUserid());
+        carMap.put("userid", userBean.getUserid());
         carMap.put("start", "0");
         carMap.put("limit", "20");
 

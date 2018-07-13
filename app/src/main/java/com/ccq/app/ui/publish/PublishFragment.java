@@ -177,6 +177,7 @@ public class PublishFragment extends BaseFragment {
         setImageSetting();
         //手机号
         if (AppCache.getUserBean() != null) etUserPhone.setText(AppCache.getUserBean().getMobile());
+
     }
 
     /**
@@ -184,7 +185,7 @@ public class PublishFragment extends BaseFragment {
      */
     private void initGridView() {
         gridView.setColumnWidth(DensityUtils.dp2px(get(), 82));
-        mediaAdapter = new ChooseMediaAdapter(new ArrayList<String>() , get());
+        mediaAdapter = new ChooseMediaAdapter(new ArrayList<String>() , get(),isLocal);
         gridView.setAdapter(mediaAdapter);
     }
 
@@ -215,16 +216,15 @@ public class PublishFragment extends BaseFragment {
             List<com.ccq.app.entity.Car.PicImgBean> imgBeans = car.getPic_img();
             List<Car.VideoBean> videoBeans = car.getVideoList();
             String[] imageIds = car.getPic().split(",");
+
             imgInfoMap = new HashMap<>();
 
             if (imgBeans != null) {
-
                 for (int i = 0; i < imgBeans.size(); i++) {
                     Car.PicImgBean img = imgBeans.get(i);
                     mMultiSelectPath.add(img.getSavename());
                     imgInfoMap.put(img.getSavename(), img.getId());
                 }
-
             }
 
             if (videoBeans != null) {
@@ -234,6 +234,8 @@ public class PublishFragment extends BaseFragment {
                     imgInfoMap.put(video.getOsspath(), video.getId());
                 }
             }
+            initGridView();
+            mediaAdapter.refresh(mMultiSelectPath);
         }
     }
 

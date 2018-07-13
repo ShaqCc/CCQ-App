@@ -23,6 +23,8 @@ import com.ccq.app.ui.message.SingleChatActivity;
 import com.ccq.app.ui.publish.BaseMapActivity;
 import com.ccq.app.ui.reprot.ReportCarActivity;
 import com.ccq.app.ui.user.LoginActivity;
+import com.ccq.app.ui.user.UserInfoActivity;
+import com.ccq.app.ui.user.UserSubscribeActivity;
 import com.ccq.app.utils.AppCache;
 import com.ccq.app.utils.DensityUtils;
 import com.ccq.app.utils.JmessageUtils;
@@ -164,6 +166,19 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
                     carHolder.ivMoments.setVisibility(View.GONE);
                 }
                 //点击事件
+                carHolder.itemIvHeader.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (AppCache.getUserBean() == null) {
+                            context.startActivity(new Intent(context, LoginActivity.class));
+                            return;
+                        }
+                        Intent intentt =  new Intent(context ,UserInfoActivity.class);
+                        intentt.putExtra("id",String.valueOf(carBean.getUserInfo().getUserid()));
+                        context.startActivity(intentt);
+                    }
+                });
+//                carHolder.itemIvHeader.setTag(carBean);
                 carHolder.itemTvMessage.setOnClickListener(this);
                 carHolder.itemTvMessage.setTag(carBean);
                 carHolder.itemTvCall.setOnClickListener(this);
@@ -214,6 +229,15 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
     public void onClick(View v) {
         Car car = (Car) v.getTag();
         switch (v.getId()) {
+//            case R.id.item_car_iv_header:
+//                if (AppCache.getUserBean() == null) {
+//                    context.startActivity(new Intent(context, LoginActivity.class));
+//                    return;
+//                }
+//                Intent intentt =  new Intent(context ,UserInfoActivity.class);
+//                intentt.putExtra("id",String.valueOf(car.getUserInfo().getUserid()));
+//                context.startActivity(intentt);
+//                break;
             case R.id.item_tv_call:
                 if (car != null)
                     Utils.call(context, car.getPhone());

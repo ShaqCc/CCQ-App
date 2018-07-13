@@ -350,7 +350,7 @@ public class Car implements Serializable{
     }
 
 
-    public class PicImgBean implements Serializable {
+    public static class PicImgBean implements Serializable {
 
         /**
          * id : 5488
@@ -377,7 +377,7 @@ public class Car implements Serializable{
         }
     }
 
-    public class VideoBean implements Serializable{
+    public static class VideoBean implements Serializable{
 
         private String id;
         private String name;

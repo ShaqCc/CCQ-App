@@ -3,6 +3,7 @@ package com.ccq.app.ui.user;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -91,6 +92,11 @@ public class UserSubscribeActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     //TODO  用户资料页面
+                List<SubscribeUser.SubUsr> mList = subscribeUser.getData();
+                String userid  = mList.get(position).getUserid();
+                Intent intent =  new Intent(UserSubscribeActivity.this ,UserInfoActivity.class);
+                intent.putExtra("id",userid);
+                startActivity(intent);
             }
         });
 
