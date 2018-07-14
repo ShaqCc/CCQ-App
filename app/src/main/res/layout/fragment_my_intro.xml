@@ -1,251 +1,245 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-     <LinearLayout
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-          <LinearLayout
-              android:id="@+id/llyout_mycar_info"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="horizontal"
-              android:padding="4dp"
-              >
+        <LinearLayout
+            android:id="@+id/llyout_mycar_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="4dp">
 
-               <LinearLayout
-                   android:layout_width="0dp"
-                   android:layout_height="wrap_content"
-                   android:orientation="vertical"
-                   android:layout_weight="1"
-                   android:gravity="center"
-                   >
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/tv_on_sale_count"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@color/white"
-                        android:gravity="center"
-                        android:text="0"
-                        android:textColor="#898787" />
+                <TextView
+                    android:id="@+id/tv_on_sale_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:gravity="center"
+                    android:text="0"
+                    android:textColor="@color/black_de" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@color/white"
-                        android:gravity="center"
-                        android:layout_marginTop="2dp"
-                        android:text="在售车源"
-                        android:textColor="#898787" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:background="@color/white"
+                    android:gravity="center"
+                    android:text="在售车源"
+                    android:textColor="@color/black_de" />
 
-               </LinearLayout>
+            </LinearLayout>
 
 
-               <View
-                   android:layout_width="0.3dp"
-                   android:layout_height="match_parent"
-                   android:layout_marginBottom="5dp"
-                   android:layout_marginTop="5dp"
-                   android:background="#d7d7d7" />
+            <View
+                android:layout_width="0.3dp"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:background="#d7d7d7" />
 
-               <LinearLayout
-                   android:layout_width="0dp"
-                   android:layout_height="wrap_content"
-                   android:orientation="vertical"
-                   android:layout_weight="1"
-                   android:gravity="center"
-                   >
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/tv_sale_out_count"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@color/white"
-                        android:gravity="center"
-                        android:text="0"
-                        android:textColor="#898787" />
+                <TextView
+                    android:id="@+id/tv_sale_out_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:gravity="center"
+                    android:text="0"
+                    android:textColor="@color/black_de" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@color/white"
-                        android:layout_marginTop="2dp"
-                        android:gravity="center"
-                        android:text="已售车源"
-                        android:textColor="#898787" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:background="@color/white"
+                    android:gravity="center"
+                    android:text="已售车源"
+                    android:textColor="@color/black_de" />
 
-               </LinearLayout>
+            </LinearLayout>
 
-          </LinearLayout>
+        </LinearLayout>
 
-          <View
-              android:layout_width="match_parent"
-              android:layout_height="1px"
-              android:layout_marginBottom="5dp"
-              android:layout_marginTop="5dp"
-              android:background="#d7d7d7" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:background="#d7d7d7" />
 
-          <RelativeLayout
-              android:id="@+id/llyout_mine_info"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:paddingLeft="@dimen/padding"
-              android:paddingRight="@dimen/padding"
-              >
+        <RelativeLayout
+            android:id="@+id/llyout_mine_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/padding"
+            android:paddingRight="@dimen/padding">
 
-               <TextView
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:background="@color/white"
-                   android:layout_marginTop="@dimen/margin"
-                   android:layout_alignParentLeft="true"
-                   android:text="|  简介"
-                   android:textStyle="bold"
-                   android:textSize="@dimen/LargeTextSize"
-                   android:textColor="#898787" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_marginTop="@dimen/margin"
+                android:background="@color/white"
+                android:text="|  简介"
+                android:textColor="@color/black_de"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
-               <TextView
-                   android:id="@+id/tv_myinfo_edit"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:background="@color/white"
-                   android:layout_marginTop="@dimen/margin"
-                   android:layout_alignParentRight="true"
-                   android:text="编辑"
-                   android:textColor="@color/steelblue" />
+            <TextView
+                android:id="@+id/tv_myinfo_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="@dimen/margin"
+                android:background="@color/white"
+                android:text="编辑"
+                android:textColor="@color/steelblue" />
 
-          </RelativeLayout>
+        </RelativeLayout>
 
-          <TextView
-              android:id="@+id/tv_myinfo_content"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:background="@color/white"
-              android:layout_marginTop="@dimen/margin"
-              android:text=""
-              android:paddingLeft="@dimen/padding"
-              android:paddingRight="@dimen/padding"
-              android:textSize="@dimen/LargeTextSize"
-              android:textColor="#898787" />
+        <TextView
+            android:id="@+id/tv_myinfo_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin"
+            android:background="@color/white"
+            android:paddingLeft="@dimen/padding"
+            android:paddingRight="@dimen/padding"
+            android:textColor="@color/black_de"
+            android:textSize="15sp" />
 
-          <View
-              android:layout_width="match_parent"
-              android:layout_height="1dp"
-              android:layout_marginBottom="5dp"
-              android:layout_marginTop="5dp"
-              android:background="#d7d7d7"
-              android:visibility="gone"
-              />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:background="#d7d7d7" />
 
-          <LinearLayout
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:orientation="vertical"
-              android:visibility="gone"
-              >
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-               <RelativeLayout
-                   android:id="@+id/llyout_mine_imgs"
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:paddingLeft="@dimen/padding"
-                   android:paddingRight="@dimen/padding"
+            <RelativeLayout
+                android:id="@+id/llyout_mine_imgs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-                   >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginTop="@dimen/margin"
+                    android:background="@color/white"
+                    android:paddingLeft="@dimen/padding"
+                    android:text="|  图片简介"
+                    android:textColor="@color/black_de"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@color/white"
-                        android:layout_marginTop="@dimen/margin"
-                        android:layout_alignParentLeft="true"
-                        android:text="|  图片简介"
-                        android:textStyle="bold"
-                        android:textSize="@dimen/LargeTextSize"
-                        android:textColor="#898787" />
+                <TextView
+                    android:id="@+id/tv_myimg_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="@dimen/margin"
+                    android:layout_marginRight="20dp"
+                    android:background="@color/white"
+                    android:text="管理"
+                    android:textColor="@color/steelblue" />
 
-                    <TextView
-                        android:id="@+id/tv_myimg_edit"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@color/white"
-                        android:layout_marginTop="@dimen/margin"
-                        android:layout_alignParentRight="true"
-                        android:text="管理"
-                        android:textColor="@color/steelblue" />
+            </RelativeLayout>
 
-               </RelativeLayout>
+            <com.youth.banner.Banner
+                android:id="@+id/myinfo_banner"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="14dp" />
 
-               <com.youth.banner.Banner
-                   android:id="@+id/myinfo_banner"
-                   android:layout_gravity="center"
-                   android:layout_margin="@dimen/padding"
-                   android:layout_width="match_parent"
-                   android:layout_height="330px" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:background="#d7d7d7" />
 
-               <View
-                   android:layout_width="match_parent"
-                   android:layout_height="1dp"
-                   android:layout_marginBottom="5dp"
-                   android:layout_marginTop="5dp"
-                   android:background="#d7d7d7" />
+            <RelativeLayout
+                android:id="@+id/llyout_mine_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/padding"
+                android:paddingRight="@dimen/padding">
 
-               <RelativeLayout
-                   android:id="@+id/llyout_mine_location"
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:paddingLeft="@dimen/padding"
-                   android:paddingRight="@dimen/padding"
-                   >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin"
+                    android:background="@color/white"
+                    android:text="|  地址"
+                    android:textColor="@color/black_de"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@color/white"
-                        android:layout_marginTop="@dimen/margin"
-                        android:layout_alignParentLeft="true"
-                        android:text="|  地址"
-                        android:textStyle="bold"
-                        android:textSize="@dimen/LargeTextSize"
-                        android:textColor="#898787" />
+                <TextView
+                    android:id="@+id/tv_mylocation_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="@dimen/margin"
+                    android:background="@color/white"
+                    android:text="管理"
+                    android:textColor="@color/steelblue" />
 
-                    <TextView
-                        android:id="@+id/tv_mylocation_edit"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@color/white"
-                        android:layout_marginTop="@dimen/margin"
-                        android:layout_alignParentRight="true"
-                        android:text="管理"
-                        android:textColor="@color/steelblue" />
+            </RelativeLayout>
 
-               </RelativeLayout>
+            <TextView
+                android:id="@+id/tv_my_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="10dp"
+                android:textColor="@color/black_de"
+                android:textSize="15sp" />
 
-               <FrameLayout
-                   android:id="@+id/layout_mylocation_map"
-                   android:layout_width="match_parent"
-                   android:layout_height="330px"
-                   android:layout_margin="@dimen/padding"
-                   >
-
-               </FrameLayout>
+            <com.baidu.mapapi.map.MapView
+                android:id="@+id/layout_mylocation_map"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="16dp" />
 
 
-               <View
-                   android:layout_width="match_parent"
-                   android:layout_height="1dp"
-                   android:layout_marginBottom="5dp"
-                   android:layout_marginTop="5dp"
-                   android:background="#d7d7d7" />
-          </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:background="#d7d7d7" />
+        </LinearLayout>
 
 
-
-     </LinearLayout>
+    </LinearLayout>
 
 </ScrollView>

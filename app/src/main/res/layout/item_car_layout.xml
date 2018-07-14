@@ -75,12 +75,18 @@
         </RelativeLayout>
 
 
-        <com.ccq.app.weidget.MainCarImageLayout
+        <!--<com.ccq.app.weidget.MainCarImageLayout-->
+            <!--android:id="@+id/item_car_gridview"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="12dp"-->
+            <!--app:sapcing="4dp" />-->
+
+        <com.ccq.app.weidget.MyGridView
             android:id="@+id/item_car_gridview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            app:sapcing="4dp" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
         <TextView
             android:id="@+id/item_car_tv_car_info"

@@ -72,6 +72,7 @@ public class TabHomeFragment extends BaseFragment {
         LinearLayoutManager layoutmanager = new LinearLayoutManager(getActivity());
         //设置RecyclerView 布局
         myHomeRecycleview.setLayoutManager(layoutmanager);
+        myHomeRecycleview.setNestedScrollingEnabled(false);
         //设置Adapter
         adapter = new MyPublishListAdapter(getActivity(), carList, new MyPublishListAdapter.onItemManageInterface() {
             @Override
@@ -279,17 +280,17 @@ public class TabHomeFragment extends BaseFragment {
     @Override
     public void initData() {
         userBean = (UserBean) get().getIntent().getSerializableExtra("bean");
-        if(userBean==null){
+        if (userBean == null) {
             userBean = AppCache.getUserBean();
         }
-        if (userBean==null) {
+        if (userBean == null) {
             return;
         }
         apiService = RetrofitClient.getInstance().getApiService();
-        HashMap carMap = new HashMap<>();
+        HashMap<String, String> carMap = new HashMap<>();
         carMap.put("userid", userBean.getUserid());
         carMap.put("start", "0");
-        carMap.put("limit", "20");
+        carMap.put("limit", "100");
 
         HttpClient.getInstance(get()).sendRequest(apiService.getUserCarList(carMap), new ProgressCallBack<List<Car>>(get(), true, "正在查询...") {
 
@@ -306,7 +307,7 @@ public class TabHomeFragment extends BaseFragment {
                     } else {
                         emptyView.setVisibility(View.GONE);
                         myHomeRecycleview.setVisibility(View.VISIBLE);
-                        adapter.notifyDataSetChanged();
+                        adapter.refresh(carList);
                     }
                 } else {
                     emptyView.setVisibility(View.VISIBLE);

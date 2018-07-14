@@ -18,6 +18,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.ccq.app.R;
 import com.ccq.app.weidget.Toasty;
+import com.dmcbig.mediapicker.PickerActivity;
+import com.dmcbig.mediapicker.PickerConfig;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -156,8 +158,7 @@ public class ChooseMediaAdapter extends BaseAdapter {
             ivPic.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(mActivity, ImageGridActivity.class);
-                    mActivity.startActivityForResult(intent, PublishFragment.RESULT_LOAD_IMAGE);
+                    choosePic(mActivity);
                 }
             });
         } else {
@@ -170,19 +171,32 @@ public class ChooseMediaAdapter extends BaseAdapter {
                 @Override
                 public void onClick(View view) {
                     //视频
-                    Intent intentPic = new Intent(
-                            Intent.ACTION_GET_CONTENT);
-                    intentPic.addCategory(Intent.CATEGORY_OPENABLE);
-                    intentPic.setType("video/*");
-                    mActivity.startActivityForResult(intentPic,
-                            PublishFragment.RESULT_LOAD_VIDEO);
-                    Toasty.info(view.getContext(), "选择视频。。。").show();
+                    chooseVideo(mActivity);
                 }
             });
         }
         return inflate;
     }
 
+    void choosePic(Activity activity) {
+        Intent intent = new Intent(activity, PickerActivity.class);
+        intent.putExtra(PickerConfig.SELECT_MODE, PickerConfig.PICKER_IMAGE);//default image and video (Optional)
+        long maxSize = 1024 * 1024 * 2;//long long long long类型
+        intent.putExtra(PickerConfig.MAX_SELECT_SIZE, maxSize); //default 180MB (Optional)
+        intent.putExtra(PickerConfig.MAX_SELECT_COUNT, 15);  //default 40 (Optional)
+//        intent.putExtra(PickerConfig.DEFAULT_SELECTED_LIST, defaultSelect); //(Optional)默认选中的照片
+        activity.startActivityForResult(intent, 200);
+    }
+
+    void chooseVideo(Activity activity) {
+        Intent intent = new Intent(activity, PickerActivity.class);
+        intent.putExtra(PickerConfig.SELECT_MODE, PickerConfig.PICKER_VIDEO);//default image and video (Optional)
+        long maxSize = 1024 * 1024 * 5;//long long long long类型
+        intent.putExtra(PickerConfig.MAX_SELECT_SIZE, maxSize); //default 180MB (Optional)
+        intent.putExtra(PickerConfig.MAX_SELECT_COUNT, 15);  //default 40 (Optional)
+//        intent.putExtra(PickerConfig.DEFAULT_SELECTED_LIST, defaultSelect); //(Optional)默认选中的照片
+        activity.startActivityForResult(intent, 400);
+    }
 
     public static Bitmap createVideoThumbnail(String filePath,int kind){
         Bitmap bitmap = null;
@@ -234,7 +248,4 @@ public class ChooseMediaAdapter extends BaseAdapter {
         }
         return bitmap;
     }
-
-
-
 }

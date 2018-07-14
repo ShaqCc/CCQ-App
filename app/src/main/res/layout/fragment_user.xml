@@ -4,162 +4,187 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <FrameLayout
-        android:id="@+id/fragment_usr"
-        android:layout_alignParentTop="true"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:id="@+id/user_iv_banner"
-            android:layout_width="match_parent"
-            android:layout_height="160dp"
-            android:scaleType="centerCrop"
-            android:src="@mipmap/user_banner" />
-
-        <include layout="@layout/include_user_info_card" />
-
-        <!--<RelativeLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content">-->
-
-        <!--<Button-->
-        <!--android:id = "@+id/btn_user_setting"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:minHeight="0dp"-->
-        <!--android:background="@drawable/bg_white_corner"-->
-        <!--android:layout_alignParentRight="true"-->
-        <!--android:paddingLeft="12dp"-->
-        <!--android:paddingTop="4dp"-->
-        <!--android:paddingBottom="4dp"-->
-        <!--android:layout_marginRight="-12dp"-->
-        <!--android:layout_marginTop="8dp"-->
-        <!--android:drawableLeft="@drawable/icon_setting"-->
-        <!--android:text="设置   "-->
-        <!--android:textColor="@color/lightgrey"/>-->
-        <!--</RelativeLayout>-->
+        android:layout_height="match_parent">
 
         <LinearLayout
-            android:id="@+id/btn_vip_setting"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right|center_vertical"
-            android:layout_marginRight="-12dp"
-            android:background="@drawable/bg_white_corner"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingBottom="4dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="20dp"
-            android:paddingTop="4dp">
-
-            <ImageView
-                android:id="@+id/usercenter_icon_vip"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/icon_no_vip" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:text="会员  >"
-                android:textColor="@color/google_blue"
-                android:textSize="14sp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/llyout_my_attention"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="70dp"
-            android:layout_marginTop="120dp"
-            android:orientation="horizontal"
-            android:background="@color/white"
-            android:padding="4dp"
-            android:visibility="gone">
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:id="@+id/fragment_usr"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/user_iv_banner"
+                        android:layout_width="match_parent"
+                        android:layout_height="160dp"
+                        android:scaleType="centerCrop"
+                        android:src="@mipmap/user_banner" />
+
+                    <RelativeLayout
+                        android:id="@+id/llyout_my_attention"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:padding="4dp">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:id="@+id/layout_my_subscribe"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/tv_my_attention_count"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="@color/white"
+                                    android:gravity="center"
+                                    android:text="0"
+                                    android:textColor="#000" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="2dp"
+                                    android:background="@color/white"
+                                    android:gravity="center"
+                                    android:text="关注"
+                                    android:textColor="#898787"
+                                    android:textSize="16sp" />
+
+                            </LinearLayout>
+
+
+                            <View
+                                android:layout_width="0.3dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginBottom="5dp"
+                                android:layout_marginLeft="16dp"
+                                android:layout_marginRight="16dp"
+                                android:layout_marginTop="5dp"
+                                android:background="#d7d7d7" />
+
+                            <LinearLayout
+                                android:id="@+id/layout_my_subscribe_fans"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/tv_my_fans_count"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="@color/white"
+                                    android:gravity="center"
+                                    android:text="0"
+                                    android:textColor="#000" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="2dp"
+                                    android:background="@color/white"
+                                    android:gravity="center"
+                                    android:text="粉丝"
+                                    android:textColor="#898787"
+                                    android:textSize="16sp" />
+
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <Button
+                            android:id="@+id/btn_invite_attation"
+                            android:layout_width="wrap_content"
+                            android:layout_height="30dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_gravity="center_vertical"
+                            android:background="@drawable/btn_style_one"
+                            android:gravity="center"
+                            android:paddingLeft="4dp"
+                            android:paddingRight="4dp"
+                            android:text="邀请关注"
+                            android:textColor="@color/white" />
+
+                    </RelativeLayout>
+
+                    <View style="@style/tranversLine" />
+                </LinearLayout>
+
+
+                <include layout="@layout/include_user_info_card" />
+
+
+                <LinearLayout
+                    android:id="@+id/btn_vip_setting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right|center_vertical"
+                    android:layout_marginRight="-12dp"
+                    android:background="@drawable/bg_white_corner"
+                    android:orientation="horizontal"
+                    android:paddingBottom="4dp"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="20dp"
+                    android:paddingTop="4dp">
+
+                    <ImageView
+                        android:id="@+id/usercenter_icon_vip"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/icon_no_vip" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:text="会员  >"
+                        android:textColor="@color/google_blue"
+                        android:textSize="14sp" />
+
+                </LinearLayout>
+            </FrameLayout>
 
             <LinearLayout
-                android:id="@+id/layout_my_subscribe"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tv_my_attention_count"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:gravity="center"
-                    android:text="0"
-                    android:textColor="#898787" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:background="@color/white"
-                    android:gravity="center"
-                    android:text="关注"
-                    android:textColor="#898787" />
-
-            </LinearLayout>
-
-
-            <View
-                android:layout_width="0.3dp"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="5dp"
-                android:layout_marginTop="5dp"
-                android:background="#d7d7d7" />
-
-            <LinearLayout
-                android:id="@+id/layout_my_subscribe_fans"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tv_my_fans_count"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:gravity="center"
-                    android:text="0"
-                    android:textColor="#898787" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:background="@color/white"
-                    android:gravity="center"
-                    android:text="粉丝"
-                    android:textColor="#898787" />
-
-            </LinearLayout>
-
-            <Button
-                android:id="@+id/btn_invite_attation"
                 android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_gravity="center_vertical"
-                android:background="@drawable/btn_style_one"
-                android:gravity="center"
-                android:paddingLeft="4dp"
-                android:paddingRight="4dp"
-                android:text="邀请关注"
-                android:textColor="@color/white" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
+                <com.ccq.app.weidget.SlidingTabLayout
+                    android:id="@+id/user_pagerTabStrip"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp">
+
+                </com.ccq.app.weidget.SlidingTabLayout>
+
+                <View style="@style/tranversLine" />
+
+                <com.ccq.app.weidget.CustomViewPager
+                    android:id="@+id/vp_my_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
         </LinearLayout>
-
-    </FrameLayout>
+    </ScrollView>
 
 
     <!--<LinearLayout-->
@@ -252,83 +277,46 @@
     <LinearLayout
         android:id="@+id/user_opt"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_height="40dp"
         android:layout_alignParentBottom="true"
-        android:visibility="gone"
-        >
+        android:orientation="horizontal"
+        android:visibility="gone">
 
         <TextView
-            android:layout_weight="1"
             android:id="@+id/tv_subscribe"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
             android:background="#dadada"
-            android:text="已关注"
             android:gravity="center"
             android:padding="8dp"
-            android:textSize="18sp"
-            />
+            android:text="已关注"
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/tv_sms"
-            android:layout_weight="1"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="消息"
-            android:padding="8dp"
-            android:gravity="center"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
             android:background="#46d430"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="消息"
             android:textColor="@color/white"
-            android:textSize="18sp"
-            />
+            android:textSize="18sp" />
 
 
         <TextView
             android:id="@+id/tv_tel"
-            android:layout_weight="1"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="呼叫"
-            android:padding="8dp"
-            android:gravity="center"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
             android:background="#00b81e"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="呼叫"
             android:textColor="@color/white"
-            android:textSize="18sp"
-
-            />
+            android:textSize="18sp" />
 
     </LinearLayout>
-
-
-    <LinearLayout
-        android:layout_above="@id/user_opt"
-        android:layout_below="@id/fragment_usr"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <com.ccq.app.weidget.SlidingTabLayout
-            android:id="@+id/user_pagerTabStrip"
-            android:layout_width="match_parent"
-            android:layout_height="45dp">
-
-        </com.ccq.app.weidget.SlidingTabLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#f7f7f7" />
-
-        <android.support.v4.view.ViewPager
-            android:id="@+id/vp_my_info"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        </android.support.v4.view.ViewPager>
-
-
-    </LinearLayout>
-
-
-
 </RelativeLayout>

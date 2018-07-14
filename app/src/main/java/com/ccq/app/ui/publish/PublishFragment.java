@@ -42,6 +42,8 @@ import com.ccq.app.utils.FileUtil;
 import com.ccq.app.utils.ToastUtils;
 import com.ccq.app.weidget.ListDialog;
 import com.ccq.app.weidget.MyGridView;
+import com.dmcbig.mediapicker.PickerConfig;
+import com.dmcbig.mediapicker.entity.Media;
 import com.qiniu.android.jpush.utils.StringUtils;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
@@ -164,7 +166,7 @@ public class PublishFragment extends BaseFragment {
     @Override
     protected void initView(View rootView) {
         car = (Car) get().getIntent().getSerializableExtra("bean");
-        if (car!=null) {
+        if (car != null) {
             //修改的
             isLocal = false;
             initCarInfo();
@@ -185,7 +187,7 @@ public class PublishFragment extends BaseFragment {
      */
     private void initGridView() {
         gridView.setColumnWidth(DensityUtils.dp2px(get(), 82));
-        mediaAdapter = new ChooseMediaAdapter(new ArrayList<String>() , get(),isLocal);
+        mediaAdapter = new ChooseMediaAdapter(new ArrayList<String>(), get(), isLocal);
         gridView.setAdapter(mediaAdapter);
     }
 
@@ -433,7 +435,7 @@ public class PublishFragment extends BaseFragment {
     }
 
     private boolean validate() {
-        if (brandModelBean == null) {
+        if (TextUtils.isEmpty(brandModelBean.getId())) {
             ToastUtils.show(get(), "请选择品牌型号");
             return false;
         }
@@ -441,12 +443,12 @@ public class PublishFragment extends BaseFragment {
             ToastUtils.show(get(), "请选择车龄");
             return false;
         }
-        if (TextUtils.isEmpty(etUserPhone.getText())) {
-            ToastUtils.show(get(), "请输入手机号码");
-            return false;
-        }
         if (mMultiSelectPath == null || mMultiSelectPath.size() < 4 || mMultiSelectPath.size() > 18) {
             ToastUtils.show(get(), "请上传4-18张图片");
+            return false;
+        }
+        if (TextUtils.isEmpty(etUserPhone.getText())) {
+            ToastUtils.show(get(), "请输入手机号码");
             return false;
         }
         return true;
@@ -480,7 +482,7 @@ public class PublishFragment extends BaseFragment {
                 //重置页面
                 reset();
                 //跳转到首页
-                ((MainActivity)getActivity()).setCurrentTab(0);
+                ((MainActivity) getActivity()).setCurrentTab(0);
             }
 
             @Override
@@ -498,7 +500,7 @@ public class PublishFragment extends BaseFragment {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                if (loading!=null && loading.isShowing()) {
+                if (loading != null && loading.isShowing()) {
                     loading.dismiss();
                 }
             }
@@ -634,23 +636,48 @@ public class PublishFragment extends BaseFragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode,resultCode,data);
-        if (requestCode == RESULT_LOAD_IMAGE && resultCode == ImagePicker.RESULT_CODE_ITEMS) {
-            ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
-            if (images != null && images.size() > 0) {
-                for (ImageItem item : images) {
-                    String path = item.path;
+        super.onActivityResult(requestCode, resultCode, data);
+//        if (requestCode == RESULT_LOAD_IMAGE && resultCode == ImagePicker.RESULT_CODE_ITEMS) {
+//            ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
+//            if (images != null && images.size() > 0) {
+//                for (ImageItem item : images) {
+//                    String path = item.path;
+//                    mMultiSelectPath.add(path);
+//                    photoPath.add(path);
+//                }
+//                mediaAdapter.refresh(mMultiSelectPath);
+//            }
+//        } else if (requestCode == RESULT_LOAD_VIDEO && resultCode == RESULT_OK){
+//            Uri videoUri = data.getData();
+//            String vPath = FileUtil.getPath(get(), videoUri);
+//            mMultiSelectPath.add(vPath);
+//            videoPath.add(vPath);
+//            mediaAdapter.refresh(mMultiSelectPath);
+//        }
+
+        if (requestCode == 200 && resultCode == PickerConfig.RESULT_CODE) {
+            //选择图片结果
+            ArrayList<Media> select = data.getParcelableArrayListExtra(PickerConfig.EXTRA_RESULT);
+            if (select != null) {
+                for (int i = 0; i < select.size(); i++) {
+                    String path = select.get(i).path;
                     mMultiSelectPath.add(path);
                     photoPath.add(path);
                 }
                 mediaAdapter.refresh(mMultiSelectPath);
             }
-        } else if (requestCode == RESULT_LOAD_VIDEO && resultCode == RESULT_OK){
-            Uri videoUri = data.getData();
-            String vPath = FileUtil.getPath(get(), videoUri);
-            mMultiSelectPath.add(vPath);
-            videoPath.add(vPath);
-            mediaAdapter.refresh(mMultiSelectPath);
+
+        } else if (requestCode == 400 && resultCode == PickerConfig.RESULT_CODE) {
+            //选择视频
+            ArrayList<Media> select = data.getParcelableArrayListExtra(PickerConfig.EXTRA_RESULT);
+            if (select != null) {
+                for (int i = 0; i < select.size(); i++) {
+                    String path = select.get(i).path;
+                    mMultiSelectPath.add(path);
+                    videoPath.add(path);
+                }
+                mediaAdapter.refresh(mMultiSelectPath);
+            }
         }
 
         if (resultCode == RESULT_OK) {

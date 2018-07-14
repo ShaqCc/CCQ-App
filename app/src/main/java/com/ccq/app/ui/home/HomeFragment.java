@@ -32,6 +32,7 @@ import com.ccq.app.ui.home.adapter.OrderAdapter;
 import com.ccq.app.ui.home.adapter.TypeAdapter;
 import com.ccq.app.ui.home.adapter.YearAdapter;
 import com.ccq.app.ui.user.OpenVipActivity;
+import com.ccq.app.utils.DensityUtils;
 import com.ccq.app.utils.DialogUtils;
 import com.ccq.app.utils.GlideImageLoader;
 import com.ccq.app.utils.RequestCode;
@@ -102,6 +103,8 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
     private TextView tvCity;
     @BindView(R.id.home_checkbox_parent)
     View homeCheckBoxParent;
+    private int statusBarHeight;
+    private int chockBoxHeight;
 
 
     @OnClick(R.id.user_iv_header)
@@ -141,9 +144,9 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
         @Override
         public void onDismiss() {
             resetCheckBoxState();
-            WindowManager.LayoutParams attributes = getActivity().getWindow().getAttributes();
-            attributes.alpha = 1f;
-            getActivity().getWindow().setAttributes(attributes);
+//            WindowManager.LayoutParams attributes = getActivity().getWindow().getAttributes();
+//            attributes.alpha = 1f;
+//            getActivity().getWindow().setAttributes(attributes);
         }
     };
     private String[] orderStringArray;
@@ -264,6 +267,10 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
         tvAge = tagAge.findViewById(R.id.tag_tv_content);
         tagAge.setOnClickListener(this);
         EventBus.getDefault().register(this);
+
+        statusBarHeight = ScreenUtil.getStatusBarHeight(get());
+        chockBoxHeight = DensityUtils.dp2px(get(),42);
+        DialogUtils.setPopWindowOffset(chockBoxHeight + statusBarHeight);
     }
 
     private void refresh() {
@@ -399,7 +406,7 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
      */
     @Override
     public void showTypeList(List<TypeBean.NumberListBean> list) {
-        DialogUtils.showListPopWindow(get(), homeHeader, new TypeAdapter(list), new DialogUtils.OnPopItemClickListener() {
+        DialogUtils.showListPopWindow(get(), homeCheckBoxParent, new TypeAdapter(list), new DialogUtils.OnPopItemClickListener() {
             @Override
             public void OnPopItemClick(Object o, int position) {
                 TypeBean.NumberListBean type = (TypeBean.NumberListBean) o;
@@ -422,7 +429,7 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
      */
     @Override
     public void showYearList(List<YearLimitBean> list) {
-        DialogUtils.showListPopWindow(get(), homeHeader, new YearAdapter(list), new DialogUtils.OnPopItemClickListener() {
+        DialogUtils.showListPopWindow(get(), homeCheckBoxParent, new YearAdapter(list), new DialogUtils.OnPopItemClickListener() {
             @Override
             public void OnPopItemClick(Object o, int position) {
                 YearLimitBean year = (YearLimitBean) o;
@@ -498,7 +505,7 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
                 resetCheckBoxState();
                 bannerRbOrder.setChecked(true);
                 scrollToTop();
-                DialogUtils.showListPopWindow(get(), homeHeader, orderAdapter, new DialogUtils.OnPopItemClickListener() {
+                DialogUtils.showListPopWindow(get(), homeCheckBoxParent, orderAdapter, new DialogUtils.OnPopItemClickListener() {
                     @Override
                     public void OnPopItemClick(Object o, int position) {
                         HomeCarParams.getInstance().put("order", String.valueOf(position));

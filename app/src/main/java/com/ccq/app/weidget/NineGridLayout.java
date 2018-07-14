@@ -123,7 +123,7 @@ public abstract class NineGridLayout extends ViewGroup {
 
         if (size == 1) {
             String url = mUrlList.get(0);
-            RatioImageView imageView = createImageView(0, url);
+            ImageView imageView = createImageView(0, url);
 
             //避免在ListView中一张图未加载成功时，布局高度受其他item影响
             LayoutParams params = getLayoutParams();
@@ -145,7 +145,7 @@ public abstract class NineGridLayout extends ViewGroup {
 
         for (int i = 0; i < size; i++) {
             String url = mUrlList.get(i);
-            RatioImageView imageView;
+            ImageView imageView;
             if (!mIsShowAll) {
                 if (i < MAX_COUNT - 1) {
                     imageView = createImageView(i, url);
@@ -176,8 +176,8 @@ public abstract class NineGridLayout extends ViewGroup {
         setLayoutParams(params);
     }
 
-    private RatioImageView createImageView(final int i, final String url) {
-        RatioImageView imageView = new RatioImageView(mContext);
+    private ImageView createImageView(final int i, final String url) {
+        ImageView imageView = new ImageView(mContext);
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         imageView.setOnClickListener(new OnClickListener() {
             @Override
@@ -193,7 +193,7 @@ public abstract class NineGridLayout extends ViewGroup {
      * @param url
      * @param showNumFlag 是否在最大值的图片上显示还有未显示的图片张数
      */
-    private void layoutImageView(RatioImageView imageView, int i, String url, boolean showNumFlag) {
+    private void layoutImageView(ImageView imageView, int i, String url, boolean showNumFlag) {
         final int singleWidth = (int) ((mTotalWidth - mSpacing * (3 - 1)) / 3);
         int singleHeight = singleWidth;
 
@@ -272,7 +272,7 @@ public abstract class NineGridLayout extends ViewGroup {
 
     }
 
-    protected void setOneImageLayoutParams(RatioImageView imageView, int width, int height) {
+    protected void setOneImageLayoutParams(ImageView imageView, int width, int height) {
         imageView.setLayoutParams(new LayoutParams(width, height));
         imageView.layout(0, 0, width, height);
 
@@ -313,9 +313,9 @@ public abstract class NineGridLayout extends ViewGroup {
      * @param parentWidth 父控件宽度
      * @return true 代表按照九宫格默认大小显示，false 代表按照自定义宽高显示
      */
-    protected abstract boolean displayOneImage(RatioImageView imageView, String url, int parentWidth);
+    protected abstract boolean displayOneImage(ImageView imageView, String url, int parentWidth);
 
-    protected abstract void displayImage(RatioImageView imageView, String url);
+    protected abstract void displayImage(ImageView imageView, String url);
 
     protected abstract void onClickImage(int position, String url, List<String> urlList);
 }

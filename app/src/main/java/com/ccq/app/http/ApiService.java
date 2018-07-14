@@ -13,6 +13,7 @@ import com.ccq.app.entity.Province;
 import com.ccq.app.entity.SubscribeUser;
 import com.ccq.app.entity.TypeBean;
 import com.ccq.app.entity.UserBean;
+import com.ccq.app.entity.UserLocationBean;
 import com.ccq.app.entity.WeixinPayBean;
 import com.ccq.app.entity.WxLoginResultBean;
 import com.ccq.app.entity.WxUserInfo;
@@ -275,6 +276,16 @@ public interface ApiService {
     @POST("/user/subscribe/check")
     Call<Object> checkSubscribe(@Query("userid")String userid,@Query("subuser")String subuser);
 
+
+    @POST("/user/addr")
+    Call<UserLocationBean> getUserLocation(@Query("userid")String userid);
+
+
+    @POST("/user/imglist/getlist")
+    Call<Object> getUserImageList(@Query("userid")String userid);
+
+    @POST("/addr/local")
+    Call<BaseBean> getAddressByLgt(@Query("phone")String phone,@Query("longitude")String longitude,@Query("latitude")String latitude);
 
 //    ------------------------------------微信登陆相关接口-----------------------------------------------
 

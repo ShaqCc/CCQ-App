@@ -92,6 +92,11 @@ public class  MyPublishListAdapter extends RecyclerView.Adapter<MyPublishListAda
 
     }
 
+    public void refresh(List<Car> data){
+        this.mCarList = data;
+        notifyDataSetChanged();
+    }
+
     private String getImageUrl(String url) {
         return url + "!300auto";
     }

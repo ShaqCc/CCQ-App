@@ -22,6 +22,8 @@ import com.ccq.app.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import uk.co.senab.photoview.PhotoView;
+
 /**************************************************
  *
  * 作者：巴银
@@ -66,7 +68,7 @@ public class ImageWatchActivity extends FragmentActivity {
         viewPager.setCurrentItem(currentPosition);
     }
 
-    private static class ImageAdapter extends PagerAdapter {
+    private class ImageAdapter extends PagerAdapter {
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
@@ -75,9 +77,15 @@ public class ImageWatchActivity extends FragmentActivity {
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            ImageView imageView = (ImageView) LayoutInflater.from(container.getContext()).inflate(R.layout.item_imageview, container, false);
+            PhotoView imageView = (PhotoView) LayoutInflater.from(container.getContext()).inflate(R.layout.item_imageview, container, false);
             Glide.with(container.getContext()).load(imageUrlList.get(position)).into(imageView);
             container.addView(imageView);
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    finish();
+                }
+            });
             return imageView;
         }
 

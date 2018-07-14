@@ -31,6 +31,7 @@ import com.ccq.app.utils.JmessageUtils;
 import com.ccq.app.utils.ToastUtils;
 import com.ccq.app.utils.Utils;
 import com.ccq.app.weidget.MainCarImageLayout;
+import com.ccq.app.weidget.MyGridView;
 import com.ccq.app.weidget.Toasty;
 
 import java.util.ArrayList;
@@ -73,6 +74,7 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
     private Activity context;
 
     private int dataStatus = STATUS_DATA;
+    private int gridWidth;
 
 
     public HomeAdapter(List<Car> list) {
@@ -147,17 +149,19 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
                 //发布时间
                 carHolder.itemTvPublishTime.setText(carBean.getAddtime_format());
                 //图片
-                ViewGroup.LayoutParams layoutParams = carHolder.itemGridview.getLayoutParams();
-                layoutParams.width = DensityUtils.dp2px(context, 90 * 3 + 8);
-                carHolder.itemGridview.setLayoutParams(layoutParams);
+//                ViewGroup.LayoutParams layoutParams = carHolder.itemGridview.getLayoutParams();
+//                layoutParams.width = DensityUtils.dp2px(context, 90 * 3 + 8);
+//                carHolder.itemGridview.setLayoutParams(layoutParams);
                 if (carBean.getPic_img() == null || carBean.getPic_img().size() == 0) {
                     carHolder.itemGridview.setVisibility(View.GONE);
                 } else {
                     carHolder.itemGridview.setVisibility(View.VISIBLE);
-                    carHolder.itemGridview.setIsShowAll(false);
-                    List<String> urlList = getImageUrlList(carBean.getPic_img());
-                    carHolder.itemGridview.setUrlList(urlList);
-
+                    ArrayList<String> urlList = getImageUrlList(carBean.getPic_img());
+                    if (gridWidth == 0) {
+                        carHolder.itemGridview.measure(0, 0);
+                        gridWidth = carHolder.itemGridview.getMeasuredWidth();
+                    }
+                    carHolder.itemGridview.setAdapter(new PictureAdapter(urlList, carHolder.itemGridview, gridWidth));
                 }
                 //是否分享
                 if (carBean.getIsshare().equals("1")) {
@@ -173,8 +177,8 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
                             context.startActivity(new Intent(context, LoginActivity.class));
                             return;
                         }
-                        Intent intentt =  new Intent(context ,UserInfoActivity.class);
-                        intentt.putExtra("id",String.valueOf(carBean.getUserInfo().getUserid()));
+                        Intent intentt = new Intent(context, UserInfoActivity.class);
+                        intentt.putExtra("id", String.valueOf(carBean.getUserInfo().getUserid()));
                         context.startActivity(intentt);
                     }
                 });
@@ -215,7 +219,7 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
         }
     }
 
-    private List<String> getImageUrlList(List<Car.PicImgBean> pic_img) {
+    private ArrayList<String> getImageUrlList(List<Car.PicImgBean> pic_img) {
         ArrayList<String> result = new ArrayList<>();
         for (int i = 0; i < pic_img.size(); i++) {
             result.add(pic_img.get(i).getSavename() + "!auto");
@@ -366,7 +370,7 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
         @BindView(R.id.item_car_tv_car_price)
         TextView itemTvCarPrice;
         @BindView(R.id.item_car_gridview)
-        MainCarImageLayout itemGridview;
+        MyGridView itemGridview;
         @BindView(R.id.item_car_tv_car_info)
         TextView itemTvCarInfo;
         @BindView(R.id.item_car_tv_car_location)

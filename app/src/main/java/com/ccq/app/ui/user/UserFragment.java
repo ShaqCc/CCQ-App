@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -78,7 +79,7 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
     @BindView(R.id.tv_my_fans_count)
     TextView tvMyFansCount;
     @BindView(R.id.llyout_my_attention)
-    LinearLayout llyoutMyAttention;
+    RelativeLayout llyoutMyAttention;
     @BindView(R.id.layout_my_subscribe)
     LinearLayout layoutMySubscribe;
     @BindView(R.id.layout_my_subscribe_fans)
@@ -124,7 +125,7 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
 
     @OnClick(R.id.user_iv_header)
     public void login() {
-        if(userBean == null){
+        if (userBean == null) {
             userBean = AppCache.getUserBean();
         }
         if (userBean != null) {
@@ -136,7 +137,7 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
         }
     }
 
-    List<String> titles = new ArrayList<String>(Arrays.asList("发布", "简介"));
+    List<String> titles = new ArrayList<String>(Arrays.asList("首页", "求购", "简介"));
     List<BaseFragment> fragments = new ArrayList<BaseFragment>();
 
     @Override
@@ -153,7 +154,7 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
     protected void initView(View rootView) {
 //        EventBus.getDefault().register(this);
         userBean = (UserBean) get().getIntent().getSerializableExtra("bean");
-        if(userBean!=null){
+        if (userBean != null) {
             isMine = false;
             userOpt.setVisibility(View.VISIBLE);
             layoutMySubscribe.setClickable(false);
@@ -166,17 +167,17 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
 
     @Override
     public void initData() {
-        if(userBean==null){
+        if (userBean == null) {
             userBean = AppCache.getUserBean();
-        }else{
-            RetrofitClient.getInstance().getApiService().checkSubscribe(AppCache.getUserBean().getUserid(),userBean.getUserid()).enqueue(new Callback<Object>() {
+        } else {
+            RetrofitClient.getInstance().getApiService().checkSubscribe(AppCache.getUserBean().getUserid(), userBean.getUserid()).enqueue(new Callback<Object>() {
 
                 @Override
                 public void onResponse(Call<Object> call, Response<Object> response) {
                     Map<String, Object> map = (Map<String, Object>) response.body();
                     if (0.0 == (Double) map.get("code")) {
                         tvSubscribe.setText("已关注");
-                    }else{
+                    } else {
                         tvSubscribe.setText("未关注");
                     }
                 }
@@ -221,7 +222,7 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
     @Override
     public void onResume() {
         super.onResume();
-        if(isMine){
+        if (isMine) {
             String unionId = (String) SharedPreferencesUtils.getParam(get(), Constants.KEY_UNIONID, "");
             if (!TextUtils.isEmpty(unionId)) {
                 showProgress("刷新中...");
@@ -256,7 +257,7 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
     }
 
     public void setView() {
-        if(userBean==null){
+        if (userBean == null) {
             userBean = AppCache.getUserBean();
         }
         tvName.setText(userBean.getNickname());
@@ -266,15 +267,17 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
 //        llyoutMyInfo.setVisibility(View.VISIBLE);
         llyoutMyAttention.setVisibility(View.VISIBLE);
         fragments.add(new TabHomeFragment());
+        fragments.add(new WantBuyFragment());
         fragments.add(new TabIntroFragment());
         adapter = new MyFragmentAdapter(getActivity().getSupportFragmentManager(), fragments, titles);
 
         vpMyInfo.setAdapter(adapter);
+
         pagerTabStrip.setDistributeEvenly(true);
         pagerTabStrip.setCustomTabView(R.layout.custorm_tab_layout, R.id.tv_tab);
         pagerTabStrip.setSelectedIndicatorColors(getActivity().getResources().getColor(R.color.colorPrimary));
         pagerTabStrip.setTitleTextColor(getResources().getColor(R.color.black_de), getResources().getColor(R.color.text_black_color));
-        pagerTabStrip.setTabStripWidth(ScreenUtil.getDisplayWidth() / 2);
+        pagerTabStrip.setTabStripWidth(ScreenUtil.getDisplayWidth() / 3);
         pagerTabStrip.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -363,7 +366,7 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
         unbinder.unbind();
     }
 
-    @OnClick({R.id.layout_my_subscribe, R.id.layout_my_subscribe_fans, R.id.btn_vip_setting, R.id.btn_invite_attation,R.id.tv_sms,R.id.tv_tel,R.id.tv_subscribe})
+    @OnClick({R.id.layout_my_subscribe, R.id.layout_my_subscribe_fans, R.id.btn_vip_setting, R.id.btn_invite_attation, R.id.tv_sms, R.id.tv_tel, R.id.tv_subscribe})
     public void onViewClicked(View view) {
         switch (view.getId()) {
 //            case R.id.layout_home:
@@ -388,7 +391,6 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
                 startActivity(new Intent(get(), OpenVipActivity.class));
                 break;
             case R.id.btn_invite_attation:
-
 
 
                 break;
@@ -432,13 +434,13 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
 
                 break;
             case R.id.tv_tel:
-                Utils.call(get(),userBean.getMobile());
+                Utils.call(get(), userBean.getMobile());
 
                 break;
 
             case R.id.tv_subscribe:
                 //订阅
-                if("未关注".equals(tvSubscribe.getText())) {
+                if ("未关注".equals(tvSubscribe.getText())) {
                     RetrofitClient.getInstance().getApiService().setUserSubAdd(AppCache.getUserBean().getUserid(), userBean.getUserid()).enqueue(new Callback<Object>() {
 
                         @Override
@@ -455,7 +457,7 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
 
                         }
                     });
-                }else{
+                } else {
                     showDialog("是否要取消关注");
 
                 }
@@ -464,8 +466,7 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
     }
 
 
-
-    private void showDialog(String message){
+    private void showDialog(String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(get());
         builder.setTitle("操作提示：");
         builder.setMessage(message);

@@ -26,27 +26,31 @@ public class DialogUtils {
 
     private static PopupWindow popupWindow;
     private static ListView listview;
+    private static int popWindowOffset;
 
+    public static void setPopWindowOffset(int offset) {
+        popWindowOffset = offset;
+    }
 
 
     public static void showListPopWindow(Activity activity, View view, final BaseAdapter adapter,
-                                         final OnPopItemClickListener lis,PopupWindow.OnDismissListener dismissListener){
-        if (popupWindow==null) initPop(activity);
+                                         final OnPopItemClickListener lis, PopupWindow.OnDismissListener dismissListener) {
+        if (popupWindow == null) initPop(activity);
         listview.setAdapter(adapter);
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if (lis!=null){
-                    lis.OnPopItemClick(adapter.getItem(i),i);
+                if (lis != null) {
+                    lis.OnPopItemClick(adapter.getItem(i), i);
                 }
                 closePop();
             }
         });
         popupWindow.showAsDropDown(view);
         //背景变灰
-        WindowManager.LayoutParams attributes = activity.getWindow().getAttributes();
-        attributes.alpha = 0.3f;
-        activity.getWindow().setAttributes(attributes);
+//        WindowManager.LayoutParams attributes = activity.getWindow().getAttributes();
+//        attributes.alpha = 0.3f;
+//        activity.getWindow().setAttributes(attributes);
         popupWindow.setOnDismissListener(dismissListener);
     }
 
@@ -54,8 +58,8 @@ public class DialogUtils {
         if (popupWindow != null) popupWindow.dismiss();
     }
 
-    public interface OnPopItemClickListener<T>{
-        void OnPopItemClick(T t,int position);
+    public interface OnPopItemClickListener<T> {
+        void OnPopItemClick(T t, int position);
     }
 
     private static void initPop(Activity activity) {
@@ -63,14 +67,20 @@ public class DialogUtils {
         popupWindow.setOutsideTouchable(false);
         popupWindow.setTouchable(true);
         popupWindow.setFocusable(true);
-        popupWindow.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#00000000")));
+        popupWindow.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#90000000")));
         popupWindow.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
-        popupWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+        int height = SystemUtil.getScreenHeight(activity) - popWindowOffset;
+        popupWindow.setHeight(height);
         View contentView = LayoutInflater.from(activity).inflate(R.layout.pop_list_layout, null, false);
         popupWindow.setContentView(contentView);
         listview = contentView.findViewById(R.id.pop_listview);
+        contentView.findViewById(R.id.pop_root).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                closePop();
+            }
+        });
 //        ViewGroup.LayoutParams layoutParams = listview.getLayoutParams();
-//        layoutParams.height = SystemUtil.getScreenHeight(activity)/2;
 //        listview.setLayoutParams(layoutParams);
 
         // 按下android回退物理键 PopipWindow消失解决

@@ -91,7 +91,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:3.8.1'
     implementation project(':banner-lib')
     //图片查看器
-//    implementation 'com.ycjiang:imgepreviewlibrary:1.0.1'
+    implementation 'com.dmcBig:mediapicker:2.7'
     implementation project(':dialog-lib')
     implementation project(':index-lib')
     //微信登录，支付，分享，收藏，统计
@@ -99,14 +99,14 @@ dependencies {
     implementation project(':messagelist')
     implementation 'com.android.support:multidex:1.0.3'
     //权限
-    implementation 'pub.devrel:easypermissions:0.4.0'
+//    implementation 'pub.devrel:easypermissions:0.4.0'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
-    implementation 'io.reactivex.rxjava2:rxjava:2.x.x'
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.9'
     //极光
     implementation project(':chatapp')
     implementation 'com.google.android:flexbox:0.2.6'
     implementation files('libs/jdom.jar')
     //implementation 'io.github.mayubao:pay_library:1.0.0'
-    implementation 'com.github.bumptech.glide:glide:4.7.1'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
+//    implementation 'com.github.bumptech.glide:glide:4.7.1'
+//    annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
 }
