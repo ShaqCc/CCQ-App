@@ -172,7 +172,10 @@ public class UserFragment extends BaseFragment<UserPresenter> implements IWXAPIE
         userBean = (UserBean) get().getIntent().getSerializableExtra("bean");
         if (userBean != null) {
             isMine = false;
+            //底部操作
             userOpt.setVisibility(View.VISIBLE);
+            //会员
+            btnUserVip.setVisibility(View.GONE);
             layoutMySubscribe.setClickable(false);
             layoutMySubscribe.setFocusable(false);
             layoutMySubscribeFans.setClickable(false);
@@ -262,7 +265,11 @@ public class UserFragment extends BaseFragment<UserPresenter> implements IWXAPIE
         tvLocation.setText(userBean.getProvinceName() + "·" + userBean.getCityName());
 
         llyoutMyAttention.setVisibility(View.VISIBLE);
-        fragments.add(new TabHomeFragment());
+        TabHomeFragment tabHomeFragment = new TabHomeFragment();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(TabHomeFragment.KEY_IS_SELF, isMine);
+        tabHomeFragment.setArguments(bundle);
+        fragments.add(tabHomeFragment);
         fragments.add(new WantBuyFragment());
         fragments.add(new TabIntroFragment());
         adapter = new MyFragmentAdapter(getActivity().getSupportFragmentManager(), fragments, titles);
@@ -433,7 +440,7 @@ public class UserFragment extends BaseFragment<UserPresenter> implements IWXAPIE
                 break;
             case R.id.tv_subscribe:
                 //订阅
-                if ("未关注".equals(tvSubscribe.getText())) {
+                if ("未订阅".equals(tvSubscribe.getText())) {
                     RetrofitClient.getInstance().getApiService().setUserSubAdd(AppCache.getUserBean().getUserid(), userBean.getUserid()).enqueue(new Callback<Object>() {
 
                         @Override
@@ -441,7 +448,7 @@ public class UserFragment extends BaseFragment<UserPresenter> implements IWXAPIE
                             Map<String, Object> map = (Map<String, Object>) response.body();
                             if (0.0 == (Double) map.get("code")) {
                                 ToastUtils.show(get(), "设置成功");
-                                tvSubscribe.setText("已关注");
+                                tvSubscribe.setText((String) map.get("message"));
                             }
                         }
 
@@ -506,7 +513,7 @@ public class UserFragment extends BaseFragment<UserPresenter> implements IWXAPIE
                         Map<String, Object> map = (Map<String, Object>) response.body();
                         if (0.0 == (Double) map.get("code")) {
                             ToastUtils.show(get(), "设置成功");
-                            tvSubscribe.setText("未关注");
+                            tvSubscribe.setText((String) map.get("message"));
                         }
 
                     }

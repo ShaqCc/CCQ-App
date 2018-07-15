@@ -1,6 +1,7 @@
 package com.ccq.app.ui.user;
 
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -66,6 +67,9 @@ public class UserInfoActivity extends BaseActivity {
         FragmentTransaction transaction = manager.beginTransaction();
 
         Fragment fragment = new UserFragment();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(TabHomeFragment.KEY_IS_SELF,false);
+        fragment.setArguments(bundle);
         transaction.add(R.id.add_fragment,fragment);
         transaction.commit();
     }
