@@ -135,12 +135,13 @@ public interface ApiService {
     Call<Object> addCarInfo(@QueryMap Map<String, Object> carParams);
 
 
+    @Multipart
     @POST("/uploadimage")
-    Call<Object> uploadBannerImage(@Part MultipartBody.Part file);
+    Call<BaseBean> uploadBannerImage(@Part MultipartBody.Part file);
 
     @Multipart
     @POST("/user/modifybanner")
-    Call<BaseBean> changeUserBanner(@Query("userid")String userID,@Part MultipartBody.Part file);
+    Call<BaseBean> changeUserBanner(@Query("userid") String userID, @Part MultipartBody.Part file);
 
     /**
      * 修改车辆信息
@@ -173,7 +174,7 @@ public interface ApiService {
     Call<Object> setUserSubRemind(@QueryMap Map<String, String> carParams);
 
     @POST("/user/subscribe/add")
-    Call<Object> setUserSubAdd(@Query("userid")String userid,@Query("subuser")String subuser);
+    Call<Object> setUserSubAdd(@Query("userid") String userid, @Query("subuser") String subuser);
 
     @POST("/user/subscribe/remove")
     Call<Object> setUserSubRemove(@QueryMap Map<String, String> carParams);
@@ -275,32 +276,42 @@ public interface ApiService {
     Call<Object> delCarImg(@Query("cid") String cid);
 
     @POST("/user/info/saveerweima")
-    Call<Object> saveUserErWeiMa(@Query("userid") String userid, @Query("erweima")String url);
+    Call<Object> saveUserErWeiMa(@Query("userid") String userid, @Query("erweima") String url);
 
     @POST("/car/report")
-    Call<Object> reportCar(@Query("userid")String userid,@Query("carid")String carid,
-                           @Query("cateid")String cateid,@Query("content")String content,
-                           @Query("typeid")String typeid);
-
+    Call<Object> reportCar(@Query("userid") String userid, @Query("carid") String carid,
+                           @Query("cateid") String cateid, @Query("content") String content,
+                           @Query("typeid") String typeid);
 
 
     @POST("/user/subscribe/check")
-    Call<BaseBean> checkSubscribe(@Query("userid")String userid,@Query("subuser")String subuser);
+    Call<BaseBean> checkSubscribe(@Query("userid") String userid, @Query("subuser") String subuser);
 
 
     @POST("/user/addr")
-    Call<UserLocationBean> getUserLocation(@Query("userid")String userid);
+    Call<UserLocationBean> getUserLocation(@Query("userid") String userid);
 
 
     @POST("/user/imglist/getlist")
-    Call<Object> getUserImageList(@Query("userid")String userid);
+    Call<Object> getUserImageList(@Query("userid") String userid);
 
     @POST("/addr/local")
-    Call<BaseBean> getAddressByLgt(@Query("phone")String phone,@Query("longitude")String longitude,@Query("latitude")String latitude);
+    Call<BaseBean> getAddressByLgt(@Query("phone") String phone, @Query("longitude") String longitude, @Query("latitude") String latitude);
 
 
     @POST("/user/banner")
-    Call<UserBanner> getUserBanner(@Query("userid")String userid);
+    Call<UserBanner> getUserBanner(@Query("userid") String userid);
+
+    /**
+     * 求购列表
+     * province  省ID
+     * city      市 ID
+     * userid   用户ID，默认0，求购列表，大于0我发布的
+     * page     页码
+     * size     每页显示数量
+     */
+    @POST("/qiugou/list")
+    Call<List<Object>> getQiuGouList(@QueryMap Map<String, Object> params);
 
 //    ------------------------------------微信登陆相关接口-----------------------------------------------
 

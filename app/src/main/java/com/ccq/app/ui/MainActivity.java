@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
@@ -22,6 +23,7 @@ import com.ccq.app.ui.message.MessageFragment;
 import com.ccq.app.ui.publish.PublishFragment;
 import com.ccq.app.ui.user.OpenVipActivity;
 import com.ccq.app.ui.user.SetWechatQRActivity;
+import com.ccq.app.ui.user.TabHomeFragment;
 import com.ccq.app.ui.user.UserFragment;
 import com.ccq.app.utils.AppCache;
 import com.ccq.app.utils.Constants;
@@ -88,7 +90,12 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
         mFragments.add(new PublishFragment());
         conversationListFragment = new MessageFragment();
         mFragments.add(conversationListFragment);
-        mFragments.add(new UserFragment());
+        //个人中心
+        UserFragment user = new UserFragment();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(TabHomeFragment.KEY_IS_SELF,true);
+        user.setArguments(bundle);
+        mFragments.add(user);
         mFragmentAdapter = new MainFragmentAdapter(getSupportFragmentManager(), mFragments);
         mMainViewpager.setAdapter(mFragmentAdapter);
         mMainViewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {

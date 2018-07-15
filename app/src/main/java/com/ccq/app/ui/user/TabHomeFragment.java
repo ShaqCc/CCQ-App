@@ -55,6 +55,8 @@ public class TabHomeFragment extends BaseFragment {
     List<Car> carList = new ArrayList<>();
 
     Car editCar;
+    public static String KEY_IS_SELF = "is_self";
+    private boolean isUserSelf;
 
     @Override
     protected int inflateContentView() {
@@ -68,6 +70,8 @@ public class TabHomeFragment extends BaseFragment {
 
     @Override
     protected void initView(View rootView) {
+        if (getArguments() != null)
+            isUserSelf = getArguments().getBoolean(KEY_IS_SELF, true);
         emptyView.setVisibility(View.GONE);
         LinearLayoutManager layoutmanager = new LinearLayoutManager(getActivity());
         //设置RecyclerView 布局
@@ -87,7 +91,7 @@ public class TabHomeFragment extends BaseFragment {
                 getCarLocation();
 
             }
-        });
+        }, isUserSelf);
         myHomeRecycleview.setAdapter(adapter);
     }
 

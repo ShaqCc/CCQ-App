@@ -15,27 +15,22 @@ import com.bumptech.glide.Glide;
 import com.ccq.app.R;
 import com.ccq.app.base.BaseActivity;
 import com.ccq.app.base.BasePresenter;
+import com.ccq.app.base.CcqApp;
+import com.ccq.app.entity.BaseBean;
 import com.ccq.app.http.ApiService;
 import com.ccq.app.http.RetrofitClient;
 import com.ccq.app.utils.AppCache;
 import com.ccq.app.weidget.Toasty;
+import com.dmcbig.mediapicker.PickerActivity;
+import com.dmcbig.mediapicker.PickerConfig;
+import com.dmcbig.mediapicker.entity.Media;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
-import jiguang.chat.utils.imagepicker.ImageGridActivity;
 import jiguang.chat.utils.imagepicker.ImagePicker;
-import jiguang.chat.utils.imagepicker.bean.ImageItem;
 import jiguang.chat.utils.imagepicker.view.CropImageView;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -61,8 +56,12 @@ public class SetWechatQRActivity extends BaseActivity {
 
     @OnClick(R.id.select_erweima)
     public void selectPic() {
-        Intent intent = new Intent(this, ImageGridActivity.class);
-        startActivityForResult(intent, 123);
+        Intent intent = new Intent(this, PickerActivity.class);
+        intent.putExtra(PickerConfig.SELECT_MODE, PickerConfig.PICKER_IMAGE);//default image and video (Optional)
+        long maxSize = 1024 * 1024 * 2;//long long long long类型
+        intent.putExtra(PickerConfig.MAX_SELECT_SIZE, maxSize); //default 180MB (Optional)
+        intent.putExtra(PickerConfig.MAX_SELECT_COUNT, 1);  //default 40 (Optional)
+        startActivityForResult(intent, 111);
     }
 
     @OnClick(R.id.btn_submit)
@@ -76,100 +75,69 @@ public class SetWechatQRActivity extends BaseActivity {
             dialog = new ProgressDialog(this);
             dialog.setMessage("上传图片中...");
             dialog.show();
-
             uploadFile();
         }
     }
 
-    private String imageUploadId;//上传服务器返回的id
-
-    private void uploadImg(String path) throws IOException {
-
-        File file = new File(path);
-        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-        MultipartBody.Part body = MultipartBody.Part.createFormData("filename", file.getName(), requestFile);
-
-        Call<Object> result = apiService.uploadImages(body);
-        Response<Object> response = result.execute();
-        Map<String, Object> map = (Map<String, Object>) response.body();
-        if (0.0 == (Double) map.get("code")) {
-            imageUploadId = String.valueOf(map.get("imageid"));
-        }
-
-    }
 
     private void uploadFile() {
-        io.reactivex.Observable.create(
-                new ObservableOnSubscribe<Boolean>() {
-                    @Override
-                    public void subscribe(final ObservableEmitter<Boolean> emitter) throws Exception {
-                        if (!emitter.isDisposed()) {
-                            try {
-                                //访问网络操作
-                                if (imagePath != null) {
-                                    uploadImg(imagePath);
+
+        File file = new File(imagePath);
+        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        MultipartBody.Part body = MultipartBody.Part.createFormData("filename", file.getName(), requestFile);
+        apiService.uploadBannerImage(body).enqueue(new Callback<BaseBean>() {
+            @Override
+            public void onResponse(Call<BaseBean> call, Response<BaseBean> response) {
+                if (response.body() != null && response.body().getCode() == 0) {
+                    //保存二维码
+                    apiService.saveUserErWeiMa(AppCache.getUserBean().getUserid(), response.body().getMessage())
+                            .enqueue(new Callback<Object>() {
+                                @Override
+                                public void onResponse(Call<Object> call, Response<Object> response) {
+                                    dismissDialog();
+                                    Toasty.success(CcqApp.getAppContext(), "恭喜，保存成功！").show();
                                 }
-//                                emitter.onNext(true);
-                                emitter.onComplete();
 
-                            } catch (IOException ioe) {
-                                emitter.onError(ioe);
-                            }
+                                @Override
+                                public void onFailure(Call<Object> call, Throwable t) {
+                                    dismissDialog();
+                                    Toasty.error(CcqApp.getAppContext(), t.getMessage()).show();
+                                }
+                            });
+                } else {
+                    dismissDialog();
+                    Toasty.error(CcqApp.getAppContext(), "上传失败稍后再试").show();
+                }
+            }
 
-                        }
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Boolean>() {
-
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        if (d.isDisposed()) {
-                        }
-                    }
-
-                    @Override
-                    public void onNext(Boolean boo) {
-//                        if (boo) {
-//                            imgids = StringUtils.join(imgidList.toArray(new String[imgidList.size()]), ",");
-//                            videoids = StringUtils.join(videoidList.toArray(new String[videoidList.size()]), ",");
+            @Override
+            public void onFailure(Call<BaseBean> call, Throwable t) {
+                Toasty.error(CcqApp.getAppContext(), t.getMessage()).show();
+            }
+        });
+    }
+//
+//    private void submitData() {
+//        apiService.saveUserErWeiMa(AppCache.getUserBean().getUserid(), imageUploadId)
+//                .enqueue(new Callback<Object>() {
+//                    @Override
+//                    public void onResponse(Call<Object> call, Response<Object> response) {
+//                        Map<String, Object> map = (Map<String, Object>) response.body();
+//                        String message = (String) map.get("message");
+//                        if (0.0 == (Double) map.get("code")) {
+//                            message = "上传成功，赶快发布信息试试吧！";
 //                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        submitData();
-                    }
-                });
-
-    }
-
-    private void submitData() {
-        apiService.saveUserErWeiMa(AppCache.getUserBean().getUserid(), imageUploadId)
-                .enqueue(new Callback<Object>() {
-                    @Override
-                    public void onResponse(Call<Object> call, Response<Object> response) {
-                        Map<String, Object> map = (Map<String, Object>) response.body();
-                        String message = (String) map.get("message");
-                        if (0.0 == (Double) map.get("code")) {
-                            message = "上传成功，赶快发布信息试试吧！";
-                        }
-                        dismissDialog();
-                        Toasty.success(getCurrentActivity(), message, Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onFailure(Call<Object> call, Throwable t) {
-                        dismissDialog();
-                        Toasty.error(getCurrentActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
+//                        dismissDialog();
+//                        Toasty.success(getCurrentActivity(), message, Toast.LENGTH_SHORT).show();
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<Object> call, Throwable t) {
+//                        dismissDialog();
+//                        Toasty.error(getCurrentActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+//    }
 
     private void dismissDialog() {
         handler.post(new Runnable() {
@@ -222,11 +190,11 @@ public class SetWechatQRActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 123 && resultCode == ImagePicker.RESULT_CODE_ITEMS) {
-            ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
-            if (!images.isEmpty()) {
-                imagePath = images.get(0).path;
-                Glide.with(this).load(imagePath).into(ivErweima);
+        if (requestCode == 111 && resultCode == PickerConfig.RESULT_CODE) {
+            ArrayList<Media> select = data.getParcelableArrayListExtra(PickerConfig.EXTRA_RESULT);
+            if (select != null && !select.isEmpty()) {
+                Glide.with(this).load(select.get(0).path).into(ivErweima);
+                imagePath = select.get(0).path;
             }
         }
     }

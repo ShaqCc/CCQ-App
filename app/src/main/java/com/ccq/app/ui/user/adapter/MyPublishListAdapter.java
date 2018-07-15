@@ -27,6 +27,7 @@ public class  MyPublishListAdapter extends RecyclerView.Adapter<MyPublishListAda
     List<Car> mCarList;
     Context context;
     public onItemManageInterface itemManageInterface;
+    private boolean isUserSelf;
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -55,12 +56,18 @@ public class  MyPublishListAdapter extends RecyclerView.Adapter<MyPublishListAda
             holder.itemPrice.setText(Car.getPrice() +"万元");
         }
 
-        holder.itemManage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                itemManageInterface.onManageClick(position);
-            }
-        });
+        if (isUserSelf){
+            holder.itemManage.setVisibility(View.VISIBLE);
+            holder.itemManage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    itemManageInterface.onManageClick(position);
+                }
+            });
+        }else {
+            holder.itemManage.setVisibility(View.GONE);
+        }
+
 
         holder.itemLocation.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,10 +122,11 @@ public class  MyPublishListAdapter extends RecyclerView.Adapter<MyPublishListAda
         return mCarList.size();
     }
 
-    public MyPublishListAdapter(Context context ,List<Car> mCarList, onItemManageInterface onItemManageInterface) {
+    public MyPublishListAdapter(Context context ,List<Car> mCarList, onItemManageInterface onItemManageInterface,boolean isSelf) {
         this.itemManageInterface= onItemManageInterface;
         this.mCarList = mCarList;
         this.context = context;
+        this.isUserSelf = isSelf;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
