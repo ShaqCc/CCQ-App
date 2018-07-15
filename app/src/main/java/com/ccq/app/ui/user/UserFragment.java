@@ -1,5 +1,6 @@
 package com.ccq.app.ui.user;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -19,23 +20,32 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.ccq.app.R;
+import com.ccq.app.base.BaseActivity;
 import com.ccq.app.base.BaseFragment;
 import com.ccq.app.base.BasePresenter;
 import com.ccq.app.base.CcqApp;
+import com.ccq.app.entity.BaseBean;
+import com.ccq.app.entity.SubscriberCountBean;
+import com.ccq.app.entity.UserBanner;
 import com.ccq.app.entity.UserBean;
 import com.ccq.app.http.ApiService;
 import com.ccq.app.http.RetrofitClient;
 import com.ccq.app.ui.ImageWatchActivity;
+import com.ccq.app.ui.MainActivity;
 import com.ccq.app.ui.message.SingleChatActivity;
 import com.ccq.app.ui.user.adapter.MyFragmentAdapter;
 import com.ccq.app.utils.AppCache;
 import com.ccq.app.utils.Constants;
 import com.ccq.app.utils.JmessageUtils;
+import com.ccq.app.utils.MMAlert;
 import com.ccq.app.utils.SharedPreferencesUtils;
 import com.ccq.app.utils.ToastUtils;
 import com.ccq.app.utils.Utils;
 import com.ccq.app.weidget.SlidingTabLayout;
 import com.ccq.app.weidget.Toasty;
+import com.dmcbig.mediapicker.PickerActivity;
+import com.dmcbig.mediapicker.PickerConfig;
+import com.dmcbig.mediapicker.entity.Media;
 import com.google.gson.jpush.JsonObject;
 import com.google.gson.jpush.JsonParser;
 import com.tencent.mm.opensdk.modelbase.BaseReq;
@@ -52,6 +62,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import cn.jiguang.imui.commons.models.IUser;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.model.Conversation;
 import cn.jpush.im.android.api.model.UserInfo;
@@ -61,7 +72,6 @@ import jiguang.chat.entity.Event;
 import jiguang.chat.entity.EventType;
 import jiguang.chat.pickerimage.utils.ScreenUtil;
 import jiguang.chat.utils.ToastUtil;
-import okhttp3.internal.Util;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -72,8 +82,9 @@ import retrofit2.Response;
  * Author: Created by bayin on 2018/3/26.
  ****************************************/
 
-public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
+public class UserFragment extends BaseFragment<UserPresenter> implements IWXAPIEventHandler, IUserView {
 
+    private static final int CHANGE_BANNER = 11;//更换banner请求
     @BindView(R.id.tv_my_attention_count)
     TextView tvMyAttentionCount;
     @BindView(R.id.tv_my_fans_count)
@@ -116,6 +127,11 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
     SlidingTabLayout pagerTabStrip;
     @BindView(R.id.usercenter_icon_vip)
     ImageView iconVipLogo;
+    @BindView(R.id.user_iv_banner)
+    ImageView ivBanner;
+    @BindView(R.id.user_center_ll_setting)
+    LinearLayout llSetting;
+
 
     private ProgressDialog dialogProgress;
 
@@ -146,8 +162,8 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
     }
 
     @Override
-    protected BasePresenter createPresenter() {
-        return null;
+    protected UserPresenter createPresenter() {
+        return new UserPresenter(this);
     }
 
     @Override
@@ -162,41 +178,37 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
             layoutMySubscribeFans.setClickable(false);
             layoutMySubscribeFans.setFocusable(false);
             btnInviteAttation.setVisibility(View.GONE);
+            llSetting.setVisibility(View.GONE);
         }
     }
 
     @Override
     public void initData() {
-        if (userBean == null) {
+        if (isMine) {
+            //用户自己的
             userBean = AppCache.getUserBean();
         } else {
-            RetrofitClient.getInstance().getApiService().checkSubscribe(AppCache.getUserBean().getUserid(), userBean.getUserid()).enqueue(new Callback<Object>() {
-
-                @Override
-                public void onResponse(Call<Object> call, Response<Object> response) {
-                    Map<String, Object> map = (Map<String, Object>) response.body();
-                    if (0.0 == (Double) map.get("code")) {
-                        tvSubscribe.setText("已关注");
-                    } else {
-                        tvSubscribe.setText("未关注");
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<Object> call, Throwable t) {
-
-                }
-            });
+            /*查看别人的信息*/
+            //头像
+            Glide.with(get()).load(userBean.getHeadimgurl()).into(ivHeader);
+            //是否关注了该用户
+            mPresenter.getSubscirberInfo(userBean.getUserid());
         }
         if (userBean != null) {
-            Glide.with(get()).load(userBean.getHeadimgurl()).into(ivHeader);
-            setView();
-            getData();
+            //获取用户信息
+            mPresenter.getUserInfo(userBean.getUserid());
+            //banner
+            mPresenter.getUserBanner(userBean.getUserid());
+            //关注人数，被关注人数
+            mPresenter.getSubscribeCount(userBean.getUserid());
         } else {
             resetUserInfo();
         }
     }
 
+    /**
+     * c重置界面
+     */
     private void resetUserInfo() {
         ivHeader.setImageResource(R.drawable.icon_no_login);
         tvName.setText("请登录");
@@ -222,40 +234,25 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
     @Override
     public void onResume() {
         super.onResume();
-        if (isMine) {
-            String unionId = (String) SharedPreferencesUtils.getParam(get(), Constants.KEY_UNIONID, "");
-            if (!TextUtils.isEmpty(unionId)) {
-                showProgress("刷新中...");
-                RetrofitClient.getInstance().getApiService().getUserByUniondId(unionId)
-                        .enqueue(new Callback<UserBean>() {
-                            @Override
-                            public void onResponse(Call<UserBean> call, Response<UserBean> response) {
-                                dismiss();
-                                UserBean userBean = response.body();
-                                if (getActivity() != null && response.isSuccessful() && userBean != null) {
-                                    AppCache.setUserBean(userBean);
-                                    Glide.with(get()).load(userBean.getHeadimgurl()).into(ivHeader);
-                                    if (userBean.getVip() == 1) {
-                                        iconVipLogo.setImageResource(R.drawable.icon_vip_enable);
-                                    } else {
-                                        iconVipLogo.setImageResource(R.drawable.icon_no_vip);
-                                    }
-                                    setView();
-                                    getData();
-                                }
-                                Toasty.success(get(), "更新成功！").show();
-                            }
+    }
 
-                            @Override
-                            public void onFailure(Call<UserBean> call, Throwable t) {
-                                dismiss();
-                                Toasty.error(get(), t.getMessage()).show();
-                            }
-                        });
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        //接收banner的结果
+        if (requestCode == CHANGE_BANNER && resultCode == PickerConfig.RESULT_CODE) {
+            ArrayList<Media> select = data.getParcelableArrayListExtra(PickerConfig.EXTRA_RESULT);
+            if (select != null && !select.isEmpty()) {
+                Glide.with(getHostActivity()).load(select.get(0).path).into(ivBanner);
+                //上传图片
+                mPresenter.changeBanner(select.get(0).path);
             }
         }
     }
 
+    /**
+     * 设置界面信息，viewpager
+     */
     public void setView() {
         if (userBean == null) {
             userBean = AppCache.getUserBean();
@@ -264,7 +261,6 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
         tvPhone.setText(userBean.getMobile());
         tvLocation.setText(userBean.getProvinceName() + "·" + userBean.getCityName());
 
-//        llyoutMyInfo.setVisibility(View.VISIBLE);
         llyoutMyAttention.setVisibility(View.VISIBLE);
         fragments.add(new TabHomeFragment());
         fragments.add(new WantBuyFragment());
@@ -295,30 +291,6 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
             }
         });
         pagerTabStrip.setViewPager(vpMyInfo);
-    }
-
-    public void getData() {
-        ApiService apiService = RetrofitClient.getInstance().getApiService();
-        apiService.getSubscribeCount(userBean.getUserid()).enqueue(new Callback<Object>() {
-            @Override
-            public void onResponse(Call<Object> call, Response<Object> response) {
-                if (response != null && response.body() != null) {
-                    Object obj = response.body();
-                    if (obj != null) {
-                        JsonObject returnData = new JsonParser().parse(obj.toString()).getAsJsonObject();
-                        //   v1:10  我订阅的， v2:10   订阅我的
-                        tvMyAttentionCount.setText(String.valueOf(returnData.get("v1").getAsInt()));
-                        tvMyFansCount.setText(String.valueOf(returnData.get("v2").getAsInt()));
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Object> call, Throwable t) {
-
-            }
-        });
-
     }
 
     @Override
@@ -360,23 +332,52 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
         return rootView;
     }
 
+    private void showUserSettingDialog() {
+        String[] items = {"二维码水印", "修改图片", "切换账号", "更新用户信息"};
+        AlertDialog.Builder listDialog =
+                new AlertDialog.Builder(getHostActivity());
+        listDialog.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case 0:
+                        Intent i = new Intent(getHostActivity(), SetWechatQRActivity.class);
+                        startActivity(i);
+                        break;
+                    case 1:
+                        //非会员或过期提醒
+                        changeBanner();
+                        break;
+                    case 2:
+                        //退出登录
+                        SharedPreferencesUtils.setParam(getHostActivity(), Constants.USER_ID, "");
+                        AppCache.setUserBean(null);
+                        resetUserInfo();
+                        break;
+                    case 3:
+                        initData();
+                        break;
+                }
+            }
+        });
+        listDialog.show();
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
     }
 
-    @OnClick({R.id.layout_my_subscribe, R.id.layout_my_subscribe_fans, R.id.btn_vip_setting, R.id.btn_invite_attation, R.id.tv_sms, R.id.tv_tel, R.id.tv_subscribe})
+    @OnClick({R.id.layout_my_subscribe, R.id.layout_my_subscribe_fans,
+            R.id.btn_vip_setting, R.id.btn_invite_attation, R.id.tv_sms,
+            R.id.tv_tel, R.id.tv_subscribe, R.id.user_center_ll_setting})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-//            case R.id.layout_home:
-//                vpMyInfo.setCurrentItem(0);
-//                selectHome();
-//                break;
-//            case R.id.layout_intro:
-//                vpMyInfo.setCurrentItem(1);
-//                selectIntro();
-//                break;
+            case R.id.user_center_ll_setting:
+                //设置
+                showUserSettingDialog();
+                break;
             case R.id.layout_my_subscribe:
                 Intent i = new Intent(getActivity(), UserSubscribeActivity.class);
                 i.putExtra("type", 0);
@@ -410,12 +411,7 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
                     ToastUtil.shortToast(get(), "该用户未注册IM聊天系统");
                     return;
                 }
-//                mTargetId = intent.getStringExtra(TARGET_ID);
-//                mTargetAppKey = intent.getStringExtra(TARGET_APP_KEY);
-//                mTitle = intent.getStringExtra(JGApplication.CONV_TITLE);
-
-//                String userName = JmessageUtils.getUserName(car.getUserInfo().getUserid() + "");
-                Intent intent = new Intent(get(), SingleChatActivity.class);
+                final Intent intent = new Intent(get(), SingleChatActivity.class);
                 intent.putExtra(JGApplication.CONV_TITLE, AppCache.getUserBean().getNickname());
                 intent.putExtra(JGApplication.TARGET_ID, userName);
                 intent.putExtra(JGApplication.TARGET_APP_KEY, CcqApp.jmappkey);
@@ -431,13 +427,10 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
                             .setConversation(conv)
                             .build());
                 }
-
                 break;
             case R.id.tv_tel:
                 Utils.call(get(), userBean.getMobile());
-
                 break;
-
             case R.id.tv_subscribe:
                 //订阅
                 if ("未关注".equals(tvSubscribe.getText())) {
@@ -459,9 +452,39 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
                     });
                 } else {
                     showDialog("是否要取消关注");
-
                 }
                 break;
+        }
+    }
+
+    private void changeBanner() {
+        if (AppCache.getUserBean() != null && isMine) {
+            if (AppCache.getUserBean().isMember() || AppCache.getUserBean().isBusiness()) {
+                //切换banner
+                Intent intent = new Intent(getHostActivity(), PickerActivity.class);
+                intent.putExtra(PickerConfig.SELECT_MODE, PickerConfig.PICKER_IMAGE);//default image and video (Optional)
+                long maxSize = 1024 * 1024 * 2;//long long long long类型
+                intent.putExtra(PickerConfig.MAX_SELECT_SIZE, maxSize); //default 180MB (Optional)
+                intent.putExtra(PickerConfig.MAX_SELECT_COUNT, 1);  //default 40 (Optional)
+                getHostActivity().startActivityForResult(intent, CHANGE_BANNER);
+            } else {
+                //非会员提示
+                MMAlert.showAlert(getHostActivity(), "此功能只有会员可用，是否开通会员", "提示", "开通会员", "取消",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                //开会员
+                                Intent intent1 = new Intent(getHostActivity(), OpenVipActivity.class);
+                                startActivity(intent1);
+                            }
+                        },
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                //取消
+                            }
+                        });
+            }
         }
     }
 
@@ -507,4 +530,43 @@ public class UserFragment extends BaseFragment implements IWXAPIEventHandler {
 
     }
 
+    @Override
+    public BaseActivity getHostActivity() {
+        return (BaseActivity) getActivity();
+    }
+
+    @Override
+    public void setUserView(UserBean userBean) {
+        Glide.with(get()).load(userBean.getHeadimgurl()).into(ivHeader);
+        if (userBean.getVip() == 1) {
+            iconVipLogo.setImageResource(R.drawable.icon_vip_enable);
+        } else {
+            iconVipLogo.setImageResource(R.drawable.icon_no_vip);
+        }
+        setView();
+    }
+
+    @Override
+    public void setBanner(UserBanner banner) {
+        if (!TextUtils.isEmpty(banner.getImage())) {
+            Glide.with(getHostActivity()).load(banner.getImage()).into(ivBanner);
+        }
+    }
+
+    @Override
+    public void setSubscriber(BaseBean baseBean) {
+        tvSubscribe.setText(baseBean.getMessage());
+    }
+
+    @Override
+    public void setSubCount(SubscriberCountBean bean) {
+        //   v1:10  我订阅的， v2:10   订阅我的
+        tvMyAttentionCount.setText(String.valueOf(bean.getV1()));
+        tvMyFansCount.setText(String.valueOf(bean.getV2()));
+    }
+
+    @Override
+    public void dismissProgress() {
+        dismiss();
+    }
 }

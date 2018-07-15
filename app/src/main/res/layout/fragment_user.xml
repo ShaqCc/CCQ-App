@@ -133,18 +133,47 @@
 
                 <include layout="@layout/include_user_info_card" />
 
+                <!--设置-->
+                <LinearLayout
+                    android:id="@+id/user_center_ll_setting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_marginTop="20dp"
+                    android:paddingRight="8dp"
+                    android:background="@drawable/shape_left_corner_white_bg"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingBottom="2dp"
+                    android:paddingLeft="14dp"
+                    android:paddingTop="2dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/icon_setting" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:textSize="14sp"
+                        android:text="设置"
+                        android:textColor="@color/black_de" />
+
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/btn_vip_setting"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="right|center_vertical"
-                    android:layout_marginRight="-12dp"
-                    android:background="@drawable/bg_white_corner"
+                    android:layout_gravity="right"
+                    android:layout_marginTop="50dp"
+                    android:background="@drawable/shape_left_corner_white_bg"
                     android:orientation="horizontal"
                     android:paddingBottom="4dp"
                     android:paddingLeft="16dp"
-                    android:paddingRight="20dp"
+                    android:paddingRight="10dp"
                     android:paddingTop="4dp">
 
                     <ImageView

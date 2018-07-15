@@ -637,23 +637,6 @@ public class PublishFragment extends BaseFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-//        if (requestCode == RESULT_LOAD_IMAGE && resultCode == ImagePicker.RESULT_CODE_ITEMS) {
-//            ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
-//            if (images != null && images.size() > 0) {
-//                for (ImageItem item : images) {
-//                    String path = item.path;
-//                    mMultiSelectPath.add(path);
-//                    photoPath.add(path);
-//                }
-//                mediaAdapter.refresh(mMultiSelectPath);
-//            }
-//        } else if (requestCode == RESULT_LOAD_VIDEO && resultCode == RESULT_OK){
-//            Uri videoUri = data.getData();
-//            String vPath = FileUtil.getPath(get(), videoUri);
-//            mMultiSelectPath.add(vPath);
-//            videoPath.add(vPath);
-//            mediaAdapter.refresh(mMultiSelectPath);
-//        }
 
         if (requestCode == 200 && resultCode == PickerConfig.RESULT_CODE) {
             //选择图片结果

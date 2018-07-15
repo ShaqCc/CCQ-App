@@ -11,13 +11,16 @@ import com.ccq.app.entity.Car;
 import com.ccq.app.entity.CarInfo;
 import com.ccq.app.entity.Province;
 import com.ccq.app.entity.SubscribeUser;
+import com.ccq.app.entity.SubscriberCountBean;
 import com.ccq.app.entity.TypeBean;
+import com.ccq.app.entity.UserBanner;
 import com.ccq.app.entity.UserBean;
 import com.ccq.app.entity.UserLocationBean;
 import com.ccq.app.entity.WeixinPayBean;
 import com.ccq.app.entity.WxLoginResultBean;
 import com.ccq.app.entity.WxUserInfo;
 import com.ccq.app.entity.YearLimitBean;
+import com.youth.banner.Banner;
 
 import java.util.List;
 import java.util.Map;
@@ -131,6 +134,14 @@ public interface ApiService {
     @POST("/car/addcar")
     Call<Object> addCarInfo(@QueryMap Map<String, Object> carParams);
 
+
+    @POST("/uploadimage")
+    Call<Object> uploadBannerImage(@Part MultipartBody.Part file);
+
+    @Multipart
+    @POST("/user/modifybanner")
+    Call<BaseBean> changeUserBanner(@Query("userid")String userID,@Part MultipartBody.Part file);
+
     /**
      * 修改车辆信息
      *
@@ -169,7 +180,7 @@ public interface ApiService {
 
 
     @POST("/user/subscribe/count")
-    Call<Object> getSubscribeCount(@Query("userid") String userid);
+    Call<SubscriberCountBean> getSubscribeCount(@Query("userid") String userid);
 
     /**
      * 发布信息前检测
@@ -274,7 +285,7 @@ public interface ApiService {
 
 
     @POST("/user/subscribe/check")
-    Call<Object> checkSubscribe(@Query("userid")String userid,@Query("subuser")String subuser);
+    Call<BaseBean> checkSubscribe(@Query("userid")String userid,@Query("subuser")String subuser);
 
 
     @POST("/user/addr")
@@ -286,6 +297,10 @@ public interface ApiService {
 
     @POST("/addr/local")
     Call<BaseBean> getAddressByLgt(@Query("phone")String phone,@Query("longitude")String longitude,@Query("latitude")String latitude);
+
+
+    @POST("/user/banner")
+    Call<UserBanner> getUserBanner(@Query("userid")String userid);
 
 //    ------------------------------------微信登陆相关接口-----------------------------------------------
 

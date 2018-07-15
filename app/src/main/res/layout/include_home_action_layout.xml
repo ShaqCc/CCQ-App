@@ -45,13 +45,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="-12dp"
-        android:background="@drawable/bg_white_corner"
+        android:background="@drawable/shape_left_corner_white_bg"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingBottom="4dp"
         android:paddingLeft="16dp"
-        android:paddingRight="20dp"
+        android:paddingRight="10dp"
         android:paddingTop="4dp">
 
         <ImageView
@@ -64,7 +63,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:text="会员  >"
+            android:text="会员 >"
             android:textColor="@color/google_blue"
             android:textSize="14sp" />
 

@@ -146,7 +146,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
                         case 3:
                             setToolBarVisible(true);
                             setToolBarTitle("个人中心");
-                            btSetting.setVisibility(View.VISIBLE);
+                            btSetting.setVisibility(View.GONE);
                             break;
                     }
                     return true;

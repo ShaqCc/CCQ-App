@@ -189,41 +189,44 @@ public class UserSubscribeActivity extends Activity {
     }
 
     private void getData() {
-        subscribeUser = new SubscribeUser();
+        if (AppCache.getUserBean()!=null){
+            subscribeUser = new SubscribeUser();
 
-        apiService = RetrofitClient.getInstance().getApiService();
-        HashMap userMap = new HashMap<>();
-        userMap.put("userid", AppCache.getUserBean().getUserid());
+            apiService = RetrofitClient.getInstance().getApiService();
+            HashMap userMap = new HashMap<>();
+            userMap.put("userid", AppCache.getUserBean().getUserid());
 //        carMap.put("page", "1");
 //        carMap.put("size", "20");
 
-        if (type == 0) {
-            apiService.getUserSubscribe(userMap).enqueue(new Callback() {
-                @Override
-                public void onResponse(Call call, Response response) {
-                    subscribeUser = (SubscribeUser) response.body();
-                    getUserSaleInfo();
-                }
+            if (type == 0) {
+                apiService.getUserSubscribe(userMap).enqueue(new Callback() {
+                    @Override
+                    public void onResponse(Call call, Response response) {
+                        subscribeUser = (SubscribeUser) response.body();
+                        getUserSaleInfo();
+                    }
 
-                @Override
-                public void onFailure(Call call, Throwable t) {
+                    @Override
+                    public void onFailure(Call call, Throwable t) {
 
-                }
-            });
-        } else {
-            apiService.getUserFans(userMap).enqueue(new Callback() {
-                @Override
-                public void onResponse(Call call, Response response) {
-                    subscribeUser = (SubscribeUser) response.body();
-                    getUserSaleInfo();
-                }
+                    }
+                });
+            } else {
+                apiService.getUserFans(userMap).enqueue(new Callback() {
+                    @Override
+                    public void onResponse(Call call, Response response) {
+                        subscribeUser = (SubscribeUser) response.body();
+                        getUserSaleInfo();
+                    }
 
-                @Override
-                public void onFailure(Call call, Throwable t) {
+                    @Override
+                    public void onFailure(Call call, Throwable t) {
 
-                }
-            });
+                    }
+                });
+            }
         }
+
     }
 
     void getUser(final SubscribeUser.SubUsr user){

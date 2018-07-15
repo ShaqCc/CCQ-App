@@ -56,7 +56,6 @@ public class TabIntroFragment extends BaseFragment {
     TextView tvSaleOutCount;
     @BindView(R.id.tv_myinfo_edit)
     TextView tvMyinfoEdit;
-    @BindView(R.id.tv_myinfo_content)
     TextView tvMyinfoContent;
     @BindView(R.id.tv_myimg_edit)
     TextView tvMyimgEdit;
@@ -88,6 +87,7 @@ public class TabIntroFragment extends BaseFragment {
 
     @Override
     protected void initView(View rootView) {
+        tvMyinfoContent = rootView.findViewById(R.id.tv_myinfo_content);
         baiduMap = mapView.getMap();
         BitmapDescriptor mCurrentMarker = BitmapDescriptorFactory
                 .fromResource(R.drawable.icon_position);
@@ -210,12 +210,6 @@ public class TabIntroFragment extends BaseFragment {
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
         unbinder = ButterKnife.bind(this, rootView);
         return rootView;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
     }
 
     @OnClick(R.id.tv_myinfo_edit)
