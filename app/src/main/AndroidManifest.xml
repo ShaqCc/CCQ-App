@@ -31,21 +31,21 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
     <application
-        tools:replace="android:icon,android:theme"
         android:name=".base.CcqApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher_128"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-
+        android:theme="@style/AppTheme"
+        tools:replace="android:icon,android:theme">
 
 
         <activity
             android:name=".ui.SplashActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppCompat.FullScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -57,32 +57,60 @@
         <activity
             android:name=".ui.MainActivity"
             android:label="@string/app_name"
-            android:launchMode="singleTask" />
-        <activity android:name=".ui.city.ProvinceActivity" />
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.city.ProvinceActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".wxapi.WXEntryActivity"
             android:exported="true"
-            android:label="@string/app_name" />
-        <activity android:name=".ui.user.BindPhoneActivity" />
-        <activity android:name=".ui.user.LoginActivity" />
-        <activity android:name=".ui.publish.BaseMapActivity" />
-        <activity android:name=".ui.publish.BrandModelSelectActivity" />
-        <activity android:name=".ui.user.UserSubscribeActivity" />
-        <activity android:name=".ui.message.SingleChatActivity"/>
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.user.BindPhoneActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.user.LoginActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.publish.BaseMapActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.publish.BrandModelSelectActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.user.UserSubscribeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.message.SingleChatActivity"
+            android:screenOrientation="portrait" />
 
-        <activity android:name=".ui.user.EditMyIntroActivity" />
-        <activity android:name=".ui.user.EditPublishActivity" />
-        <activity android:name=".ui.user.SetWechatQRActivity" />
-        <activity android:name=".ui.user.OpenVipActivity" />
-        <activity android:name=".wxapi.WXPayEntryActivity"
-            android:exported="true"/>
-        <activity android:name=".ui.reprot.ReportCarActivity" />
-        <activity android:name=".ui.ImageWatchActivity" />
-        <activity android:name=".ui.user.UserInfoActivity" />
-
-
-
-
+        <activity
+            android:name=".ui.user.EditMyIntroActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.user.EditPublishActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.user.SetWechatQRActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.user.OpenVipActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".wxapi.WXPayEntryActivity"
+            android:exported="true"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.reprot.ReportCarActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.ImageWatchActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.user.UserInfoActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
