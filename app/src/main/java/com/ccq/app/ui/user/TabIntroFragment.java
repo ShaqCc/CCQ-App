@@ -1,6 +1,7 @@
 package com.ccq.app.ui.user;
 
 import android.content.Intent;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -89,6 +90,20 @@ public class TabIntroFragment extends BaseFragment {
     protected void initView(View rootView) {
         tvMyinfoContent = rootView.findViewById(R.id.tv_myinfo_content);
         baiduMap = mapView.getMap();
+
+        mapView.showZoomControls(false);
+
+        baiduMap.setOnMapLoadedCallback(new BaiduMap.OnMapLoadedCallback()     {
+
+            @Override
+            public void onMapLoaded() {
+                Point point = new Point();
+                point.x = 20;
+                point.y = 20;
+                mapView.setScaleControlPosition(point);
+            }
+        });
+
         BitmapDescriptor mCurrentMarker = BitmapDescriptorFactory
                 .fromResource(R.drawable.icon_position);
         baiduMap.setMyLocationConfigeration(new MyLocationConfiguration(
@@ -216,5 +231,21 @@ public class TabIntroFragment extends BaseFragment {
     public void onViewClicked() {
         Intent i = new Intent(get(), EditMyIntroActivity.class);
         get().startActivity(i);
+    }
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mapView.setVisibility(View.INVISIBLE);
+        mapView.onPause();
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mapView.setVisibility(View.VISIBLE);
+        mapView.onResume();
     }
 }
