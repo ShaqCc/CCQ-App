@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.baidu.mapapi.map.BaiduMap;
@@ -17,6 +18,8 @@ import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.Marker;
+import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.model.LatLng;
 import com.ccq.app.R;
@@ -74,6 +77,8 @@ public class TabIntroFragment extends BaseFragment {
     String defaultInfo = "我是%s，我来自%s，我的联系方式是：%s，如有业务请与我联系我吧";
 
     UserBean userBean;
+    @BindView(R.id.iv_map_point)
+    ImageView ivMapPoint;
     private UserLocationBean userLocationBean;
 
     @Override
@@ -93,7 +98,7 @@ public class TabIntroFragment extends BaseFragment {
 
         mapView.showZoomControls(false);
 
-        baiduMap.setOnMapLoadedCallback(new BaiduMap.OnMapLoadedCallback()     {
+        baiduMap.setOnMapLoadedCallback(new BaiduMap.OnMapLoadedCallback() {
 
             @Override
             public void onMapLoaded() {
@@ -106,6 +111,8 @@ public class TabIntroFragment extends BaseFragment {
 
         BitmapDescriptor mCurrentMarker = BitmapDescriptorFactory
                 .fromResource(R.drawable.icon_position);
+
+
         baiduMap.setMyLocationConfigeration(new MyLocationConfiguration(
                 MyLocationConfiguration.LocationMode.NORMAL, true, mCurrentMarker,
                 0xAAFFFF88, 0xAA00FF00));
@@ -139,6 +146,13 @@ public class TabIntroFragment extends BaseFragment {
                         baiduMap.setMyLocationEnabled(true);
                         LatLng latLng = new LatLng(Double.parseDouble(userLocationBean.getLatitude()), Double.parseDouble(userLocationBean.getLongitude()));
                         MapStatus mMapStatus = new MapStatus.Builder().target(latLng).zoom(18).build();
+
+                        BitmapDescriptor mCurrentMarker = BitmapDescriptorFactory
+                                .fromResource(R.drawable.icon_position);
+                        MarkerOptions markerOptions = new MarkerOptions().icon(mCurrentMarker).position(latLng);
+                        baiduMap.addOverlay(markerOptions);
+
+
                         MapStatusUpdate mMapStatusUpdate = MapStatusUpdateFactory.newMapStatus(mMapStatus);
                         baiduMap.setMapStatus(mMapStatusUpdate);
 
@@ -248,4 +262,5 @@ public class TabIntroFragment extends BaseFragment {
         mapView.setVisibility(View.VISIBLE);
         mapView.onResume();
     }
+
 }
