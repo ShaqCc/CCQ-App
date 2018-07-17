@@ -111,6 +111,8 @@
         <activity
             android:name=".ui.user.UserInfoActivity"
             android:screenOrientation="portrait" />
+
+        <meta-data android:name="TencentMapSDK" android:value="F53BZ-LEE66-MRBSH-MQQ6Z-STHXE-XYBRY" />
     </application>
 
 </manifest>

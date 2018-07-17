@@ -13,7 +13,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="4dp">
+            android:paddingBottom="14dp"
+            android:paddingTop="14dp">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -86,35 +87,42 @@
             android:layout_marginTop="5dp"
             android:background="#d7d7d7" />
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/llyout_mine_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
             android:paddingLeft="@dimen/padding"
             android:paddingRight="@dimen/padding">
 
+            <View
+                android:layout_width="4dp"
+                android:layout_height="20dp"
+                android:background="@color/black_de" />
+
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:layout_marginTop="@dimen/margin"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1"
                 android:background="@color/white"
-                android:text="|  简介"
+                android:text="简介"
                 android:textColor="@color/black_de"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/tv_myinfo_edit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_marginTop="@dimen/margin"
                 android:background="@color/white"
                 android:text="编辑"
                 android:textColor="@color/steelblue" />
 
-        </RelativeLayout>
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tv_myinfo_content"
@@ -135,39 +143,45 @@
             android:background="#d7d7d7" />
 
         <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/padding"
+            android:paddingRight="@dimen/padding">
+
+            <View
+                android:layout_width="4dp"
+                android:layout_height="20dp"
+                android:background="@color/black_de" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                android:background="@color/white"
+                android:text="图片简介"
+                android:textColor="@color/black_de"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tv_myimg_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:background="@color/white"
+                android:text="编辑"
+                android:textColor="@color/steelblue" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
-            <RelativeLayout
-                android:id="@+id/llyout_mine_imgs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_marginTop="@dimen/margin"
-                    android:background="@color/white"
-                    android:paddingLeft="@dimen/padding"
-                    android:text="|  图片简介"
-                    android:textColor="@color/black_de"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tv_myimg_edit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginTop="@dimen/margin"
-                    android:layout_marginRight="20dp"
-                    android:background="@color/white"
-                    android:text="管理"
-                    android:textColor="@color/steelblue" />
-
-            </RelativeLayout>
 
             <com.youth.banner.Banner
                 android:id="@+id/myinfo_banner"
@@ -183,34 +197,41 @@
                 android:layout_marginTop="5dp"
                 android:background="#d7d7d7" />
 
-            <RelativeLayout
-                android:id="@+id/llyout_mine_location"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
                 android:paddingLeft="@dimen/padding"
                 android:paddingRight="@dimen/padding">
 
+                <View
+                    android:layout_width="4dp"
+                    android:layout_height="20dp"
+                    android:background="@color/black_de" />
+
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
                     android:background="@color/white"
-                    android:text="|  地址"
+                    android:text="地址"
                     android:textColor="@color/black_de"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/tv_mylocation_edit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:layout_marginTop="@dimen/margin"
                     android:background="@color/white"
-                    android:text="管理"
+                    android:text="编辑"
                     android:textColor="@color/steelblue" />
 
-            </RelativeLayout>
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/tv_my_location"
@@ -220,7 +241,7 @@
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="10dp"
                 android:textColor="@color/black_de"
-                android:textSize="15sp" />
+                android:textSize="12sp" />
 
             <com.baidu.mapapi.map.MapView
                 android:id="@+id/layout_mylocation_map"

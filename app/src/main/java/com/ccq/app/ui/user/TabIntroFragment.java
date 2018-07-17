@@ -77,8 +77,6 @@ public class TabIntroFragment extends BaseFragment {
     String defaultInfo = "我是%s，我来自%s，我的联系方式是：%s，如有业务请与我联系我吧";
 
     UserBean userBean;
-    @BindView(R.id.iv_map_point)
-    ImageView ivMapPoint;
     private UserLocationBean userLocationBean;
 
     @Override

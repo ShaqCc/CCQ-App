@@ -1,6 +1,7 @@
 package com.ccq.app.utils;
 
 import com.ccq.app.entity.UserBean;
+import com.tencent.map.geolocation.TencentLocation;
 
 /**************************************************
  *
@@ -21,4 +22,6 @@ public class AppCache {
     public static UserBean getUserBean(){
         return sUserBean;
     }
+
+    public static TencentLocation mLocation;
 }

@@ -414,7 +414,7 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
                     //子列表
                     HomeCarParams.getInstance().put("numberid", type.getId());
                 }
-                HomeCarParams.getInstance().put("tonnageid", type.getId());
+                HomeCarParams.getInstance().put("tonnageid", type.getTid());
                 HomeCarParams.getInstance().setCarTypeName(type.getName());
                 //刷新
                 refreshHomeData();

@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
@@ -29,11 +30,18 @@ import com.ccq.app.utils.AppCache;
 import com.ccq.app.utils.Constants;
 import com.ccq.app.utils.SharedPreferencesUtils;
 import com.ccq.app.utils.statusbar.StatusBarUtils;
+import com.ccq.app.weidget.Toasty;
+import com.tencent.map.geolocation.TencentLocation;
+import com.tencent.map.geolocation.TencentLocationListener;
+import com.tencent.map.geolocation.TencentLocationManager;
+import com.tencent.map.geolocation.TencentLocationRequest;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+
+import static com.ccq.app.base.CcqApp.getAppContext;
 
 
 public class MainActivity extends BaseActivity<MainPresenter> implements MainView {
@@ -50,6 +58,9 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
     private MainFragmentAdapter mFragmentAdapter;
     private MessageFragment conversationListFragment;
     private Fragment currentFragment;
+    private TencentLocationManager locationManager;
+    private TencentLocationListener listener;
+    private TencentLocationRequest request;
 
 
     @Override
@@ -79,10 +90,51 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
 
             if (checkSelfPermission(permissions[0]) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(permissions, 0);
+            } else {
+                //开启定位
+                initLocationListener();
             }
+        }else {
+            initLocationListener();
         }
     }
 
+    private void initLocationListener() {
+        listener = new TencentLocationListener() {
+            @Override
+            public void onLocationChanged(TencentLocation tencentLocation, int error, String s) {
+                if (TencentLocation.ERROR_OK == error) {
+                    AppCache.mLocation = tencentLocation;
+                    Toasty.success(getApplication(),AppCache.mLocation.getAddress()).show();
+                } else {
+                    // 定位失败
+                    AppCache.mLocation = null;
+                    Toasty.success(getApplication(),error+"  :"+s).show();
+                }
+                locationManager.removeUpdates(listener);
+            }
+
+            @Override
+            public void onStatusUpdate(String s, int i, String s1) {
+
+            }
+        };
+
+        request = TencentLocationRequest.create();
+        request.setRequestLevel(TencentLocationRequest.REQUEST_LEVEL_POI);
+        locationManager = TencentLocationManager.getInstance(getApplicationContext());
+        locationManager.requestLocationUpdates(request, listener);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 0 && grantResults.length >= 1) {
+            //开启定位
+            initLocationListener();
+        }
+    }
 
 
     private void initViewPager() {
@@ -93,7 +145,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
         //个人中心
         UserFragment user = new UserFragment();
         Bundle bundle = new Bundle();
-        bundle.putBoolean(TabHomeFragment.KEY_IS_SELF,true);
+        bundle.putBoolean(TabHomeFragment.KEY_IS_SELF, true);
         user.setArguments(bundle);
         mFragments.add(user);
         mFragmentAdapter = new MainFragmentAdapter(getSupportFragmentManager(), mFragments);
@@ -143,6 +195,9 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
                         case 1:
                             setToolBarVisible(true);
                             setToolBarTitle("发布");
+                            if (mFragments.get(position) instanceof PublishFragment) {
+                                ((PublishFragment) mFragments.get(position)).initVars();
+                            }
                             btSetting.setVisibility(View.GONE);
                             break;
                         case 2:
@@ -165,7 +220,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        currentFragment.onActivityResult(requestCode,resultCode,data);
+        currentFragment.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -193,9 +248,9 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
                         break;
                     case 2:
                         //退出登录
-                        SharedPreferencesUtils.setParam(getCurrentActivity(), Constants.USER_ID,"");
+                        SharedPreferencesUtils.setParam(getCurrentActivity(), Constants.USER_ID, "");
                         AppCache.setUserBean(null);
-                        ((BaseFragment)mFragments.get(3)).initData();
+                        ((BaseFragment) mFragments.get(3)).initData();
                         break;
                 }
             }
@@ -233,9 +288,9 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
             conversationListFragment.sortConvList();
     }
 
-    public void setCurrentTab(int index){
-        if (index>=0 && index < 4){
-           mNavigation.setCurrentItem(index,true);
+    public void setCurrentTab(int index) {
+        if (index >= 0 && index < 4) {
+            mNavigation.setCurrentItem(index, true);
         }
     }
 

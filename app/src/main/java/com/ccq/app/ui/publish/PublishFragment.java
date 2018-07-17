@@ -28,8 +28,8 @@ import com.ccq.app.base.BaseFragment;
 import com.ccq.app.base.BasePresenter;
 import com.ccq.app.base.CcqApp;
 import com.ccq.app.entity.BrandBean;
-import com.ccq.app.entity.BrandModelBean;
 import com.ccq.app.entity.Car;
+import com.ccq.app.entity.TypeBean;
 import com.ccq.app.http.ApiService;
 import com.ccq.app.http.HttpClient;
 import com.ccq.app.http.ProgressCallBack;
@@ -38,7 +38,6 @@ import com.ccq.app.service.LocationService;
 import com.ccq.app.ui.MainActivity;
 import com.ccq.app.utils.AppCache;
 import com.ccq.app.utils.DensityUtils;
-import com.ccq.app.utils.FileUtil;
 import com.ccq.app.utils.ToastUtils;
 import com.ccq.app.weidget.ListDialog;
 import com.ccq.app.weidget.MyGridView;
@@ -69,7 +68,6 @@ import io.reactivex.schedulers.Schedulers;
 import jiguang.chat.utils.ToastUtil;
 import jiguang.chat.utils.imagepicker.ImageLoader;
 import jiguang.chat.utils.imagepicker.ImagePicker;
-import jiguang.chat.utils.imagepicker.bean.ImageItem;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -137,7 +135,7 @@ public class PublishFragment extends BaseFragment {
     private String locAddress = "";
 
     private BrandBean brandBean = new BrandBean();
-    private BrandModelBean brandModelBean = new BrandModelBean();
+    private TypeBean.NumberListBean brandModelBean;
 
     private ApiService apiService;
 
@@ -435,7 +433,7 @@ public class PublishFragment extends BaseFragment {
     }
 
     private boolean validate() {
-        if (TextUtils.isEmpty(brandModelBean.getId())) {
+        if (brandModelBean == null || TextUtils.isEmpty(brandModelBean.getId())) {
             ToastUtils.show(get(), "请选择品牌型号");
             return false;
         }
@@ -456,18 +454,19 @@ public class PublishFragment extends BaseFragment {
 
     private void submitData() {
         HashMap<String, Object> map = new HashMap<>();
+        map.put("userid", AppCache.getUserBean().getUserid());
         map.put("address", btnCarLocation.getText().toString());
         map.put("content", etDescription.getText().toString());
         map.put("imglist", TextUtils.isEmpty(imgids) ? "" : imgids);
         map.put("videolist", TextUtils.isEmpty(videoids) ? "" : videoids);
         map.put("latitude", String.valueOf(point.latitude));
         map.put("longitude", String.valueOf(point.longitude));
-        map.put("number", brandModelBean.getId());
         map.put("phone", etUserPhone.getText().toString());
-        map.put("pinpai", brandBean.getId());
-        map.put("price", etCarPrice.getText().toString());
-        map.put("userid", AppCache.getUserBean().getUserid());
         map.put("year", btnCarAge.getText().toString());
+        map.put("price", etCarPrice.getText().toString());
+        map.put("pinpai", brandModelBean.getBid());
+        map.put("tonnage",brandModelBean.getTid());
+        map.put("number", brandModelBean.getId());
 
         apiService.addCarInfo(map).enqueue(new Callback<Object>() {
             @Override
@@ -672,7 +671,7 @@ public class PublishFragment extends BaseFragment {
                     break;
                 case REQUEST_BRAND_MODEL_CODE:
                     brandBean = (BrandBean) data.getSerializableExtra("brand");
-                    brandModelBean = (BrandModelBean) data.getSerializableExtra("model");
+                    brandModelBean = (TypeBean.NumberListBean) data.getSerializableExtra("model");
                     btnBandModel.setText(brandBean.getName() + "  " + brandModelBean.getName());
                     break;
             }
@@ -722,7 +721,11 @@ public class PublishFragment extends BaseFragment {
         }
     }
 
-
+    public void initVars(){
+        photoPath.clear();
+        videoPath.clear();
+        mMultiSelectPath.clear();
+    }
 }
 
 class PicassoImageLoader implements ImageLoader {

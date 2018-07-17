@@ -1,5 +1,6 @@
 package com.ccq.app.entity;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**************************************************
@@ -11,7 +12,7 @@ import java.util.List;
  *
  **************************************************/
 
-public class TypeBean {
+public class TypeBean implements Serializable{
 
     /**
      * code : 50
@@ -107,7 +108,7 @@ public class TypeBean {
         this.numberList = numberList;
     }
 
-    public static class NumberListBean {
+    public static class NumberListBean implements Serializable{
         public boolean isSub() {
             return isSub;
         }

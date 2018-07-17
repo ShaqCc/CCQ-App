@@ -12,8 +12,11 @@ import android.widget.TextView;
 import com.ccq.app.R;
 import com.ccq.app.entity.BrandBean;
 import com.ccq.app.entity.BrandModelBean;
+import com.ccq.app.entity.TypeBean;
 import com.ccq.app.http.ApiService;
+import com.ccq.app.http.HomeCarParams;
 import com.ccq.app.http.RetrofitClient;
+import com.ccq.app.ui.home.adapter.TypeAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,18 +88,20 @@ public class BrandModelSelectActivity extends Activity {
 
     }
 
-    private void setAdapterRight() {
+    private void setAdapterRight(final List<TypeBean.NumberListBean> dataList) {
 
-        adapterRight = new DoubleListRightAdapter(this, modelList);
-        lvListRight.setAdapter(adapterRight);
+//        adapterRight = new DoubleListRightAdapter(this, modelList);
+//        lvListRight.setAdapter(adapterRight);
+        TypeAdapter typeAdapter = new TypeAdapter(dataList);
+        lvListRight.setAdapter(typeAdapter);
 
         lvListRight.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                BrandModelBean model = modelList.get(position);
+                TypeBean.NumberListBean bean = dataList.get(position);
                 Intent data = new Intent();
                 data.putExtra("brand", selectBrand);
-                data.putExtra("model", model);
+                data.putExtra("model", bean);
                 setResult(RESULT_OK, data);
                 BrandModelSelectActivity.this.finish();
             }
@@ -127,15 +132,58 @@ public class BrandModelSelectActivity extends Activity {
     }
 
     private void getBrandModelData(String brandid) {
-        apiService.getBrandModelList(brandid).enqueue(new Callback<List<BrandModelBean>>() {
+//        apiService.getBrandModelList(brandid).enqueue(new Callback<List<BrandModelBean>>() {
+//            @Override
+//            public void onResponse(Call<List<BrandModelBean>> call, Response<List<BrandModelBean>> response) {
+//                modelList = response.body();
+//                setAdapterRight();
+//            }
+//
+//            @Override
+//            public void onFailure(Call<List<BrandModelBean>> call, Throwable t) {
+//
+//            }
+//        });
+
+
+        apiService.getCarTypeList(brandid).enqueue(new Callback<List<TypeBean>>() {
             @Override
-            public void onResponse(Call<List<BrandModelBean>> call, Response<List<BrandModelBean>> response) {
-                modelList = response.body();
-                setAdapterRight();
+            public void onResponse(Call<List<TypeBean>> call, Response<List<TypeBean>> response) {
+                List<TypeBean> typeList = response.body();
+                if (typeList !=null){
+                    List<TypeBean.NumberListBean> dataList = new ArrayList<>();
+                    TypeBean.NumberListBean bean;
+                    for (int i = 0; i < typeList.size(); i++) {
+                        TypeBean typeBean = typeList.get(i);
+                        bean = new TypeBean.NumberListBean();
+                        bean.setSub(false);
+                        bean.setId(typeBean.getId());
+                        bean.setName(typeBean.getName());
+                        bean.setCode(typeBean.getCode());
+                        dataList.add(bean);
+                        //遍历子列表
+                        List<TypeBean.NumberListBean> numberList = typeBean.getNumberList();
+                        if (numberList!=null && numberList.size()>0) {
+                            for (int j = 0; j < numberList.size(); j++) {
+                                TypeBean.NumberListBean numberBean = numberList.get(j);
+                                bean = new TypeBean.NumberListBean();
+                                bean.setSub(true);
+                                bean.setTid(typeBean.getId());
+                                bean.setName(numberBean.getName());
+                                bean.setCode(numberBean.getCode());
+                                bean.setId(numberBean.getId());
+                                bean.setBid(numberBean.getBid());
+                                dataList.add(bean);
+                            }
+                        }
+                    }
+                    //设置右边的分类列表
+                    setAdapterRight(dataList);
+                }
             }
 
             @Override
-            public void onFailure(Call<List<BrandModelBean>> call, Throwable t) {
+            public void onFailure(Call<List<TypeBean>> call, Throwable t) {
 
             }
         });

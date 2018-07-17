@@ -173,12 +173,12 @@
 
             <ImageView
                 android:id="@+id/item_car_iv_tip"
-                android:layout_width="wrap_content"
+                android:layout_width="18dp"
                 android:layout_height="26dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:scaleType="fitEnd"
-                android:src="@drawable/icon_report" />
+                android:scaleType="fitCenter"
+                android:src="@drawable/jubao" />
 
             <TextView
                 android:id="@+id/item_car_tv_report"
