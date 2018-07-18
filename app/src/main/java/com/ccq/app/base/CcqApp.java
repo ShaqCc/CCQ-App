@@ -4,8 +4,11 @@ import android.content.Context;
 import android.support.multidex.MultiDex;
 import android.text.TextUtils;
 
+import com.activeandroid.ActiveAndroid;
+import com.baidu.mapapi.SDKInitializer;
 import com.ccq.app.entity.UserBean;
 import com.ccq.app.http.RetrofitClient;
+import com.ccq.app.service.LocationService;
 import com.ccq.app.utils.AppCache;
 import com.ccq.app.utils.Constants;
 import com.ccq.app.utils.CrashHandler;
@@ -15,9 +18,12 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
+import butterknife.BuildConfig;
 import butterknife.ButterKnife;
 import cn.jpush.im.android.api.JMessageClient;
+import jiguang.chat.activity.LoginActivity;
 import jiguang.chat.application.JGApplication;
+import jiguang.chat.database.UserEntry;
 import jiguang.chat.entity.NotificationClickEventReceiver;
 import jiguang.chat.pickerimage.utils.ScreenUtil;
 import jiguang.chat.pickerimage.utils.StorageUtil;
@@ -40,6 +46,7 @@ import static jiguang.chat.activity.LoginActivity.swapEnvironment;
 
 public class CcqApp extends com.activeandroid.app.Application {
     private static IWXAPI iwxapi;
+    public LocationService locationService;
     private static Context sContext;
     public static String jmappkey = "eb9dced406535d33bd0f637e";
 
@@ -50,6 +57,11 @@ public class CcqApp extends com.activeandroid.app.Application {
         //微信
         iwxapi = WXAPIFactory.createWXAPI(this, Constants.WX_APP_ID, true);
         iwxapi.registerApp(Constants.WX_APP_ID);
+        /***
+         * 初始化定位sdk，建议在Application中创建
+         */
+        SDKInitializer.initialize(getApplicationContext());
+        locationService = new LocationService(getApplicationContext());
         //初始化极光IM
         initJmIm();
         //测试环境

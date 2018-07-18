@@ -1,6 +1,5 @@
 package com.ccq.app.ui.user;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -11,7 +10,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -22,16 +20,13 @@ import com.bumptech.glide.Glide;
 import com.ccq.app.R;
 import com.ccq.app.base.BaseActivity;
 import com.ccq.app.base.BaseFragment;
-import com.ccq.app.base.BasePresenter;
 import com.ccq.app.base.CcqApp;
 import com.ccq.app.entity.BaseBean;
 import com.ccq.app.entity.SubscriberCountBean;
 import com.ccq.app.entity.UserBanner;
 import com.ccq.app.entity.UserBean;
-import com.ccq.app.http.ApiService;
 import com.ccq.app.http.RetrofitClient;
 import com.ccq.app.ui.ImageWatchActivity;
-import com.ccq.app.ui.MainActivity;
 import com.ccq.app.ui.message.SingleChatActivity;
 import com.ccq.app.ui.user.adapter.MyFragmentAdapter;
 import com.ccq.app.utils.AppCache;
@@ -42,12 +37,9 @@ import com.ccq.app.utils.SharedPreferencesUtils;
 import com.ccq.app.utils.ToastUtils;
 import com.ccq.app.utils.Utils;
 import com.ccq.app.weidget.SlidingTabLayout;
-import com.ccq.app.weidget.Toasty;
 import com.dmcbig.mediapicker.PickerActivity;
 import com.dmcbig.mediapicker.PickerConfig;
 import com.dmcbig.mediapicker.entity.Media;
-import com.google.gson.jpush.JsonObject;
-import com.google.gson.jpush.JsonParser;
 import com.tencent.mm.opensdk.modelbase.BaseReq;
 import com.tencent.mm.opensdk.modelbase.BaseResp;
 import com.tencent.mm.opensdk.openapi.IWXAPIEventHandler;
@@ -62,7 +54,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import cn.jiguang.imui.commons.models.IUser;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.model.Conversation;
 import cn.jpush.im.android.api.model.UserInfo;
@@ -96,7 +87,7 @@ public class UserFragment extends BaseFragment<UserPresenter> implements IWXAPIE
     @BindView(R.id.layout_my_subscribe_fans)
     LinearLayout layoutMySubscribeFans;
     @BindView(R.id.btn_invite_attation)
-    Button btnInviteAttation;
+    TextView btnInviteAttation;
     @BindView(R.id.btn_vip_setting)
     LinearLayout btnUserVip;
     @BindView(R.id.tv_subscribe)

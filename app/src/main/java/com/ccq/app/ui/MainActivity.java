@@ -105,7 +105,8 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
             public void onLocationChanged(TencentLocation tencentLocation, int error, String s) {
                 if (TencentLocation.ERROR_OK == error) {
                     AppCache.mLocation = tencentLocation;
-                    Toasty.success(getApplication(),AppCache.mLocation.getAddress()).show();
+                    Toasty.success(getApplication(),AppCache.mLocation.getProvince()+AppCache.mLocation.getCity()
+                            +AppCache.mLocation.getStreet()).show();
                 } else {
                     // 定位失败
                     AppCache.mLocation = null;

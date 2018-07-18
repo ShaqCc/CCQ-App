@@ -1,27 +1,14 @@
 package com.ccq.app.ui.user;
 
 import android.content.Intent;
-import android.graphics.Point;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.baidu.mapapi.map.BaiduMap;
-import com.baidu.mapapi.map.BitmapDescriptor;
-import com.baidu.mapapi.map.BitmapDescriptorFactory;
-import com.baidu.mapapi.map.MapStatus;
-import com.baidu.mapapi.map.MapStatusUpdate;
-import com.baidu.mapapi.map.MapStatusUpdateFactory;
-import com.baidu.mapapi.map.MapView;
-import com.baidu.mapapi.map.Marker;
-import com.baidu.mapapi.map.MarkerOptions;
-import com.baidu.mapapi.map.MyLocationConfiguration;
-import com.baidu.mapapi.model.LatLng;
 import com.ccq.app.R;
 import com.ccq.app.base.BaseFragment;
 import com.ccq.app.base.BasePresenter;
@@ -34,6 +21,12 @@ import com.ccq.app.utils.AppCache;
 import com.ccq.app.utils.Constants;
 import com.ccq.app.utils.ToastUtils;
 import com.ccq.app.weidget.Toasty;
+import com.tencent.mapsdk.raster.model.BitmapDescriptorFactory;
+import com.tencent.mapsdk.raster.model.LatLng;
+import com.tencent.mapsdk.raster.model.Marker;
+import com.tencent.mapsdk.raster.model.MarkerOptions;
+import com.tencent.tencentmap.mapsdk.map.TencentMap;
+import com.tencent.tencentmap.mapsdk.map.UiSettings;
 import com.youth.banner.Banner;
 
 import org.greenrobot.eventbus.EventBus;
@@ -67,17 +60,17 @@ public class TabIntroFragment extends BaseFragment {
     Banner myinfoBanner;
     @BindView(R.id.tv_mylocation_edit)
     TextView tvMylocationEdit;
-    @BindView(R.id.layout_mylocation_map)
-    MapView mapView;
+    @BindView(R.id.tencent_map)
+    com.tencent.tencentmap.mapsdk.map.MapView mapView;
     @BindView(R.id.tv_my_location)
     TextView tvMyLocation;
-    BaiduMap baiduMap;
 
     Unbinder unbinder;
     String defaultInfo = "我是%s，我来自%s，我的联系方式是：%s，如有业务请与我联系我吧";
 
     UserBean userBean;
     private UserLocationBean userLocationBean;
+    private TencentMap tencentMap;
 
     @Override
     protected int inflateContentView() {
@@ -92,28 +85,7 @@ public class TabIntroFragment extends BaseFragment {
     @Override
     protected void initView(View rootView) {
         tvMyinfoContent = rootView.findViewById(R.id.tv_myinfo_content);
-        baiduMap = mapView.getMap();
-
-        mapView.showZoomControls(false);
-
-        baiduMap.setOnMapLoadedCallback(new BaiduMap.OnMapLoadedCallback() {
-
-            @Override
-            public void onMapLoaded() {
-                Point point = new Point();
-                point.x = 20;
-                point.y = 20;
-                mapView.setScaleControlPosition(point);
-            }
-        });
-
-        BitmapDescriptor mCurrentMarker = BitmapDescriptorFactory
-                .fromResource(R.drawable.icon_position);
-
-
-        baiduMap.setMyLocationConfigeration(new MyLocationConfiguration(
-                MyLocationConfiguration.LocationMode.NORMAL, true, mCurrentMarker,
-                0xAAFFFF88, 0xAA00FF00));
+        tencentMap = mapView.getMap();
         EventBus.getDefault().register(this);
     }
 
@@ -141,19 +113,16 @@ public class TabIntroFragment extends BaseFragment {
                         tvOnSaleCount.setText(String.valueOf(userBean.getZaishou_count()));
                         tvSaleOutCount.setText(String.valueOf(userBean.getYishou_count()));
                         //设置地图
-                        baiduMap.setMyLocationEnabled(true);
+                        tencentMap.setZoom(18);
+//                        tencentMap.setTrafficEnabled(true);
                         LatLng latLng = new LatLng(Double.parseDouble(userLocationBean.getLatitude()), Double.parseDouble(userLocationBean.getLongitude()));
-                        MapStatus mMapStatus = new MapStatus.Builder().target(latLng).zoom(18).build();
-
-                        BitmapDescriptor mCurrentMarker = BitmapDescriptorFactory
-                                .fromResource(R.drawable.icon_position);
-                        MarkerOptions markerOptions = new MarkerOptions().icon(mCurrentMarker).position(latLng);
-                        baiduMap.addOverlay(markerOptions);
-
-
-                        MapStatusUpdate mMapStatusUpdate = MapStatusUpdateFactory.newMapStatus(mMapStatus);
-                        baiduMap.setMapStatus(mMapStatusUpdate);
-
+                        tencentMap.setCenter(latLng);
+                        tencentMap.addMarker(new MarkerOptions()
+                                .position(latLng)
+                                .title("当前位置")
+                                .anchor(1, 1)
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_location))
+                                .draggable(false));
                         //地址
                         RetrofitClient.getInstance().getApiService().getAddressByLgt(userBean.getMobile(), userLocationBean.getLongitude(), userLocationBean.getLatitude())
                                 .enqueue(new Callback<BaseBean>() {
@@ -253,12 +222,23 @@ public class TabIntroFragment extends BaseFragment {
         mapView.onPause();
     }
 
-
     @Override
     public void onResume() {
         super.onResume();
         mapView.setVisibility(View.VISIBLE);
         mapView.onResume();
+    }
+
+    @Override
+    public void onDestroy() {
+        mapView.onDestroy();
+        super.onDestroy();
+    }
+
+    @Override
+    public void onStop() {
+        mapView.onStop();
+        super.onStop();
     }
 
 }

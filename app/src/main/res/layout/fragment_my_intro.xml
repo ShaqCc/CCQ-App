@@ -243,13 +243,13 @@
                 android:textColor="@color/black_de"
                 android:textSize="12sp" />
 
-            <com.baidu.mapapi.map.MapView
-                android:id="@+id/layout_mylocation_map"
-                android:layout_width="match_parent"
-                android:layout_height="300dp"
+            <com.tencent.tencentmap.mapsdk.map.MapView
+                android:id="@+id/tencent_map"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
-                android:layout_marginTop="16dp" />
+                android:layout_marginTop="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"/>
 
 
             <View

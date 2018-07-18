@@ -57,11 +57,11 @@ android {
         resolutionStrategy.force 'com.android.support:recyclerview-v7:26.1.0'
         resolutionStrategy.force 'com.android.support:support-fragment:26.1.0'
     }
-//    sourceSets {
-//        main {
-//            jniLibs.srcDirs = ['libs']
-//        }
-//    }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
 
 //    splits {
 //        abi {
