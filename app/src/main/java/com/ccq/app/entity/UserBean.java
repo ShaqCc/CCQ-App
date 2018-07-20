@@ -79,6 +79,7 @@ public class UserBean implements Serializable {
     private String mobile;
     private String nickname;
     private String password;
+    private String erweima;
     private int refcount;
     private Object refdate;
     private String reminddate;
@@ -107,6 +108,14 @@ public class UserBean implements Serializable {
     private boolean isBusiness;
     private boolean isMember;
 
+
+    public String getErweima() {
+        return erweima;
+    }
+
+    public void setErweima(String erweima) {
+        this.erweima = erweima;
+    }
 
     public String getJiguang_name() {
         return jiguang_name;

@@ -4,11 +4,13 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.ccq.app.R;
 import com.ccq.app.base.BaseFragment;
@@ -23,6 +25,7 @@ import com.ccq.app.ui.publish.BaseMapActivity;
 import com.ccq.app.ui.user.adapter.MyPublishListAdapter;
 import com.ccq.app.utils.AppCache;
 import com.ccq.app.utils.ToastUtils;
+import com.ccq.app.weidget.Toasty;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -169,9 +172,11 @@ public class TabHomeFragment extends BaseFragment {
                         removeCar();
                         break;
                     case 3:
-                        if (userBean.isBusiness() || userBean.isMember()) {
+                        if(userBean.getRefcount()>=5){
+                            Toasty.warning(get(), "24小时内只能刷新5次！" , Toast.LENGTH_LONG).show();
+                        }else if (userBean.isBusiness() || userBean.isMember()) {
                             refreshCar();
-                        } else {
+                        }else {
                             AlertDialog.Builder alertbuild = new AlertDialog.Builder(get());
                             alertbuild.setTitle("");
                             alertbuild.setCancelable(true);
@@ -213,7 +218,9 @@ public class TabHomeFragment extends BaseFragment {
                     com.google.gson.jpush.JsonObject returnData = new com.google.gson.jpush.JsonParser().parse(obj.toString()).getAsJsonObject();
                     String mesg = returnData.get("message").getAsString();
                     ToastUtils.show(get(), mesg);
-
+                    if("0.0".equals(returnData.get("code").getAsString())){
+                        initData();
+                    }
                 }
             }
 
@@ -237,7 +244,9 @@ public class TabHomeFragment extends BaseFragment {
                     com.google.gson.jpush.JsonObject returnData = new com.google.gson.jpush.JsonParser().parse(obj.toString()).getAsJsonObject();
                     String mesg = returnData.get("message").getAsString();
                     ToastUtils.show(get(), mesg);
-
+                    if("0.0".equals(returnData.get("code").getAsString())){
+                        initData();
+                    }
                 }
             }
 
@@ -260,6 +269,9 @@ public class TabHomeFragment extends BaseFragment {
                 if (obj != null) {
                     com.google.gson.jpush.JsonObject returnData = new com.google.gson.jpush.JsonParser().parse(obj.toString()).getAsJsonObject();
                     String mesg = returnData.get("message").getAsString();
+                    if("0.0".equals(returnData.get("code").getAsString())){
+                        refreshUserInfo();
+                    }
                     ToastUtils.show(get(), mesg);
                 }
             }
@@ -280,6 +292,21 @@ public class TabHomeFragment extends BaseFragment {
         get().startActivity(i);
     }
 
+    //刷新信息后需要重新获取用户的刷新次数
+    private void refreshUserInfo(){
+        apiService.getUser(userBean.getUserid()).enqueue(new Callback<UserBean>() {
+            @Override
+            public void onResponse(Call<UserBean> call, @NonNull Response<UserBean> response) {
+                AppCache.setUserBean(response.body());
+                userBean = response.body();
+            }
+
+            @Override
+            public void onFailure(Call<UserBean> call, Throwable t) {
+                Toasty.warning(get(), "更新用户信息失败" + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
 
     @Override
     public void initData() {
@@ -325,27 +352,9 @@ public class TabHomeFragment extends BaseFragment {
             }
         });
 
-//        apiService.getUserCarList(carMap).enqueue(new Callback() {
-//            @Override
-//            public void onResponse(Call call, Response response) {
-//                if (response!=null && response.body()!=null){
-//                    if(carList!=null)carList.clear();
-//                    carList.addAll( (List<Car>) response.body());
-//                    if(carList.size()<1){
-////                        setViewState(ViewState.STATE_EMPTY);
-//                    }else{
-//                        adapter.notifyDataSetChanged();
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call call, Throwable t) {
-//
-//            }
-//        });
-
     }
+
+
 
 
     @Override

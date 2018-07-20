@@ -47,6 +47,12 @@ public class ChooseMediaAdapter extends BaseAdapter {
     private Activity mActivity;
     private boolean islocal;
 
+    public void setDeleteItemClickListener(DeleteItemClickListener deleteItemClickListener) {
+        this.deleteItemClickListener = deleteItemClickListener;
+    }
+
+    private DeleteItemClickListener deleteItemClickListener;
+
     public ChooseMediaAdapter(List<String> mediaList, Activity activity,boolean islocal) {
         this.mediaList = mediaList;
         this.mActivity = activity;
@@ -104,14 +110,14 @@ public class ChooseMediaAdapter extends BaseAdapter {
             tvFirstPage.setVisibility(View.VISIBLE);
 
             if (mediaPath.contains(".jpg") || mediaPath.contains(".jpeg") || mediaPath.contains(".png") || mediaPath.contains(".bmp")) {
-                if(islocal){
+                if(!mediaPath.startsWith("http:")){
                     Glide.with(mActivity).load(mediaPath).into(ivPic);
                 }else{
                     Glide.with(mActivity).load(mediaPath + "!300auto").into(ivPic);
                 }
 
             } else {
-                if(islocal){
+                if(!mediaPath.startsWith("http:")){
                     MediaMetadataRetriever media = new MediaMetadataRetriever();
                     media.setDataSource(mediaPath);
                     Bitmap bitmap = media.getFrameAtTime();
@@ -132,10 +138,11 @@ public class ChooseMediaAdapter extends BaseAdapter {
             btDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (mediaList.size() > position) {
-                        mediaList.remove(position);
-                        notifyDataSetChanged();
-                    }
+                    deleteItemClickListener.onListItemClickListener(position);
+//                    if (mediaList.size() > position) {
+//                        mediaList.remove(position);
+//                        notifyDataSetChanged();
+//                    }
                 }
             });
             //切换封面
@@ -247,5 +254,9 @@ public class ChooseMediaAdapter extends BaseAdapter {
                     ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
         }
         return bitmap;
+    }
+
+    public interface DeleteItemClickListener {
+        void onListItemClickListener(int position);
     }
 }

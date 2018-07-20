@@ -2,17 +2,20 @@ package com.ccq.app.ui.user;
 
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ccq.app.R;
 import com.ccq.app.base.BaseActivity;
 import com.ccq.app.base.BasePresenter;
 import com.ccq.app.base.CcqApp;
+import com.ccq.app.entity.UserBean;
 import com.ccq.app.entity.WeixinPayBean;
 import com.ccq.app.http.HttpClient;
 import com.ccq.app.http.ProgressCallBack;
@@ -21,6 +24,7 @@ import com.ccq.app.utils.AppCache;
 import com.ccq.app.utils.Constants;
 import com.ccq.app.utils.SharedPreferencesUtils;
 import com.ccq.app.utils.SystemUtil;
+import com.ccq.app.weidget.Toasty;
 import com.tencent.mm.opensdk.constants.Build;
 import com.tencent.mm.opensdk.modelpay.PayReq;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
@@ -150,8 +154,24 @@ public class OpenVipActivity extends BaseActivity {
     @Subscribe
     public void onPayResult(Integer code) {
         if (code == Constants.PAY_RESULT_SUCCESS) {
+            refreshUserInfo();
             finish();
         }
+    }
+
+    // 支付成功后，重新获取用户的信息，变更会员状态
+    private void refreshUserInfo(){
+        RetrofitClient.getInstance().getApiService().getUser(AppCache.getUserBean().getUserid()).enqueue(new Callback<UserBean>() {
+            @Override
+            public void onResponse(Call<UserBean> call, @NonNull Response<UserBean> response) {
+                AppCache.setUserBean(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<UserBean> call, Throwable t) {
+                Toasty.warning(OpenVipActivity.this, "更新用户信息失败" + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     @Override

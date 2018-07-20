@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.ccq.app.R;
 import com.ccq.app.entity.Car;
+import com.ccq.app.ui.ImageWatchActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,15 +86,7 @@ public class  MyPublishListAdapter extends RecyclerView.Adapter<MyPublishListAda
         holder.itemInfoImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<com.ccq.app.entity.Car.PicImgBean> imgBeans = Car.getPic_img();
-                Rect rect = computeBounds(holder.itemInfoImage);
-//                ArrayList<ThumbViewInfo> mThumbList = new ArrayList<>();
-//                for(com.ccq.app.entity.Car.PicImgBean bean : imgBeans){
-//                    ThumbViewInfo viewInfo = new ThumbViewInfo(bean.getSavename()+ "!auto");
-//                    viewInfo.setBounds(rect);
-//                    mThumbList.add(viewInfo);
-//                }
-//                PhotoActivity.startActivity((Activity) context ,mThumbList, 0);
+            ImageWatchActivity.launch(context,getImageUrlList(Car.getPic_img()),position);
             }
         });
 
@@ -108,14 +101,13 @@ public class  MyPublishListAdapter extends RecyclerView.Adapter<MyPublishListAda
         return url + "!300auto";
     }
 
-    private Rect computeBounds(ImageView imageView) {
-        Rect bounds = new Rect();
-        if (imageView != null) {
-            imageView.getGlobalVisibleRect(bounds);
+    private ArrayList<String> getImageUrlList(List<Car.PicImgBean> pic_img) {
+        ArrayList<String> result = new ArrayList<>();
+        for (int i = 0; i < pic_img.size(); i++) {
+            result.add(pic_img.get(i).getSavename() + "!auto");
         }
-        return bounds;
+        return result;
     }
-
 
     @Override
     public int getItemCount() {

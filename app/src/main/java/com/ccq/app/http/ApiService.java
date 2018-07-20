@@ -146,11 +146,11 @@ public interface ApiService {
     /**
      * 修改车辆信息
      *
-     * @param user
+     * @param carParams
      * @return
      */
     @POST("/car/edit")
-    Call<Object> editCarInfo(@Body CarInfo user);
+    Call<Object> editCarInfo(@QueryMap Map<String, Object> carParams);
 
     @GET("/car/nianfen")
     Call<List<Object>> getCarNianFenList();

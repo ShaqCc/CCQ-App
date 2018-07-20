@@ -113,7 +113,7 @@ public class PublishFragment extends BaseFragment {
     MyGridView gridView;
     @BindView(R.id.scrollView_content)
     ScrollView scrollViewContent;
-    private LocationService locationService;
+//    private LocationService locationService;
 
 //    GridViewPhotoAdapter gridViewAdapter;
 
@@ -187,6 +187,26 @@ public class PublishFragment extends BaseFragment {
         gridView.setColumnWidth(DensityUtils.dp2px(get(), 82));
         mediaAdapter = new ChooseMediaAdapter(new ArrayList<String>(), get(), isLocal);
         gridView.setAdapter(mediaAdapter);
+        mediaAdapter.setDeleteItemClickListener(new ChooseMediaAdapter.DeleteItemClickListener() {
+            @Override
+            public void onListItemClickListener(int position) {
+                if (mMultiSelectPath.size() > position) {
+                    String path = mMultiSelectPath.get(position);
+                    if(!path.startsWith("http")){
+                        mMultiSelectPath.remove(position);
+                        if(photoPath!=null && photoPath.contains(path)){
+                            photoPath.remove(path);
+                        }
+                        if(videoPath!=null && videoPath.contains(path)){
+                            videoPath.remove(path);
+                        }
+                        mediaAdapter.notifyDataSetChanged();
+                    }else{
+                        deleteFileFromService(mMultiSelectPath.get(position));
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -198,11 +218,8 @@ public class PublishFragment extends BaseFragment {
 
     private void initCarInfo() {
         if (car != null) {
-            btnCarLocation.setText(car.getAddress());
+            getCarLocation();
             etDescription.setText(car.getContent());
-            if (!TextUtils.isEmpty(car.getLatitude()) && !TextUtils.isEmpty(car.getLongitude())) {
-                point = new LatLng(Double.parseDouble(car.getLatitude()), Double.parseDouble(car.getLongitude()));
-            }
 
             btnBandModel.setText(car.getBrandName() + car.getNumberName());
             etUserPhone.setText(car.getPhone());
@@ -211,12 +228,15 @@ public class PublishFragment extends BaseFragment {
             btnSubmit.setText("修改");
 
             brandBean.setId(car.getBrandId());
+            if(brandModelBean == null){
+                brandModelBean = new TypeBean.NumberListBean();
+            }
             brandModelBean.setId(car.getNumberId());
+            brandModelBean.setBid(car.getBrandId());
+            brandModelBean.setTid(car.getTonnageId());
 
             List<com.ccq.app.entity.Car.PicImgBean> imgBeans = car.getPic_img();
             List<Car.VideoBean> videoBeans = car.getVideoList();
-            String[] imageIds = car.getPic().split(",");
-
             imgInfoMap = new HashMap<>();
 
             if (imgBeans != null) {
@@ -224,19 +244,49 @@ public class PublishFragment extends BaseFragment {
                     Car.PicImgBean img = imgBeans.get(i);
                     mMultiSelectPath.add(img.getSavename());
                     imgInfoMap.put(img.getSavename(), img.getId());
+                    imgidList.add(img.getId());
                 }
             }
 
-            if (videoBeans != null) {
+            if (videoBeans != null && videoBeans.size()>0) {
                 for (int i = 0; i < videoBeans.size(); i++) {
                     Car.VideoBean video = videoBeans.get(i);
                     mMultiSelectPath.add(video.getOsspath());
                     imgInfoMap.put(video.getOsspath(), video.getId());
+                    videoidList.add(video.getId());
                 }
             }
+
             initGridView();
             mediaAdapter.refresh(mMultiSelectPath);
         }
+    }
+
+    private void getCarLocation() {
+        RetrofitClient.getInstance().getApiService().getCarAddress(String.valueOf(car.getId())).enqueue(new Callback<Object>() {
+            @Override
+            public void onResponse(Call<Object> call, Response<Object> response) {
+                Map<String, Object> map = (Map<String, Object>) response.body();
+                if (0.0 == (Double) map.get("code")) {
+                    car.setDetailAddress((String) map.get("address"));
+                    car.setLatitude(map.get("latitude").toString());
+                    car.setLongitude(map.get("longitude").toString());
+
+                    btnCarLocation.setText(car.getAddress());
+                    if (!TextUtils.isEmpty(car.getLatitude()) && !TextUtils.isEmpty(car.getLongitude())) {
+                        point = new LatLng(Double.parseDouble(car.getLatitude()), Double.parseDouble(car.getLongitude()));
+                    }
+
+                } else {
+                    ToastUtils.show(get(), (String) map.get("message"));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Object> call, Throwable t) {
+
+            }
+        });
     }
 
     public void initYearList() {
@@ -289,27 +339,33 @@ public class PublishFragment extends BaseFragment {
      * 检查是否登录，和 今日是否可上报（最多3次）
      */
     private void sendCheck() {
-        if (AppCache.getUserBean() == null) {
-            ToastUtils.show(get(), "请先登录");
-            return;
-        }
 
-        apiService.sendCheck(AppCache.getUserBean().getUserid()).enqueue(new Callback<Object>() {
-            @Override
-            public void onResponse(Call<Object> call, Response<Object> response) {
-                Map<String, Object> map = (Map<String, Object>) response.body();
-                if (0.0 == (Double) map.get("code")) {
-                    uploadFile();
-                } else {
-                    ToastUtils.show(get(), (String) map.get("message"));
+        if(isLocal){
+            if (AppCache.getUserBean() == null) {
+                ToastUtils.show(get(), "请先登录");
+                return;
+            }
+
+            apiService.sendCheck(AppCache.getUserBean().getUserid()).enqueue(new Callback<Object>() {
+                @Override
+                public void onResponse(Call<Object> call, Response<Object> response) {
+                    Map<String, Object> map = (Map<String, Object>) response.body();
+                    if (0.0 == (Double) map.get("code")) {
+                        uploadFile();
+                    } else {
+                        ToastUtils.show(get(), (String) map.get("message"));
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<Object> call, Throwable t) {
+                @Override
+                public void onFailure(Call<Object> call, Throwable t) {
 
-            }
-        });
+                }
+            });
+        }else{
+            //修改信息
+            uploadFile();
+        }
 
     }
 
@@ -468,30 +524,61 @@ public class PublishFragment extends BaseFragment {
         map.put("tonnage",brandModelBean.getTid());
         map.put("number", brandModelBean.getId());
 
-        apiService.addCarInfo(map).enqueue(new Callback<Object>() {
-            @Override
-            public void onResponse(Call<Object> call, Response<Object> response) {
-                Map<String, Object> map = (Map<String, Object>) response.body();
-                String message = (String) map.get("message");
-                if (0.0 == (Double) map.get("code")) {
-                    message = "发布成功";
+        if(isLocal){
+            apiService.addCarInfo(map).enqueue(new Callback<Object>() {
+                @Override
+                public void onResponse(Call<Object> call, Response<Object> response) {
+                    Map<String, Object> map = (Map<String, Object>) response.body();
+                    String message = (String) map.get("message");
+                    if (0.0 == (Double) map.get("code")) {
+                        message = "发布成功";
+                    }
+                    dismissLoading();
+                    ToastUtils.show(get(), message);
+                    //重置页面
+                    reset();
+                    //跳转到首页
+                    ((MainActivity) getActivity()).setCurrentTab(0);
                 }
-                dismissLoading();
-                ToastUtils.show(get(), message);
-                //重置页面
-                reset();
-                //跳转到首页
-                ((MainActivity) getActivity()).setCurrentTab(0);
-            }
 
-            @Override
-            public void onFailure(Call<Object> call, Throwable t) {
-                dismissLoading();
-                if (t != null) {
-                    Log.e("sssss====", t.getCause().toString());
+                @Override
+                public void onFailure(Call<Object> call, Throwable t) {
+                    dismissLoading();
+                    if (t != null) {
+                        Log.e("sssss====", t.getCause().toString());
+                    }
                 }
-            }
-        });
+            });
+        }else{
+            map.put("carid",car.getId());
+            map.put("BrandName",car.getBrandName());
+            map.put("TonnageName",car.getTonnageName());
+            map.put("NumberName",car.getNumberName());
+            map.put("ProvinceName",car.getProvinceName());
+            map.put("CityName",car.getCityName());
+
+            apiService.editCarInfo(map).enqueue(new Callback<Object>() {
+                @Override
+                public void onResponse(Call<Object> call, Response<Object> response) {
+                    Map<String, Object> map = (Map<String, Object>) response.body();
+                    String message = (String) map.get("message");
+                    if (0.0 == (Double) map.get("code")) {
+                        message = "修改成功";
+                    }
+                    dismissLoading();
+                    ToastUtils.show(get(), message);
+                    get().finish();
+                }
+
+                @Override
+                public void onFailure(Call<Object> call, Throwable t) {
+                    dismissLoading();
+                    if (t != null && t.getCause()!=null) {
+                        Log.e("sssss====", t.getCause().toString());
+                    }
+                }
+            });
+        }
 
     }
 
@@ -541,6 +628,7 @@ public class PublishFragment extends BaseFragment {
                             videoPath.remove(deletePath);
                         }
                         mMultiSelectPath.remove(deletePath);
+                        mediaAdapter.notifyDataSetChanged();
                     }
                 }
             }
@@ -567,22 +655,22 @@ public class PublishFragment extends BaseFragment {
     }
 
     public void getBDlocation() {
-        locationService = ((CcqApp) getActivity().getApplication()).locationService;
-        //获取locationservice实例，建议应用中只初始化1个location实例，然后使用，可以参考其他示例的activity，都是通过此种方式获取locationservice实例的
-        locationService.registerListener(mListener);
-        LocationClientOption option = locationService.getDefaultLocationClientOption();
-        option.setScanSpan(0);
-        locationService.setLocationOption(option);
-        locationService.start();// 定位SDK
+//        locationService = ((CcqApp) getActivity().getApplication()).locationService;
+//        //获取locationservice实例，建议应用中只初始化1个location实例，然后使用，可以参考其他示例的activity，都是通过此种方式获取locationservice实例的
+//        locationService.registerListener(mListener);
+//        LocationClientOption option = locationService.getDefaultLocationClientOption();
+//        option.setScanSpan(0);
+//        locationService.setLocationOption(option);
+//        locationService.start();// 定位SDK
     }
 
 
     @Override
     public void onStop() {
-        if (locationService != null) {
-            locationService.unregisterListener(mListener); //注销掉监听
-            locationService.stop(); //停止定位服务
-        }
+//        if (locationService != null) {
+//            locationService.unregisterListener(mListener); //注销掉监听
+//            locationService.stop(); //停止定位服务
+//        }
         super.onStop();
     }
 

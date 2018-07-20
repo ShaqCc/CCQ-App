@@ -54,9 +54,27 @@ public class Car implements Serializable{
     private String NumberName;
     private String brandId;
     private String numberId;
+    private String TonnageId;
+    private String TonnageName;
     private String pic;
     private String videoIds;
     private List<VideoBean> videoList;
+
+    public String getTonnageId() {
+        return TonnageId;
+    }
+
+    public void setTonnageId(String tonnageId) {
+        TonnageId = tonnageId;
+    }
+
+    public String getTonnageName() {
+        return TonnageName;
+    }
+
+    public void setTonnageName(String tonnageName) {
+        TonnageName = tonnageName;
+    }
 
     public String getVideoIds() {
         return videoIds;

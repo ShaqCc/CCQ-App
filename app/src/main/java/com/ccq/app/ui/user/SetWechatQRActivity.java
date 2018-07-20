@@ -4,11 +4,13 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -29,6 +31,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import jiguang.chat.utils.imagepicker.ImagePicker;
 import jiguang.chat.utils.imagepicker.view.CropImageView;
@@ -44,6 +47,8 @@ import retrofit2.Response;
  */
 public class SetWechatQRActivity extends BaseActivity {
 
+    @BindView(R.id.tv_erweima)
+    TextView tvErweima;
     private String imagePath;
     private ProgressDialog dialog;
     private Handler handler = new Handler();
@@ -64,7 +69,7 @@ public class SetWechatQRActivity extends BaseActivity {
         startActivityForResult(intent, 111);
     }
 
-    @OnClick(R.id.btn_submit)
+    //    @OnClick(R.id.btn_submit)
     public void upload() {
 
         apiService = RetrofitClient.getInstance().getApiService();
@@ -172,6 +177,10 @@ public class SetWechatQRActivity extends BaseActivity {
             btOpenVip.setVisibility(View.GONE);
         }
         setImageSetting();
+        if(!TextUtils.isEmpty(AppCache.getUserBean().getErweima())){
+            Glide.with(SetWechatQRActivity.this).load(AppCache.getUserBean().getErweima()+"!auto").into(ivErweima);
+            tvErweima.setText("");
+        }
     }
 
     private void setImageSetting() {
@@ -194,8 +203,11 @@ public class SetWechatQRActivity extends BaseActivity {
             ArrayList<Media> select = data.getParcelableArrayListExtra(PickerConfig.EXTRA_RESULT);
             if (select != null && !select.isEmpty()) {
                 Glide.with(this).load(select.get(0).path).into(ivErweima);
+                tvErweima.setText("");
                 imagePath = select.get(0).path;
             }
+
+            upload();
         }
     }
 
@@ -228,4 +240,5 @@ public class SetWechatQRActivity extends BaseActivity {
         builder.show();
 
     }
+
 }

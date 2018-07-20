@@ -167,10 +167,6 @@ public class UserFragment extends BaseFragment<UserPresenter> implements IWXAPIE
             userOpt.setVisibility(View.VISIBLE);
             //会员
             btnUserVip.setVisibility(View.GONE);
-            layoutMySubscribe.setClickable(false);
-            layoutMySubscribe.setFocusable(false);
-            layoutMySubscribeFans.setClickable(false);
-            layoutMySubscribeFans.setFocusable(false);
             btnInviteAttation.setVisibility(View.GONE);
             llSetting.setVisibility(View.GONE);
         }
@@ -377,14 +373,18 @@ public class UserFragment extends BaseFragment<UserPresenter> implements IWXAPIE
                 showUserSettingDialog();
                 break;
             case R.id.layout_my_subscribe:
-                Intent i = new Intent(getActivity(), UserSubscribeActivity.class);
-                i.putExtra("type", 0);
-                getActivity().startActivity(i);
+                if(isMine){
+                    Intent i = new Intent(getActivity(), UserSubscribeActivity.class);
+                    i.putExtra("type", 0);
+                    getActivity().startActivity(i);
+                }
                 break;
             case R.id.layout_my_subscribe_fans:
-                Intent ii = new Intent(getActivity(), UserSubscribeActivity.class);
-                ii.putExtra("type", 1);
-                getActivity().startActivity(ii);
+                if(isMine){
+                    Intent ii = new Intent(getActivity(), UserSubscribeActivity.class);
+                    ii.putExtra("type", 1);
+                    getActivity().startActivity(ii);
+                }
                 break;
             case R.id.btn_vip_setting:
                 startActivity(new Intent(get(), OpenVipActivity.class));

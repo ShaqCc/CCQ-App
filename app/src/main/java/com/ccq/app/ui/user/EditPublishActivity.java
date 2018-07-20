@@ -1,6 +1,7 @@
 package com.ccq.app.ui.user;
 
 
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -33,6 +34,7 @@ public class EditPublishActivity extends BaseActivity {
     TextView toobarTitle;
 
     private Car car;
+    Fragment fragment;
 
     @Override
     protected int inflateContentView() {
@@ -60,7 +62,7 @@ public class EditPublishActivity extends BaseActivity {
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
 
-        Fragment fragment = new PublishFragment();
+        fragment = new PublishFragment();
         transaction.add(R.id.add_fragment,fragment);
         transaction.commit();
     }
@@ -74,7 +76,9 @@ public class EditPublishActivity extends BaseActivity {
                     Map<String,Object>  maps = ((Map)map.get("data"));
                     car.setNumberName((String) maps.get("NumberName"));
                     car.setBrandName((String) maps.get("BrandName"));
+                    car.setTonnageName((String) maps.get("TonnageName"));
                     car.setPic((String) maps.get("pic"));
+                    car.setVideoIds((String) maps.get("video"));
 //                    List<Map<String,Object>>  imageMapsList  = (List<Map<String, Object>>) maps.get("pic_img");
 //                    List<Map<String,Object>>  videoMapsList  = (List<Map<String, Object>>) maps.get("videoList");
 
@@ -83,8 +87,9 @@ public class EditPublishActivity extends BaseActivity {
 //                    car.setPic_img((List<Car.PicImgBean>) maps.get("pic_img"));
 //                    car.setVideoList((List<Car.VideoBean>) maps.get("videoList"));
 
-                    car.setBrandId( maps.get("b_id").toString());
-                    car.setNumberId(maps.get("n_id").toString());
+                    car.setBrandId( String.valueOf(Double.valueOf(maps.get("b_id").toString()).intValue()));
+                    car.setNumberId(String.valueOf(Double.valueOf(maps.get("n_id").toString()).intValue()));
+                    car.setTonnageId(String.valueOf(Double.valueOf(maps.get("t_id").toString()).intValue()));
                     showPage();
                 }
             }
@@ -128,4 +133,9 @@ public class EditPublishActivity extends BaseActivity {
         return imglist;
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(fragment!=null) fragment.onActivityResult(requestCode,resultCode,data);
+    }
 }
