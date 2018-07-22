@@ -21,6 +21,9 @@ import com.ccq.app.utils.SystemUtil;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import jiguang.chat.pickerimage.utils.ScreenUtil;
+import jiguang.chat.utils.CommonUtils;
+
 public class StatusBarUtils {
 
     public StatusBarUtils(Activity activity) {
@@ -46,7 +49,6 @@ public class StatusBarUtils {
             EyesKitKat.translucentStatusBar(activity);
         }
     }
-
 
 
     public static void setStatusBarColorForCollapsingToolbar(@NonNull Activity activity, AppBarLayout appBarLayout, CollapsingToolbarLayout collapsingToolbarLayout,
@@ -168,13 +170,15 @@ public class StatusBarUtils {
             //如果是6.0以上将状态栏文字改为白色，并设置状态栏颜色
             activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
                     View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            activity.getWindow().getDecorView().findViewById(android.R.id.content)
+                    .setPadding(0, ScreenUtil.getStatusBarHeight(activity), 0, 0);
             //fitsSystemWindow 为 false, 不预留系统栏位置.
-            ViewGroup mContentView = (ViewGroup) activity.getWindow().findViewById(Window.ID_ANDROID_CONTENT);
-            View mChildView = mContentView.getChildAt(0);
-            if (mChildView != null) {
-                ViewCompat.setFitsSystemWindows(mChildView, true);
-                ViewCompat.requestApplyInsets(mChildView);
-            }
+//            ViewGroup mContentView = (ViewGroup) activity.getWindow().findViewById(Window.ID_ANDROID_CONTENT);
+//            View mChildView = mContentView.getChildAt(0);
+//            if (mChildView != null) {
+//                ViewCompat.setFitsSystemWindows(mChildView, true);
+//                ViewCompat.requestApplyInsets(mChildView);
+//            }
         }
     }
 
@@ -187,6 +191,8 @@ public class StatusBarUtils {
         else if ("meizu".equals(SystemUtil.getDeviceBrand()))
             FlymeSetStatusBarLightMode(activity, false);
         else
-            activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+            activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+        activity.getWindow().getDecorView().findViewById(android.R.id.content)
+                .setPadding(0, ScreenUtil.getStatusBarHeight(activity), 0, 0);
     }
 }

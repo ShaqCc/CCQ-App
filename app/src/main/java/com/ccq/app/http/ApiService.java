@@ -13,6 +13,7 @@ import com.ccq.app.entity.Province;
 import com.ccq.app.entity.SubscribeUser;
 import com.ccq.app.entity.SubscriberCountBean;
 import com.ccq.app.entity.TypeBean;
+import com.ccq.app.entity.UploadImageResponse;
 import com.ccq.app.entity.UserBanner;
 import com.ccq.app.entity.UserBean;
 import com.ccq.app.entity.UserLocationBean;
@@ -20,6 +21,7 @@ import com.ccq.app.entity.WeixinPayBean;
 import com.ccq.app.entity.WxLoginResultBean;
 import com.ccq.app.entity.WxUserInfo;
 import com.ccq.app.entity.YearLimitBean;
+import com.ccq.app.ui.user.introduce.UserImageBean;
 import com.youth.banner.Banner;
 
 import java.util.List;
@@ -137,7 +139,7 @@ public interface ApiService {
 
     @Multipart
     @POST("/uploadimage")
-    Call<BaseBean> uploadBannerImage(@Part MultipartBody.Part file);
+    Call<UploadImageResponse> uploadCommonImage(@Part MultipartBody.Part file);
 
     @Multipart
     @POST("/user/modifybanner")
@@ -292,15 +294,69 @@ public interface ApiService {
     Call<UserLocationBean> getUserLocation(@Query("userid") String userid);
 
 
+    /**
+     * 获取个人中心图片列表
+     *
+     * @param userid
+     * @return
+     */
     @POST("/user/imglist/getlist")
-    Call<Object> getUserImageList(@Query("userid") String userid);
+    Call<UserImageBean> getUserImageList(@Query("userid") String userid);
 
+    @POST("/user/imglist/add")
+    Call<Object> addUserImage(@Query("resid") String resid, @Query("userid") String userid, @Query("sort") String sort);
+
+    /**
+     * 根据经纬度获取地址
+     *
+     * @param phone
+     * @param longitude
+     * @param latitude
+     * @return
+     */
     @POST("/addr/local")
     Call<BaseBean> getAddressByLgt(@Query("phone") String phone, @Query("longitude") String longitude, @Query("latitude") String latitude);
 
 
     @POST("/user/banner")
     Call<UserBanner> getUserBanner(@Query("userid") String userid);
+
+
+    /**
+     * 删除用户图片
+     */
+    @POST("/user/imglist/remove")
+    Call<Object> deleteUserImage(@Query("id") String id, @Query("userid") String userid);
+
+    /**
+     * 修改
+     */
+    @POST("/user/imglist/update")
+    Call<Object> updateUserImage(@Query("id") String id, @Query("resid") String resid, @Query("userid") String userid);
+
+    /**
+     * 上移
+     */
+    @POST("/user/imglist/upper")
+    Call<Object> moveUp(@Query("id") String id, @Query("userid") String userid);
+
+    /**
+     * 下移
+     */
+    @POST("/user/imglist/lower")
+    Call<Object> moveDown(@Query("id") String id, @Query("userid") String userid);
+
+    /**
+     * 修改用户位置
+     * @param userid
+     * @param jingdu
+     * @param weidu
+     * @param address
+     * @return
+     */
+    @POST("/user/info/setaddress")
+    Call<Object> updateUserLocation(@Query("userid")String userid,@Query("jingdu")String jingdu,@Query("weidu")String weidu,
+                                    @Query("address")String address);
 
     /**
      * 求购列表

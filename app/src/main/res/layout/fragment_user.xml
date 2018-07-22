@@ -122,9 +122,9 @@
                             android:gravity="center"
                             android:paddingLeft="4dp"
                             android:paddingRight="4dp"
-                            android:textSize="14sp"
                             android:text="邀请关注"
-                            android:textColor="@color/white" />
+                            android:textColor="@color/white"
+                            android:textSize="14sp" />
 
                     </RelativeLayout>
 
@@ -141,12 +141,12 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
                     android:layout_marginTop="20dp"
-                    android:paddingRight="8dp"
                     android:background="@drawable/shape_left_corner_white_bg"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:paddingBottom="2dp"
                     android:paddingLeft="14dp"
+                    android:paddingRight="8dp"
                     android:paddingTop="2dp">
 
                     <ImageView
@@ -158,9 +158,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
-                        android:textSize="14sp"
                         android:text="设置"
-                        android:textColor="@color/black_de" />
+                        android:textColor="@color/black_de"
+                        android:textSize="14sp" />
 
                 </LinearLayout>
 
@@ -206,7 +206,10 @@
 
                 </com.ccq.app.weidget.SlidingTabLayout>
 
-                <View style="@style/tranversLine" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="12dp"
+                    android:background="#eeeeee" />
 
                 <com.ccq.app.weidget.CustomViewPager
                     android:id="@+id/vp_my_info"
@@ -309,8 +312,8 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_alignParentBottom="true"
-        android:orientation="horizontal"
-        android:visibility="gone">
+        android:visibility="gone"
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/tv_subscribe"
@@ -320,7 +323,7 @@
             android:background="#dadada"
             android:gravity="center"
             android:padding="8dp"
-            android:text="已关注"
+            android:text="@string/add_watch"
             android:textSize="18sp" />
 
         <TextView

@@ -21,12 +21,9 @@ import android.widget.TextView;
 
 import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
-import com.baidu.location.LocationClientOption;
-import com.baidu.mapapi.model.LatLng;
 import com.ccq.app.R;
 import com.ccq.app.base.BaseFragment;
 import com.ccq.app.base.BasePresenter;
-import com.ccq.app.base.CcqApp;
 import com.ccq.app.entity.BrandBean;
 import com.ccq.app.entity.Car;
 import com.ccq.app.entity.TypeBean;
@@ -34,11 +31,12 @@ import com.ccq.app.http.ApiService;
 import com.ccq.app.http.HttpClient;
 import com.ccq.app.http.ProgressCallBack;
 import com.ccq.app.http.RetrofitClient;
-import com.ccq.app.service.LocationService;
 import com.ccq.app.ui.MainActivity;
+import com.ccq.app.ui.TencentMapActivity;
 import com.ccq.app.utils.AppCache;
 import com.ccq.app.utils.DensityUtils;
 import com.ccq.app.utils.ToastUtils;
+import com.ccq.app.utils.Utils;
 import com.ccq.app.weidget.ListDialog;
 import com.ccq.app.weidget.MyGridView;
 import com.dmcbig.mediapicker.PickerConfig;
@@ -46,6 +44,8 @@ import com.dmcbig.mediapicker.entity.Media;
 import com.qiniu.android.jpush.utils.StringUtils;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
+import com.tencent.map.geolocation.TencentLocation;
+import com.tencent.mapsdk.raster.model.LatLng;
 
 import java.io.File;
 import java.io.IOException;
@@ -172,12 +172,31 @@ public class PublishFragment extends BaseFragment {
             //发布的
             isLocal = true;
             initGridView();
+            //获取当前位置
+            if (AppCache.mLocation == null) {
+                //定位失败，重新定位
+            } else {
+                //定位成功，直接设置位置
+                btnCarLocation.setText(Utils.getAddress(AppCache.mLocation));
+            }
         }
         //图片选择配置
         setImageSetting();
         //手机号
         if (AppCache.getUserBean() != null) etUserPhone.setText(AppCache.getUserBean().getMobile());
 
+    }
+
+    @Override
+    public void refreshUI() {
+        super.refreshUI();
+        //获取当前位置
+        if (AppCache.mLocation == null) {
+            //定位失败，重新定位
+        } else {
+            //定位成功，直接设置位置
+            btnCarLocation.setText(Utils.getAddress(AppCache.mLocation));
+        }
     }
 
     /**
@@ -192,16 +211,16 @@ public class PublishFragment extends BaseFragment {
             public void onListItemClickListener(int position) {
                 if (mMultiSelectPath.size() > position) {
                     String path = mMultiSelectPath.get(position);
-                    if(!path.startsWith("http")){
+                    if (!path.startsWith("http")) {
                         mMultiSelectPath.remove(position);
-                        if(photoPath!=null && photoPath.contains(path)){
+                        if (photoPath != null && photoPath.contains(path)) {
                             photoPath.remove(path);
                         }
-                        if(videoPath!=null && videoPath.contains(path)){
+                        if (videoPath != null && videoPath.contains(path)) {
                             videoPath.remove(path);
                         }
                         mediaAdapter.notifyDataSetChanged();
-                    }else{
+                    } else {
                         deleteFileFromService(mMultiSelectPath.get(position));
                     }
                 }
@@ -228,7 +247,7 @@ public class PublishFragment extends BaseFragment {
             btnSubmit.setText("修改");
 
             brandBean.setId(car.getBrandId());
-            if(brandModelBean == null){
+            if (brandModelBean == null) {
                 brandModelBean = new TypeBean.NumberListBean();
             }
             brandModelBean.setId(car.getNumberId());
@@ -248,7 +267,7 @@ public class PublishFragment extends BaseFragment {
                 }
             }
 
-            if (videoBeans != null && videoBeans.size()>0) {
+            if (videoBeans != null && videoBeans.size() > 0) {
                 for (int i = 0; i < videoBeans.size(); i++) {
                     Car.VideoBean video = videoBeans.get(i);
                     mMultiSelectPath.add(video.getOsspath());
@@ -340,7 +359,7 @@ public class PublishFragment extends BaseFragment {
      */
     private void sendCheck() {
 
-        if(isLocal){
+        if (isLocal) {
             if (AppCache.getUserBean() == null) {
                 ToastUtils.show(get(), "请先登录");
                 return;
@@ -362,7 +381,7 @@ public class PublishFragment extends BaseFragment {
 
                 }
             });
-        }else{
+        } else {
             //修改信息
             uploadFile();
         }
@@ -515,16 +534,16 @@ public class PublishFragment extends BaseFragment {
         map.put("content", etDescription.getText().toString());
         map.put("imglist", TextUtils.isEmpty(imgids) ? "" : imgids);
         map.put("videolist", TextUtils.isEmpty(videoids) ? "" : videoids);
-        map.put("latitude", String.valueOf(point.latitude));
-        map.put("longitude", String.valueOf(point.longitude));
+        map.put("latitude", String.valueOf(point.getLatitude()));
+        map.put("longitude", String.valueOf(point.getLongitude()));
         map.put("phone", etUserPhone.getText().toString());
         map.put("year", btnCarAge.getText().toString());
         map.put("price", etCarPrice.getText().toString());
         map.put("pinpai", brandModelBean.getBid());
-        map.put("tonnage",brandModelBean.getTid());
+        map.put("tonnage", brandModelBean.getTid());
         map.put("number", brandModelBean.getId());
 
-        if(isLocal){
+        if (isLocal) {
             apiService.addCarInfo(map).enqueue(new Callback<Object>() {
                 @Override
                 public void onResponse(Call<Object> call, Response<Object> response) {
@@ -549,13 +568,13 @@ public class PublishFragment extends BaseFragment {
                     }
                 }
             });
-        }else{
-            map.put("carid",car.getId());
-            map.put("BrandName",car.getBrandName());
-            map.put("TonnageName",car.getTonnageName());
-            map.put("NumberName",car.getNumberName());
-            map.put("ProvinceName",car.getProvinceName());
-            map.put("CityName",car.getCityName());
+        } else {
+            map.put("carid", car.getId());
+            map.put("BrandName", car.getBrandName());
+            map.put("TonnageName", car.getTonnageName());
+            map.put("NumberName", car.getNumberName());
+            map.put("ProvinceName", car.getProvinceName());
+            map.put("CityName", car.getCityName());
 
             apiService.editCarInfo(map).enqueue(new Callback<Object>() {
                 @Override
@@ -573,7 +592,7 @@ public class PublishFragment extends BaseFragment {
                 @Override
                 public void onFailure(Call<Object> call, Throwable t) {
                     dismissLoading();
-                    if (t != null && t.getCause()!=null) {
+                    if (t != null && t.getCause() != null) {
                         Log.e("sssss====", t.getCause().toString());
                     }
                 }
@@ -695,11 +714,7 @@ public class PublishFragment extends BaseFragment {
 
     private void selectLocationAtMap() {
         Intent intent = new Intent();
-        intent.setClass(get(), BaseMapActivity.class);
-        if (point != null) {
-            intent.putExtra("latlng", point);
-            intent.putExtra("address", locAddress);
-        }
+        intent.setClass(get(), TencentMapActivity.class);
         startActivityForResult(intent, REQUEST_MAP_LOCATE_CODE);
     }
 
@@ -753,8 +768,9 @@ public class PublishFragment extends BaseFragment {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case REQUEST_MAP_LOCATE_CODE:
-                    point = new LatLng(data.getDoubleExtra("latitude", 0), data.getDoubleExtra("longitude", 0));
-                    locAddress = data.getStringExtra("address");
+                    point = new LatLng(data.getDoubleExtra(TencentMapActivity.KEY_LATITUDE, 0),
+                            data.getDoubleExtra(TencentMapActivity.KEY_LONGITUDE, 0));
+                    locAddress = data.getStringExtra(TencentMapActivity.KEY_ADDRESS);
                     btnCarLocation.setText(TextUtils.isEmpty(locAddress) ? "已标记" : locAddress);
                     break;
                 case REQUEST_BRAND_MODEL_CODE:
@@ -809,7 +825,7 @@ public class PublishFragment extends BaseFragment {
         }
     }
 
-    public void initVars(){
+    public void initVars() {
         photoPath.clear();
         videoPath.clear();
         mMultiSelectPath.clear();

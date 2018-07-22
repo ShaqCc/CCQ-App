@@ -23,7 +23,7 @@ import java.util.List;
  * Created by littlemax on 2018/5/2.
  */
 
-public class  MyPublishListAdapter extends RecyclerView.Adapter<MyPublishListAdapter.ViewHolder> {
+public class MyPublishListAdapter extends RecyclerView.Adapter<MyPublishListAdapter.ViewHolder> {
 
     List<Car> mCarList;
     Context context;
@@ -49,15 +49,15 @@ public class  MyPublishListAdapter extends RecyclerView.Adapter<MyPublishListAda
 
         holder.itemBrandModelName.setText(Car.getName());
         holder.itemLocation.setText(Car.getCityName() + Car.getAddress());
-        holder.itemTime.setText(Car.getAddtime_format() + " 展现：" +Car.getCount()+"次");
+        holder.itemTime.setText(Car.getAddtime_format() + " 展现：" + Car.getCount() + "次");
 
-        if(Car.getPrice().equals("0")){
+        if (Car.getPrice().equals("0")) {
             holder.itemPrice.setText("面议");
-        }else{
-            holder.itemPrice.setText(Car.getPrice() +"万元");
+        } else {
+            holder.itemPrice.setText("￥" + Car.getPrice() + "万元");
         }
 
-        if (isUserSelf){
+        if (isUserSelf) {
             holder.itemManage.setVisibility(View.VISIBLE);
             holder.itemManage.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -65,7 +65,7 @@ public class  MyPublishListAdapter extends RecyclerView.Adapter<MyPublishListAda
                     itemManageInterface.onManageClick(position);
                 }
             });
-        }else {
+        } else {
             holder.itemManage.setVisibility(View.GONE);
         }
 
@@ -77,22 +77,22 @@ public class  MyPublishListAdapter extends RecyclerView.Adapter<MyPublishListAda
             }
         });
 
-        if(Car.getType()== 1){
+        if (Car.getType() == 1) {
             holder.itemSaleOut.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             holder.itemSaleOut.setVisibility(View.GONE);
         }
 
         holder.itemInfoImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            ImageWatchActivity.launch(context,getImageUrlList(Car.getPic_img()),position);
+                ImageWatchActivity.launch(context, getImageUrlList(Car.getPic_img()), 0);
             }
         });
 
     }
 
-    public void refresh(List<Car> data){
+    public void refresh(List<Car> data) {
         this.mCarList = data;
         notifyDataSetChanged();
     }
@@ -114,8 +114,8 @@ public class  MyPublishListAdapter extends RecyclerView.Adapter<MyPublishListAda
         return mCarList.size();
     }
 
-    public MyPublishListAdapter(Context context ,List<Car> mCarList, onItemManageInterface onItemManageInterface,boolean isSelf) {
-        this.itemManageInterface= onItemManageInterface;
+    public MyPublishListAdapter(Context context, List<Car> mCarList, onItemManageInterface onItemManageInterface, boolean isSelf) {
+        this.itemManageInterface = onItemManageInterface;
         this.mCarList = mCarList;
         this.context = context;
         this.isUserSelf = isSelf;
@@ -144,10 +144,10 @@ public class  MyPublishListAdapter extends RecyclerView.Adapter<MyPublishListAda
         }
     }
 
-    public interface onItemManageInterface{
-         void onManageClick(int position);
+    public interface onItemManageInterface {
+        void onManageClick(int position);
 
-         void onMapShowClick(int position);
+        void onMapShowClick(int position);
     }
 
 }

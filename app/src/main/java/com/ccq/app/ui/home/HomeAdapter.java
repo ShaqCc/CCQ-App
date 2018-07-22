@@ -19,6 +19,7 @@ import com.ccq.app.R;
 import com.ccq.app.base.CcqApp;
 import com.ccq.app.entity.Car;
 import com.ccq.app.http.RetrofitClient;
+import com.ccq.app.ui.TencentMapActivity;
 import com.ccq.app.ui.message.SingleChatActivity;
 import com.ccq.app.ui.publish.BaseMapActivity;
 import com.ccq.app.ui.reprot.ReportCarActivity;
@@ -320,10 +321,11 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
                     String latitude = map.get("latitude").toString();
                     String longitude = map.get("longitude").toString();
 
-                    Intent i = new Intent(context, BaseMapActivity.class);
-                    LatLng point = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
-                    i.putExtra("latlng", point);
-                    i.putExtra("address", address);
+                    Intent i = new Intent(context, TencentMapActivity.class);
+                    i.putExtra(TencentMapActivity.KEY_LATITUDE, Double.parseDouble(latitude));
+                    i.putExtra(TencentMapActivity.KEY_LONGITUDE, Double.parseDouble(longitude));
+                    i.putExtra(TencentMapActivity.KEY_ADDRESS, address);
+                    i.putExtra(TencentMapActivity.KEY_ONLY_SHOW, true);
                     context.startActivity(i);
 
                 } else {

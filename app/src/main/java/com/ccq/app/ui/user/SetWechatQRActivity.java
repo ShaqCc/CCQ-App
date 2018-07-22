@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
@@ -19,6 +18,7 @@ import com.ccq.app.base.BaseActivity;
 import com.ccq.app.base.BasePresenter;
 import com.ccq.app.base.CcqApp;
 import com.ccq.app.entity.BaseBean;
+import com.ccq.app.entity.UploadImageResponse;
 import com.ccq.app.http.ApiService;
 import com.ccq.app.http.RetrofitClient;
 import com.ccq.app.utils.AppCache;
@@ -31,7 +31,6 @@ import java.io.File;
 import java.util.ArrayList;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import jiguang.chat.utils.imagepicker.ImagePicker;
 import jiguang.chat.utils.imagepicker.view.CropImageView;
@@ -90,12 +89,12 @@ public class SetWechatQRActivity extends BaseActivity {
         File file = new File(imagePath);
         RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
         MultipartBody.Part body = MultipartBody.Part.createFormData("filename", file.getName(), requestFile);
-        apiService.uploadBannerImage(body).enqueue(new Callback<BaseBean>() {
+        apiService.uploadCommonImage(body).enqueue(new Callback<UploadImageResponse>() {
             @Override
-            public void onResponse(Call<BaseBean> call, Response<BaseBean> response) {
+            public void onResponse(Call<UploadImageResponse> call, Response<UploadImageResponse> response) {
                 if (response.body() != null && response.body().getCode() == 0) {
                     //保存二维码
-                    apiService.saveUserErWeiMa(AppCache.getUserBean().getUserid(), response.body().getMessage())
+                    apiService.saveUserErWeiMa(AppCache.getUserBean().getUserid(), String.valueOf(response.body().getImageid()))
                             .enqueue(new Callback<Object>() {
                                 @Override
                                 public void onResponse(Call<Object> call, Response<Object> response) {
@@ -116,7 +115,7 @@ public class SetWechatQRActivity extends BaseActivity {
             }
 
             @Override
-            public void onFailure(Call<BaseBean> call, Throwable t) {
+            public void onFailure(Call<UploadImageResponse> call, Throwable t) {
                 Toasty.error(CcqApp.getAppContext(), t.getMessage()).show();
             }
         });

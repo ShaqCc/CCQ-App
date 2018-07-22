@@ -190,7 +190,7 @@ public class ChooseMediaAdapter extends BaseAdapter {
         intent.putExtra(PickerConfig.SELECT_MODE, PickerConfig.PICKER_IMAGE);//default image and video (Optional)
         long maxSize = 1024 * 1024 * 2;//long long long long类型
         intent.putExtra(PickerConfig.MAX_SELECT_SIZE, maxSize); //default 180MB (Optional)
-        intent.putExtra(PickerConfig.MAX_SELECT_COUNT, 15);  //default 40 (Optional)
+        intent.putExtra(PickerConfig.MAX_SELECT_COUNT, 18);  //default 40 (Optional)
 //        intent.putExtra(PickerConfig.DEFAULT_SELECTED_LIST, defaultSelect); //(Optional)默认选中的照片
         activity.startActivityForResult(intent, 200);
     }
@@ -200,7 +200,7 @@ public class ChooseMediaAdapter extends BaseAdapter {
         intent.putExtra(PickerConfig.SELECT_MODE, PickerConfig.PICKER_VIDEO);//default image and video (Optional)
         long maxSize = 1024 * 1024 * 5;//long long long long类型
         intent.putExtra(PickerConfig.MAX_SELECT_SIZE, maxSize); //default 180MB (Optional)
-        intent.putExtra(PickerConfig.MAX_SELECT_COUNT, 15);  //default 40 (Optional)
+        intent.putExtra(PickerConfig.MAX_SELECT_COUNT, 1);  //default 40 (Optional)
 //        intent.putExtra(PickerConfig.DEFAULT_SELECTED_LIST, defaultSelect); //(Optional)默认选中的照片
         activity.startActivityForResult(intent, 400);
     }

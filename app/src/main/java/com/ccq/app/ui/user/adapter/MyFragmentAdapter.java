@@ -1,12 +1,9 @@
 package com.ccq.app.ui.user.adapter;
 
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.ccq.app.base.BaseFragment;
-import com.ccq.app.ui.user.TabHomeFragment;
-import com.ccq.app.ui.user.TabIntroFragment;
 
 import java.util.List;
 

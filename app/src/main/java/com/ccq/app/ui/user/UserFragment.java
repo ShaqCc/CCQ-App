@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
@@ -29,6 +30,7 @@ import com.ccq.app.http.RetrofitClient;
 import com.ccq.app.ui.ImageWatchActivity;
 import com.ccq.app.ui.message.SingleChatActivity;
 import com.ccq.app.ui.user.adapter.MyFragmentAdapter;
+import com.ccq.app.ui.user.introduce.TabIntroFragment;
 import com.ccq.app.utils.AppCache;
 import com.ccq.app.utils.Constants;
 import com.ccq.app.utils.JmessageUtils;
@@ -265,8 +267,8 @@ public class UserFragment extends BaseFragment<UserPresenter> implements IWXAPIE
 
         pagerTabStrip.setDistributeEvenly(true);
         pagerTabStrip.setCustomTabView(R.layout.custorm_tab_layout, R.id.tv_tab);
-        pagerTabStrip.setSelectedIndicatorColors(getActivity().getResources().getColor(R.color.colorPrimary));
-        pagerTabStrip.setTitleTextColor(getResources().getColor(R.color.black_de), getResources().getColor(R.color.text_black_color));
+        pagerTabStrip.setSelectedIndicatorColors(Color.parseColor("#256ba6"));
+        pagerTabStrip.setTitleTextColor(Color.parseColor("#256ba6"), getResources().getColor(R.color.black_de));
         pagerTabStrip.setTabStripWidth(ScreenUtil.getDisplayWidth() / 3);
         pagerTabStrip.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -373,14 +375,14 @@ public class UserFragment extends BaseFragment<UserPresenter> implements IWXAPIE
                 showUserSettingDialog();
                 break;
             case R.id.layout_my_subscribe:
-                if(isMine){
+                if (isMine) {
                     Intent i = new Intent(getActivity(), UserSubscribeActivity.class);
                     i.putExtra("type", 0);
                     getActivity().startActivity(i);
                 }
                 break;
             case R.id.layout_my_subscribe_fans:
-                if(isMine){
+                if (isMine) {
                     Intent ii = new Intent(getActivity(), UserSubscribeActivity.class);
                     ii.putExtra("type", 1);
                     getActivity().startActivity(ii);
@@ -431,16 +433,12 @@ public class UserFragment extends BaseFragment<UserPresenter> implements IWXAPIE
                 break;
             case R.id.tv_subscribe:
                 //订阅
-                if ("未订阅".equals(tvSubscribe.getText())) {
+                if (getString(R.string.add_watch).equals(tvSubscribe.getText())) {
                     RetrofitClient.getInstance().getApiService().setUserSubAdd(AppCache.getUserBean().getUserid(), userBean.getUserid()).enqueue(new Callback<Object>() {
 
                         @Override
                         public void onResponse(Call<Object> call, Response<Object> response) {
-                            Map<String, Object> map = (Map<String, Object>) response.body();
-                            if (0.0 == (Double) map.get("code")) {
-                                ToastUtils.show(get(), "设置成功");
-                                tvSubscribe.setText((String) map.get("message"));
-                            }
+                            tvSubscribe.setText(R.string.cancel_watch);
                         }
 
                         @Override
@@ -495,18 +493,13 @@ public class UserFragment extends BaseFragment<UserPresenter> implements IWXAPIE
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                HashMap map = new HashMap<>();
+                HashMap<String, String> map = new HashMap<>();
                 map.put("userid", AppCache.getUserBean().getUserid());
                 map.put("subuser", userBean.getUserid());
-                RetrofitClient.getInstance().getApiService().setUserSubRemove(map).enqueue(new Callback() {
+                RetrofitClient.getInstance().getApiService().setUserSubRemove(map).enqueue(new Callback<Object>() {
                     @Override
                     public void onResponse(Call call, Response response) {
-                        Map<String, Object> map = (Map<String, Object>) response.body();
-                        if (0.0 == (Double) map.get("code")) {
-                            ToastUtils.show(get(), "设置成功");
-                            tvSubscribe.setText((String) map.get("message"));
-                        }
-
+                        tvSubscribe.setText(R.string.add_watch);
                     }
 
                     @Override
@@ -553,7 +546,13 @@ public class UserFragment extends BaseFragment<UserPresenter> implements IWXAPIE
 
     @Override
     public void setSubscriber(BaseBean baseBean) {
-        tvSubscribe.setText(baseBean.getMessage());
+        if (baseBean.getCode() == 0) {
+            //已经订阅
+            tvSubscribe.setTextColor(R.string.cancel_watch);
+        } else {
+            //未订阅
+            tvSubscribe.setText(R.string.add_watch);
+        }
     }
 
     @Override

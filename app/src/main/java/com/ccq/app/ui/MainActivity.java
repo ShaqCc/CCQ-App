@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -29,6 +30,7 @@ import com.ccq.app.ui.user.UserFragment;
 import com.ccq.app.utils.AppCache;
 import com.ccq.app.utils.Constants;
 import com.ccq.app.utils.SharedPreferencesUtils;
+import com.ccq.app.utils.statusbar.StatusBar;
 import com.ccq.app.utils.statusbar.StatusBarUtils;
 import com.ccq.app.weidget.Toasty;
 import com.tencent.map.geolocation.TencentLocation;
@@ -94,7 +96,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
                 //开启定位
                 initLocationListener();
             }
-        }else {
+        } else {
             initLocationListener();
         }
     }
@@ -105,12 +107,12 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
             public void onLocationChanged(TencentLocation tencentLocation, int error, String s) {
                 if (TencentLocation.ERROR_OK == error) {
                     AppCache.mLocation = tencentLocation;
-                    Toasty.success(getApplication(),AppCache.mLocation.getProvince()+AppCache.mLocation.getCity()
-                            +AppCache.mLocation.getStreet()).show();
+//                    Toasty.success(getApplication(),AppCache.mLocation.getProvince()+AppCache.mLocation.getCity()
+//                            +AppCache.mLocation.getStreet()).show();
                 } else {
                     // 定位失败
                     AppCache.mLocation = null;
-                    Toasty.success(getApplication(),error+"  :"+s).show();
+                    Toasty.success(getApplication(), error + "  :" + s).show();
                 }
                 locationManager.removeUpdates(listener);
             }
@@ -191,31 +193,46 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
                     switch (position) {
                         case 0:
                             setToolBarVisible(false);
-                            btSetting.setVisibility(View.GONE);
                             break;
                         case 1:
                             setToolBarVisible(true);
                             setToolBarTitle("发布");
+                            setGreenStyle();
                             if (mFragments.get(position) instanceof PublishFragment) {
                                 ((PublishFragment) mFragments.get(position)).initVars();
                             }
-                            btSetting.setVisibility(View.GONE);
                             break;
                         case 2:
                             setToolBarVisible(true);
                             setToolBarTitle("消息");
-                            btSetting.setVisibility(View.GONE);
+                            setGreenStyle();
                             break;
                         case 3:
                             setToolBarVisible(true);
                             setToolBarTitle("个人中心");
-                            btSetting.setVisibility(View.GONE);
+                            setWhiteStyle();
                             break;
                     }
                     return true;
                 }
             }
+
         });
+    }
+
+
+    private void setWhiteStyle() {
+        getToolBar().setBackgroundColor(getResources().getColor(R.color.white));
+        getToolBarTitle().setTextColor(getResources().getColor(R.color.black));
+        StatusBarUtils.setStatusBarColor(this, getResources().getColor(R.color.white));
+        StatusBarUtils.statusBarLightMode(this);
+    }
+
+    private void setGreenStyle() {
+        getToolBar().setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        getToolBarTitle().setTextColor(getResources().getColor(R.color.white));
+        StatusBarUtils.setStatusBarColor(this, getResources().getColor(R.color.colorPrimary));
+        StatusBarUtils.statusBarDarkMode(this);
     }
 
     @Override
@@ -224,10 +241,6 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
         currentFragment.onActivityResult(requestCode, resultCode, data);
     }
 
-    @Override
-    protected void settting() {
-        showUserSettingDialog();
-    }
 
     private void showUserSettingDialog() {
         String[] items = {"二维码水印", "修改图片", "切换账号"};

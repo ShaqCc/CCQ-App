@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
+import retrofit2.http.POST;
 
 /****************************************
  * 功能说明:  activity 基类
@@ -34,7 +35,6 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
     private RelativeLayout mToolBar;
     private TextView mToolBarTitle;
     private ImageView icFinish;
-    protected ImageView btSetting;
 
     /**
      * @return activity页面的xml布局
@@ -93,13 +93,6 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
             }
         });
         icFinish.setVisibility(View.GONE);
-        btSetting = findViewById(R.id.toolbar_iv_setting);
-        btSetting.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                settting();
-            }
-        });
         //add rootview
         mRootView = LayoutInflater.from(this).inflate(inflateContentView(), null, false);
         mContainer.addView(mRootView);
@@ -109,7 +102,7 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
         initData();
     }
 
-    protected void settting(){
+    protected void settting() {
 
     }
 
@@ -119,6 +112,10 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
 
     public RelativeLayout getToolBar() {
         return mToolBar;
+    }
+
+    public TextView getToolBarTitle() {
+        return mToolBarTitle;
     }
 
 
