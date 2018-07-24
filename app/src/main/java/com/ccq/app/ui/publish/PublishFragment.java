@@ -178,6 +178,7 @@ public class PublishFragment extends BaseFragment {
             } else {
                 //定位成功，直接设置位置
                 btnCarLocation.setText(Utils.getAddress(AppCache.mLocation));
+//                point = new LatLng()
             }
         }
         //图片选择配置
@@ -699,18 +700,18 @@ public class PublishFragment extends BaseFragment {
      * 定位结果回调，重写onReceiveLocation方法
      *
      */
-    private BDAbstractLocationListener mListener = new BDAbstractLocationListener() {
-
-        @Override
-        public void onReceiveLocation(BDLocation location) {
-
-            if (null != location && location.getLocType() != BDLocation.TypeServerError) {
-                logMsg(location.getAddrStr());
-                point = new LatLng(location.getLatitude(), location.getLongitude());
-            }
-        }
-
-    };
+//    private BDAbstractLocationListener mListener = new BDAbstractLocationListener() {
+//
+//        @Override
+//        public void onReceiveLocation(BDLocation location) {
+//
+//            if (null != location && location.getLocType() != BDLocation.TypeServerError) {
+//                logMsg(location.getAddrStr());
+//                point = new LatLng(location.getLatitude(), location.getLongitude());
+//            }
+//        }
+//
+//    };
 
     private void selectLocationAtMap() {
         Intent intent = new Intent();
