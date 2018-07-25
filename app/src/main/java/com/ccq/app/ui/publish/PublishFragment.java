@@ -628,10 +628,11 @@ public class PublishFragment extends BaseFragment {
 
     private void deleteFileFromService(final String deletePath) {
         Call<Object> call;
+        final String id  = imgInfoMap.get(deletePath);
         if (deletePath.endsWith("jpg") || deletePath.endsWith("jpeg") || deletePath.endsWith("png") || deletePath.endsWith("bmp")) {
-            call = apiService.delCarImg(imgInfoMap.get(deletePath));
+            call = apiService.delCarImg(id);
         } else {
-            call = apiService.delCarVideo(AppCache.getUserBean().getUserid(), imgInfoMap.get(deletePath));
+            call = apiService.delCarVideo(AppCache.getUserBean().getUserid(), id);
         }
         HttpClient.getInstance(get()).sendRequest(call, new ProgressCallBack<Object>(get(), true, "正在删除") {
             @Override
@@ -640,11 +641,11 @@ public class PublishFragment extends BaseFragment {
                 if (response != null) {
                     Map<String, Object> map = (Map<String, Object>) response;
                     if (0.0 == (Double) map.get("code")) {
-                        if (photoPath.size() > 0 && photoPath.contains(deletePath)) {
-                            photoPath.remove(deletePath);
+                        if (imgidList.size() > 0 && imgidList.contains(id)) {
+                            imgidList.remove(id);
                         }
-                        if (videoPath.size() > 0 && videoPath.contains(deletePath)) {
-                            videoPath.remove(deletePath);
+                        if (videoidList.size() > 0 && videoidList.contains(id)) {
+                            videoidList.remove(id);
                         }
                         mMultiSelectPath.remove(deletePath);
                         mediaAdapter.notifyDataSetChanged();

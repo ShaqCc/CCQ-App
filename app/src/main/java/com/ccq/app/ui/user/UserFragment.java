@@ -69,6 +69,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.dmcbig.mediapicker.PickerConfig.RESULT_CODE;
+
 /****************************************
  * 功能说明:  我的
  *
@@ -232,7 +234,7 @@ public class UserFragment extends BaseFragment<UserPresenter> implements IWXAPIE
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         //接收banner的结果
-        if (requestCode == CHANGE_BANNER && resultCode == PickerConfig.RESULT_CODE) {
+        if (requestCode == CHANGE_BANNER && resultCode == RESULT_CODE) {
             ArrayList<Media> select = data.getParcelableArrayListExtra(PickerConfig.EXTRA_RESULT);
             if (select != null && !select.isEmpty()) {
                 Glide.with(getHostActivity()).load(select.get(0).path).into(ivBanner);
@@ -240,6 +242,7 @@ public class UserFragment extends BaseFragment<UserPresenter> implements IWXAPIE
                 mPresenter.changeBanner(select.get(0).path);
             }
         }
+
     }
 
     /**
