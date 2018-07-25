@@ -2,6 +2,7 @@ package com.dmcbig.mediapicker.adapter;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.dmcbig.mediapicker.PickerConfig;
+import com.dmcbig.mediapicker.PreviewActivity;
 import com.dmcbig.mediapicker.R;
 import com.dmcbig.mediapicker.entity.Media;
 import com.dmcbig.mediapicker.utils.FileUtils;
@@ -79,8 +81,7 @@ public class MediaGridAdapter extends RecyclerView.Adapter<MediaGridAdapter.MyVi
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         final Media media = medias.get(position);
-        Uri mediaUri = Uri.parse("file://" + media.path);
-
+        final Uri mediaUri = Uri.parse("file://" + media.path);
         Glide.with(context)
                 .load(mediaUri)
                 .into(holder.media_image);
@@ -98,8 +99,19 @@ public class MediaGridAdapter extends RecyclerView.Adapter<MediaGridAdapter.MyVi
         holder.mask_view.setVisibility(isSelect >= 0 ? View.VISIBLE : View.INVISIBLE);
         holder.check_image.setImageDrawable(isSelect >= 0 ? ContextCompat.getDrawable(context, R.drawable.btn_selected) : ContextCompat.getDrawable(context, R.drawable.btn_unselected));
 
-
+        //预览
         holder.media_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ArrayList<Media> objects = new ArrayList<>();
+                objects.add(media);
+                Intent intent = new Intent(context, PreviewActivity.class);
+                intent.putExtra(PickerConfig.PRE_RAW_LIST, objects);
+                context.startActivity(intent);
+            }
+        });
+
+        holder.check_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 

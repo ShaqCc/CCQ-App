@@ -103,6 +103,8 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
     private TextView tvCity;
     @BindView(R.id.home_checkbox_parent)
     View homeCheckBoxParent;
+    @BindView(R.id.bt_home_top)
+    View btBackTop;
     private int statusBarHeight;
     private int chockBoxHeight;
 
@@ -118,6 +120,11 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
         HomeCarParams.getInstance().resetTags();
         HomeCarParams.getInstance().resetParams();
         refreshHomeData();
+    }
+
+    @OnClick(R.id.bt_home_top)
+    public void backToTop(){
+        homeRecyclerView.scrollToPosition(0);
     }
 
     /**
@@ -271,6 +278,8 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
         statusBarHeight = ScreenUtil.getStatusBarHeight(get());
         chockBoxHeight = DensityUtils.dp2px(get(),42);
         DialogUtils.setPopWindowOffset(chockBoxHeight + statusBarHeight);
+
+        btBackTop.setVisibility(View.GONE);
     }
 
     private void refresh() {
@@ -357,6 +366,7 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements IHomeVi
     @Override
     public void showCarList(List<Car> cars) {
         isInit = true;
+        btBackTop.setVisibility(View.VISIBLE);
         homeSrl.setRefreshing(false);
         if (ACTION_TYPE == ACTION_REFRESH) {
             //刷新

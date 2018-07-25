@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.ccq.app.R;
@@ -77,7 +78,9 @@ public class PictureAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        if (mPicList != null) return mPicList.size();
+        if (mPicList != null) {
+            return mPicList.size() > 9 ? 9 : mPicList.size();
+        }
         return 0;
     }
 
@@ -97,6 +100,7 @@ public class PictureAdapter extends BaseAdapter {
         if (convertView == null) {
             holder = new Holder();
             convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_thumbpic, parent, false);
+            holder.tvNumber = convertView.findViewById(R.id.tv_addition_image);
             holder.imageView = (ImageView) convertView.findViewById(R.id.imageview);
             holder.imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             holder.imageView.setBackground(holderImage);
@@ -110,6 +114,14 @@ public class PictureAdapter extends BaseAdapter {
         layoutParams.height = imageViewSize;
         holder.imageView.setLayoutParams(layoutParams);
 
+        if (position == 8 && mPicList.size() > 9) {
+            holder.tvNumber.setText(String.format("+%s", mPicList.size() - 9));
+            holder.tvNumber.setVisibility(View.VISIBLE);
+            holder.tvNumber.setLayoutParams(layoutParams);
+        } else {
+            holder.tvNumber.setVisibility(View.GONE);
+        }
+
         Glide.with(parent.getContext())
                 .load(mPicList.get(position))
                 .into(holder.imageView);
@@ -119,7 +131,7 @@ public class PictureAdapter extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 //预览
-                ImageWatchActivity.launch(mContext,mPicList,position);
+                ImageWatchActivity.launch(mContext, mPicList, position);
             }
         });
         return convertView;
@@ -127,5 +139,6 @@ public class PictureAdapter extends BaseAdapter {
 
     static class Holder {
         public ImageView imageView;
+        public TextView tvNumber;
     }
 }

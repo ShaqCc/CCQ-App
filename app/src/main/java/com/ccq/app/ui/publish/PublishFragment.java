@@ -178,7 +178,7 @@ public class PublishFragment extends BaseFragment {
             } else {
                 //定位成功，直接设置位置
                 btnCarLocation.setText(Utils.getAddress(AppCache.mLocation));
-//                point = new LatLng()
+                point = new LatLng(AppCache.mLocation.getLongitude(), AppCache.mLocation.getLatitude());
             }
         }
         //图片选择配置
@@ -192,11 +192,14 @@ public class PublishFragment extends BaseFragment {
     public void refreshUI() {
         super.refreshUI();
         //获取当前位置
-        if (AppCache.mLocation == null) {
-            //定位失败，重新定位
-        } else {
-            //定位成功，直接设置位置
-            btnCarLocation.setText(Utils.getAddress(AppCache.mLocation));
+        if (car == null) {
+            if (AppCache.mLocation == null) {
+                //定位失败，重新定位
+            } else {
+                //定位成功，直接设置位置
+                btnCarLocation.setText(Utils.getAddress(AppCache.mLocation));
+                point = new LatLng(AppCache.mLocation.getLongitude(), AppCache.mLocation.getLatitude());
+            }
         }
     }
 
@@ -712,7 +715,6 @@ public class PublishFragment extends BaseFragment {
 //        }
 //
 //    };
-
     private void selectLocationAtMap() {
         Intent intent = new Intent();
         intent.setClass(get(), TencentMapActivity.class);

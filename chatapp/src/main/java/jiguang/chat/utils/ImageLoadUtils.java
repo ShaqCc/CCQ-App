@@ -23,7 +23,6 @@ public class ImageLoadUtils extends ImageLoader {
         String filePath = Scheme.FILE.crop(imageUri);
         Glide.with(imageView.getContext())
                 .load(filePath)
-                .asBitmap()
                 .into(imageView);
     }
 

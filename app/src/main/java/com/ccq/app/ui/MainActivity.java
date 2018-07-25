@@ -193,6 +193,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
                     switch (position) {
                         case 0:
                             setToolBarVisible(false);
+                            setGreenStyle();
                             break;
                         case 1:
                             setToolBarVisible(true);

@@ -13,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.baidu.mapapi.model.LatLng;
 import com.bumptech.glide.Glide;
 import com.ccq.app.R;
 import com.ccq.app.base.CcqApp;
@@ -21,17 +20,13 @@ import com.ccq.app.entity.Car;
 import com.ccq.app.http.RetrofitClient;
 import com.ccq.app.ui.TencentMapActivity;
 import com.ccq.app.ui.message.SingleChatActivity;
-import com.ccq.app.ui.publish.BaseMapActivity;
 import com.ccq.app.ui.reprot.ReportCarActivity;
 import com.ccq.app.ui.user.LoginActivity;
 import com.ccq.app.ui.user.UserInfoActivity;
-import com.ccq.app.ui.user.UserSubscribeActivity;
 import com.ccq.app.utils.AppCache;
-import com.ccq.app.utils.DensityUtils;
 import com.ccq.app.utils.JmessageUtils;
 import com.ccq.app.utils.ToastUtils;
 import com.ccq.app.utils.Utils;
-import com.ccq.app.weidget.MainCarImageLayout;
 import com.ccq.app.weidget.MyGridView;
 import com.ccq.app.weidget.Toasty;
 
@@ -223,7 +218,7 @@ public class HomeAdapter extends RecyclerView.Adapter implements View.OnClickLis
     private ArrayList<String> getImageUrlList(List<Car.PicImgBean> pic_img) {
         ArrayList<String> result = new ArrayList<>();
         for (int i = 0; i < pic_img.size(); i++) {
-            result.add(pic_img.get(i).getSavename() + "!auto");
+            result.add(pic_img.get(i).getSavename() + "!150auto");
         }
         return result;
     }
