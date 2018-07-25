@@ -109,6 +109,7 @@ public class HomePresenter extends BasePresenter<IHomeView> {
                         bean.setId(typeBean.getId());
                         bean.setName(typeBean.getName());
                         bean.setCode(typeBean.getCode());
+                        bean.setTid(typeBean.getId());
                         dataList.add(bean);
                         //遍历子列表
                         List<TypeBean.NumberListBean> numberList = typeBean.getNumberList();

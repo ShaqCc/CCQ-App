@@ -45,6 +45,8 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.config
+//            minifyEnabled true
+//            shrinkResources true
         }
         debug {
             signingConfig signingConfigs.debug
@@ -91,7 +93,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:3.8.1'
     implementation project(':banner-lib')
     //图片查看器
-    implementation 'com.dmcBig:mediapicker:2.7'
+    //    implementation 'com.dmcBig:mediapicker:2.7'
     implementation project(':dialog-lib')
     implementation project(':index-lib')
     //微信登录，支付，分享，收藏，统计
@@ -111,4 +113,5 @@ dependencies {
     //    annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
     implementation files('libs/TencentLocationSdk_v6.2.5.3.jar')
     implementation files('libs/TencentMapSDK_Raster_v_1.2.8.jar')
+    implementation project(':mediapicker')
 }

@@ -103,21 +103,11 @@ public class ScreenUtil {
     }
 
     public static int getStatusBarHeight(Context context) {
-        if (statusbarheight == 0) {
-            try {
-                Class<?> c = Class.forName("com.android.internal.R$dimen");
-                Object o = c.newInstance();
-                Field field = c.getField("status_bar_height");
-                int x = (Integer) field.get(o);
-                statusbarheight = context.getResources().getDimensionPixelSize(x);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        if (statusbarheight == 0) {
-            statusbarheight = ScreenUtil.dip2px(25);
-        }
-        return statusbarheight;
+        Resources resources = context.getResources();
+        int resourceId = resources.getIdentifier("status_bar_height", "dimen","android");
+        int height = resources.getDimensionPixelSize(resourceId);
+        Log.v("dbw", "Status height:" + height);
+        return height;
     }
 
     public static int getNavBarHeight(Context context) {
