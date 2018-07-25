@@ -40,6 +40,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.app.Activity.RESULT_OK;
+
 /****************************************
  * 功能说明:  我的--首页 页签
  *****************************************/
@@ -174,9 +176,10 @@ public class TabHomeFragment extends BaseFragment {
                         removeCar();
                         break;
                     case 3:
-                        if (userBean.getRefcount() >= 5) {
-                            Toasty.warning(get(), "24小时内只能刷新5次！", Toast.LENGTH_LONG).show();
-                        } else if (userBean.isBusiness() || userBean.isMember()) {
+//                        if (userBean.getRefcount() >= 5) {
+//                            Toasty.warning(get(), "24小时内只能刷新5次！", Toast.LENGTH_LONG).show();
+//                        } else
+                            if (userBean.isBusiness() || userBean.isMember()) {
                             refreshCar();
                         } else {
                             AlertDialog.Builder alertbuild = new AlertDialog.Builder(get());
@@ -369,4 +372,12 @@ public class TabHomeFragment extends BaseFragment {
         super.onDestroyView();
         unbinder.unbind();
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        initData();
+    }
+
+
 }

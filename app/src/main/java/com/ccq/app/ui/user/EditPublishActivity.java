@@ -79,13 +79,6 @@ public class EditPublishActivity extends BaseActivity {
                     car.setTonnageName((String) maps.get("TonnageName"));
                     car.setPic((String) maps.get("pic"));
                     car.setVideoIds((String) maps.get("video"));
-//                    List<Map<String,Object>>  imageMapsList  = (List<Map<String, Object>>) maps.get("pic_img");
-//                    List<Map<String,Object>>  videoMapsList  = (List<Map<String, Object>>) maps.get("videoList");
-
-//                    car.setPic_img(setPhoto(imageMapsList));
-//                    car.setVideoList(setVideo(videoMapsList));
-//                    car.setPic_img((List<Car.PicImgBean>) maps.get("pic_img"));
-//                    car.setVideoList((List<Car.VideoBean>) maps.get("videoList"));
 
                     car.setBrandId( String.valueOf(Double.valueOf(maps.get("b_id").toString()).intValue()));
                     car.setNumberId(String.valueOf(Double.valueOf(maps.get("n_id").toString()).intValue()));
@@ -107,31 +100,6 @@ public class EditPublishActivity extends BaseActivity {
         finish();
     }
 
-    private List<Car.PicImgBean> setPhoto(List<Map<String,Object>>  imageMapsList){
-
-        List<Car.PicImgBean>  imglist = new ArrayList<>();
-        for(Map<String,Object> map : imageMapsList){
-            Car.PicImgBean bean = new Car.PicImgBean();
-            bean.setId((String) map.get("id"));
-            bean.setSavename((String) map.get("savename"));
-            imglist.add(bean);
-        }
-
-        return imglist;
-    }
-
-
-    private List<Car.VideoBean> setVideo(List<Map<String,Object>>  videoMapsList){
-        List<Car.VideoBean>  imglist = new ArrayList<>();
-        for(Map<String,Object> map : videoMapsList){
-            Car.VideoBean  bean = new Car.VideoBean();
-            bean.setId((String) map.get("id"));
-            bean.setName((String) map.get("savename"));
-            bean.setOsspath((String) map.get("osspath"));
-            imglist.add(bean);
-        }
-        return imglist;
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
