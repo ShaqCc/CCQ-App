@@ -16,6 +16,7 @@ import com.ccq.app.entity.UserBean;
 import com.ccq.app.entity.UserLocationBean;
 import com.ccq.app.ui.TencentMapActivity;
 import com.ccq.app.ui.user.EditMyIntroActivity;
+import com.ccq.app.ui.user.TabHomeFragment;
 import com.ccq.app.utils.AppCache;
 import com.ccq.app.utils.GlideImageLoader;
 import com.tencent.mapsdk.raster.model.BitmapDescriptorFactory;
@@ -63,12 +64,13 @@ public class TabIntroFragment extends BaseFragment<UserIntroPresenter> implement
     private final int requestCode_INFO = 111;
     private final int requestCode_IMAGE = 123;
     private final int requestCode_LOCATION = 456;
+    private boolean isUserSelf = true;
 
 
     @OnClick(R.id.tv_myinfo_edit)
     public void onViewClicked() {
         Intent i = new Intent(get(), EditMyIntroActivity.class);
-        get().startActivityForResult(i, requestCode_INFO);
+        startActivityForResult(i, requestCode_INFO);
     }
 
     @OnClick(R.id.tv_myimg_edit)
@@ -95,7 +97,7 @@ public class TabIntroFragment extends BaseFragment<UserIntroPresenter> implement
     Unbinder unbinder;
     String defaultInfo = "我是%s，我来自%s，我的联系方式是：%s，如有业务请与我联系我吧";
 
-    UserBean userBean;
+    UserBean otherUserBean;
     private UserLocationBean userLocationBean;
     private TencentMap tencentMap;
 
@@ -111,29 +113,31 @@ public class TabIntroFragment extends BaseFragment<UserIntroPresenter> implement
 
     @Override
     protected void initView(View rootView) {
+        isUserSelf = getArguments().getBoolean(TabHomeFragment.KEY_IS_SELF);
         tvMyinfoContent = rootView.findViewById(R.id.tv_myinfo_content);
         tencentMap = mapView.getMap();
     }
 
     @Override
     public void initData() {
-
-        userBean = (UserBean) get().getIntent().getSerializableExtra("bean");
-        if (userBean == null) {
-            userBean = AppCache.getUserBean();
-            tvMyinfoEdit.setVisibility(View.VISIBLE);
-            tvMyimgEdit.setVisibility(View.VISIBLE);
-            tvMylocationEdit.setVisibility(View.VISIBLE);
-        } else {
+        if (!isUserSelf) {
+            otherUserBean = (UserBean) getArguments().getSerializable("bean");
             tvMyinfoEdit.setVisibility(View.GONE);
             tvMyimgEdit.setVisibility(View.GONE);
             tvMylocationEdit.setVisibility(View.GONE);
+            //地址，简介
+            mPresenter.queryLocation(otherUserBean);
+            //图片列表
+            mPresenter.queryImageList(otherUserBean);
+        } else {
+            tvMyinfoEdit.setVisibility(View.VISIBLE);
+            tvMyimgEdit.setVisibility(View.VISIBLE);
+            tvMylocationEdit.setVisibility(View.VISIBLE);
+            //地址，简介
+            mPresenter.queryLocation(AppCache.getUserBean());
+            //图片列表
+            mPresenter.queryImageList(AppCache.getUserBean());
         }
-        //地址，简介
-        mPresenter.queryLocation(userBean);
-        //图片列表
-        mPresenter.queryImageList(userBean);
-
     }
 
 
@@ -145,14 +149,19 @@ public class TabIntroFragment extends BaseFragment<UserIntroPresenter> implement
     @Override
     public void setLocation(UserLocationBean bean) {
         userLocationBean = bean;
-        String content = String.format(defaultInfo, userLocationBean.getName(), userLocationBean.getAddress(), userBean.getMobile());
-        if (TextUtils.isEmpty(userBean.getContent())) {
+        UserBean temp = null;
+        if (isUserSelf) {
+            temp = AppCache.getUserBean();
+        } else
+            temp = otherUserBean;
+        String content = String.format(defaultInfo, userLocationBean.getName(), userLocationBean.getAddress(), temp.getMobile());
+        if (TextUtils.isEmpty(temp.getContent())) {
             tvMyinfoContent.setText(content);
         } else {
-            tvMyinfoContent.setText(userBean.getContent());
+            tvMyinfoContent.setText(temp.getContent());
         }
-        tvOnSaleCount.setText(String.valueOf(userBean.getZaishou_count()));
-        tvSaleOutCount.setText(String.valueOf(userBean.getYishou_count()));
+        tvOnSaleCount.setText(String.valueOf(temp.getZaishou_count()));
+        tvSaleOutCount.setText(String.valueOf(temp.getYishou_count()));
         //设置地图
         tencentMap.setZoom(15);
         LatLng latLng = new LatLng(Double.parseDouble(userLocationBean.getLatitude()), Double.parseDouble(userLocationBean.getLongitude()));
@@ -201,13 +210,35 @@ public class TabIntroFragment extends BaseFragment<UserIntroPresenter> implement
     }
 
     @Override
+    public void setUserIntoduce(UserBean user) {
+
+        if (isUserSelf) {
+            AppCache.setUserBean(user);
+        } else {
+            otherUserBean = user;
+        }
+        if (TextUtils.isEmpty(user.getContent())) {
+            String content = String.format(defaultInfo, userLocationBean.getName(), userLocationBean.getAddress(), user.getMobile());
+            tvMyinfoContent.setText(content);
+        } else {
+            tvMyinfoContent.setText(user.getContent());
+        }
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == requestCode_INFO) {
-                mPresenter.queryLocation(userBean);
+                if (isUserSelf) {
+                    mPresenter.getUserInfo(AppCache.getUserBean().getUserid());
+
+                } else mPresenter.getUserInfo(otherUserBean.getUserid());
             } else if (requestCode == requestCode_IMAGE) {
-                mPresenter.queryImageList(userBean);
+                if (isUserSelf) {
+                    mPresenter.getUserInfo(AppCache.getUserBean().getUserid());
+
+                } else mPresenter.getUserInfo(otherUserBean.getUserid());
             } else if (requestCode == requestCode_LOCATION) {
                 //上传位置
                 LatLng point = new LatLng(data.getDoubleExtra(TencentMapActivity.KEY_LATITUDE, 0),

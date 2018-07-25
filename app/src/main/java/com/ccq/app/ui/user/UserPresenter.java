@@ -43,7 +43,6 @@ public class UserPresenter extends BasePresenter<IUserView> {
             @Override
             public void onResponse(Call<UserBean> call, Response<UserBean> response) {
                 if (response.body() != null) {
-                    AppCache.setUserBean(response.body());
                     mView.setUserView(response.body());
                 }
             }

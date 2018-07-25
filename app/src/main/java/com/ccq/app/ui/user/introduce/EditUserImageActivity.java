@@ -61,6 +61,10 @@ public class EditUserImageActivity extends BaseActivity {
     private Handler handler = new Handler();
     private UserImageAdapter userImageAdapter;
     private int updateImagePos;
+    private int REQUEST_ADD = 111;
+    private int REQUEST_UPDATE = 222;
+    private ArrayList<Media> select = new ArrayList<>();
+
 
     @OnClick({R.id.ic_finish, R.id.bt_add, R.id.bt_save})
     public void clidk(View view) {
@@ -84,22 +88,34 @@ public class EditUserImageActivity extends BaseActivity {
      * 选择图片
      */
     private void selectPic() {
-        Intent intent = new Intent(this, PickerActivity.class);
-        intent.putExtra(PickerConfig.SELECT_MODE, PickerConfig.PICKER_IMAGE);//default image and video (Optional)
-        intent.putExtra(PickerConfig.MAX_SELECT_COUNT, 1);  //default 40 (Optional)
-        startActivityForResult(intent, 111);
+        int size = 0;
+        if (imageBean != null && !imageBean.getData().isEmpty()) {
+            size = imageBean.getData().size();
+        }
+        size = 9 - size;
+        if (size == 0) {
+            Toasty.info(this, "最多上传9张").show();
+        } else {
+            Intent intent = new Intent(this, PickerActivity.class);
+            intent.putExtra(PickerConfig.SELECT_MODE, PickerConfig.PICKER_IMAGE);//default image and video (Optional)
+            intent.putExtra(PickerConfig.MAX_SELECT_COUNT, size);  //default 40 (Optional)
+
+            startActivityForResult(intent, REQUEST_ADD);
+        }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 111 && resultCode == PickerConfig.RESULT_CODE) {
-            ArrayList<Media> select = data.getParcelableArrayListExtra(PickerConfig.EXTRA_RESULT);
+        if (requestCode == REQUEST_ADD && resultCode == PickerConfig.RESULT_CODE) {
+            select = data.getParcelableArrayListExtra(PickerConfig.EXTRA_RESULT);
             if (select != null && !select.isEmpty()) {
                 //上传图片
-                uplaodFile(select.get(0).path);
+                for (int i = 0; i < select.size(); i++) {
+                    uplaodFile(select.remove(i).path);
+                }
             }
-        } else if (requestCode == 222 && resultCode == PickerConfig.RESULT_CODE) {
+        } else if (requestCode == REQUEST_UPDATE && resultCode == PickerConfig.RESULT_CODE) {
             ArrayList<Media> select = data.getParcelableArrayListExtra(PickerConfig.EXTRA_RESULT);
             if (select != null && !select.isEmpty()) {
                 //上传图片
@@ -130,6 +146,7 @@ public class EditUserImageActivity extends BaseActivity {
                             .enqueue(new Callback<Object>() {
                                 @Override
                                 public void onResponse(Call<Object> call, Response<Object> response) {
+
                                     dismissDialog();
                                     Toasty.success(CcqApp.getAppContext(), "恭喜，修改成功！").show();
                                     updateImageList();
@@ -181,9 +198,11 @@ public class EditUserImageActivity extends BaseActivity {
                             .enqueue(new Callback<Object>() {
                                 @Override
                                 public void onResponse(Call<Object> call, Response<Object> response) {
-                                    dismissDialog();
-                                    Toasty.success(CcqApp.getAppContext(), "恭喜，保存成功！").show();
-                                    updateImageList();
+                                    if (select==null || select.isEmpty()){
+                                        dismissDialog();
+                                        Toasty.success(CcqApp.getAppContext(), "恭喜，保存成功！").show();
+                                        updateImageList();
+                                    }
                                 }
 
                                 @Override
@@ -245,6 +264,7 @@ public class EditUserImageActivity extends BaseActivity {
     @Override
     protected void initView() {
         super.initView();
+        select.clear();
         getToolBar().setVisibility(View.GONE);
         StatusBarUtils.setStatusBarColor(this, 0xffffffff);
         StatusBarUtils.statusBarLightMode(this);
@@ -341,7 +361,7 @@ public class EditUserImageActivity extends BaseActivity {
         Intent intent = new Intent(this, PickerActivity.class);
         intent.putExtra(PickerConfig.SELECT_MODE, PickerConfig.PICKER_IMAGE);//default image and video (Optional)
         intent.putExtra(PickerConfig.MAX_SELECT_COUNT, 1);  //default 40 (Optional)
-        startActivityForResult(intent, 222);
+        startActivityForResult(intent, REQUEST_UPDATE);
     }
 
     /**

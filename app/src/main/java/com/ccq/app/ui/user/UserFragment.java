@@ -21,23 +21,17 @@ import com.bumptech.glide.Glide;
 import com.ccq.app.R;
 import com.ccq.app.base.BaseActivity;
 import com.ccq.app.base.BaseFragment;
-import com.ccq.app.base.CcqApp;
 import com.ccq.app.entity.BaseBean;
 import com.ccq.app.entity.SubscriberCountBean;
 import com.ccq.app.entity.UserBanner;
 import com.ccq.app.entity.UserBean;
-import com.ccq.app.http.RetrofitClient;
 import com.ccq.app.ui.ImageWatchActivity;
-import com.ccq.app.ui.message.SingleChatActivity;
 import com.ccq.app.ui.user.adapter.MyFragmentAdapter;
 import com.ccq.app.ui.user.introduce.TabIntroFragment;
 import com.ccq.app.utils.AppCache;
 import com.ccq.app.utils.Constants;
-import com.ccq.app.utils.JmessageUtils;
 import com.ccq.app.utils.MMAlert;
 import com.ccq.app.utils.SharedPreferencesUtils;
-import com.ccq.app.utils.ToastUtils;
-import com.ccq.app.utils.Utils;
 import com.ccq.app.weidget.SlidingTabLayout;
 import com.dmcbig.mediapicker.PickerActivity;
 import com.dmcbig.mediapicker.PickerConfig;
@@ -48,26 +42,13 @@ import com.tencent.mm.opensdk.openapi.IWXAPIEventHandler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import cn.jpush.im.android.api.JMessageClient;
-import cn.jpush.im.android.api.model.Conversation;
-import cn.jpush.im.android.api.model.UserInfo;
-import cn.jpush.im.android.eventbus.EventBus;
-import jiguang.chat.application.JGApplication;
-import jiguang.chat.entity.Event;
-import jiguang.chat.entity.EventType;
 import jiguang.chat.pickerimage.utils.ScreenUtil;
-import jiguang.chat.utils.ToastUtil;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import static com.dmcbig.mediapicker.PickerConfig.RESULT_CODE;
 
@@ -130,18 +111,11 @@ public class UserFragment extends BaseFragment<UserPresenter> implements IWXAPIE
 
     private ProgressDialog dialogProgress;
 
-    public boolean isMine = true;//用户资料信息
-
-    private UserBean userBean;
-
     @OnClick(R.id.user_iv_header)
     public void login() {
-        if (userBean == null) {
-            userBean = AppCache.getUserBean();
-        }
-        if (userBean != null) {
+        if (AppCache.getUserBean() != null) {
             ArrayList<String> objects = new ArrayList<>();
-            objects.add(userBean.getHeadimgurl());
+            objects.add(AppCache.getUserBean().getHeadimgurl());
             ImageWatchActivity.launch(get(), objects, 0);
         } else {
             startActivity(new Intent(get(), LoginActivity.class));
@@ -163,38 +137,18 @@ public class UserFragment extends BaseFragment<UserPresenter> implements IWXAPIE
 
     @Override
     protected void initView(View rootView) {
-//        EventBus.getDefault().register(this);
-        userBean = (UserBean) get().getIntent().getSerializableExtra("bean");
-        if (userBean != null) {
-            isMine = false;
-            //底部操作
-            userOpt.setVisibility(View.VISIBLE);
-            //会员
-            btnUserVip.setVisibility(View.GONE);
-            btnInviteAttation.setVisibility(View.GONE);
-            llSetting.setVisibility(View.GONE);
-        }
+
     }
 
     @Override
     public void initData() {
-        if (isMine) {
-            //用户自己的
-            userBean = AppCache.getUserBean();
-        } else {
-            /*查看别人的信息*/
-            //头像
-            Glide.with(get()).load(userBean.getHeadimgurl()).into(ivHeader);
-            //是否关注了该用户
-            mPresenter.getSubscirberInfo(userBean.getUserid());
-        }
-        if (userBean != null) {
+        if (AppCache.getUserBean() != null && !TextUtils.isEmpty(AppCache.getUserBean().getUserid())) {
             //获取用户信息
-            mPresenter.getUserInfo(userBean.getUserid());
+            mPresenter.getUserInfo(AppCache.getUserBean().getUserid());
             //banner
-            mPresenter.getUserBanner(userBean.getUserid());
+            mPresenter.getUserBanner(AppCache.getUserBean().getUserid());
             //关注人数，被关注人数
-            mPresenter.getSubscribeCount(userBean.getUserid());
+            mPresenter.getSubscribeCount(AppCache.getUserBean().getUserid());
         } else {
             resetUserInfo();
         }
@@ -226,11 +180,6 @@ public class UserFragment extends BaseFragment<UserPresenter> implements IWXAPIE
 
 
     @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         //接收banner的结果
@@ -249,21 +198,20 @@ public class UserFragment extends BaseFragment<UserPresenter> implements IWXAPIE
      * 设置界面信息，viewpager
      */
     public void setView() {
-        if (userBean == null) {
-            userBean = AppCache.getUserBean();
-        }
-        tvName.setText(userBean.getNickname());
-        tvPhone.setText(userBean.getMobile());
-        tvLocation.setText(userBean.getProvinceName() + "·" + userBean.getCityName());
+        tvName.setText(AppCache.getUserBean().getNickname());
+        tvPhone.setText(AppCache.getUserBean().getMobile());
+        tvLocation.setText(AppCache.getUserBean().getProvinceName() + "·" + AppCache.getUserBean().getCityName());
 
         llyoutMyAttention.setVisibility(View.VISIBLE);
         TabHomeFragment tabHomeFragment = new TabHomeFragment();
         Bundle bundle = new Bundle();
-        bundle.putBoolean(TabHomeFragment.KEY_IS_SELF, isMine);
+        bundle.putBoolean(TabHomeFragment.KEY_IS_SELF, true);
         tabHomeFragment.setArguments(bundle);
         fragments.add(tabHomeFragment);
         fragments.add(new WantBuyFragment());
-        fragments.add(new TabIntroFragment());
+        TabIntroFragment info = new TabIntroFragment();
+        info.setArguments(bundle);
+        fragments.add(info);
         adapter = new MyFragmentAdapter(getActivity().getSupportFragmentManager(), fragments, titles);
 
         vpMyInfo.setAdapter(adapter);
@@ -378,18 +326,14 @@ public class UserFragment extends BaseFragment<UserPresenter> implements IWXAPIE
                 showUserSettingDialog();
                 break;
             case R.id.layout_my_subscribe:
-                if (isMine) {
-                    Intent i = new Intent(getActivity(), UserSubscribeActivity.class);
-                    i.putExtra("type", 0);
-                    getActivity().startActivity(i);
-                }
+                Intent i = new Intent(getActivity(), UserSubscribeActivity.class);
+                i.putExtra("type", 0);
+                getActivity().startActivity(i);
                 break;
             case R.id.layout_my_subscribe_fans:
-                if (isMine) {
-                    Intent ii = new Intent(getActivity(), UserSubscribeActivity.class);
-                    ii.putExtra("type", 1);
-                    getActivity().startActivity(ii);
-                }
+                Intent ii = new Intent(getActivity(), UserSubscribeActivity.class);
+                ii.putExtra("type", 1);
+                getActivity().startActivity(ii);
                 break;
             case R.id.btn_vip_setting:
                 startActivity(new Intent(get(), OpenVipActivity.class));
@@ -398,66 +342,11 @@ public class UserFragment extends BaseFragment<UserPresenter> implements IWXAPIE
 
 
                 break;
-            case R.id.tv_sms:
-                if (AppCache.getUserBean() == null) {
-                    get().startActivity(new Intent(get(), LoginActivity.class));
-                    return;
-                }
-                UserInfo myInfo = JMessageClient.getMyInfo();
-                if (myInfo == null) {
-                    ToastUtil.shortToast(get(), "IM未登录");
-                    JmessageUtils.registerIM(AppCache.getUserBean());
-                    return;
-                }
-                String userName = userBean.getJiguang_name();
-                if (TextUtils.isEmpty(userName)) {
-                    ToastUtil.shortToast(get(), "该用户未注册IM聊天系统");
-                    return;
-                }
-                final Intent intent = new Intent(get(), SingleChatActivity.class);
-                intent.putExtra(JGApplication.CONV_TITLE, AppCache.getUserBean().getNickname());
-                intent.putExtra(JGApplication.TARGET_ID, userName);
-                intent.putExtra(JGApplication.TARGET_APP_KEY, CcqApp.jmappkey);
-                startActivity(intent);
-
-
-                Conversation conv = JMessageClient.getSingleConversation(userName, CcqApp.jmappkey);
-                //如果会话为空，使用EventBus通知会话列表添加新会话
-                if (conv == null) {
-                    conv = Conversation.createSingleConversation(userName, CcqApp.jmappkey);
-                    EventBus.getDefault().post(new Event.Builder()
-                            .setType(EventType.createConversation)
-                            .setConversation(conv)
-                            .build());
-                }
-                break;
-            case R.id.tv_tel:
-                Utils.call(get(), userBean.getMobile());
-                break;
-            case R.id.tv_subscribe:
-                //订阅
-                if (getString(R.string.add_watch).equals(tvSubscribe.getText())) {
-                    RetrofitClient.getInstance().getApiService().setUserSubAdd(AppCache.getUserBean().getUserid(), userBean.getUserid()).enqueue(new Callback<Object>() {
-
-                        @Override
-                        public void onResponse(Call<Object> call, Response<Object> response) {
-                            tvSubscribe.setText(R.string.cancel_watch);
-                        }
-
-                        @Override
-                        public void onFailure(Call<Object> call, Throwable t) {
-
-                        }
-                    });
-                } else {
-                    showDialog("是否要取消关注");
-                }
-                break;
         }
     }
 
     private void changeBanner() {
-        if (AppCache.getUserBean() != null && isMine) {
+        if (AppCache.getUserBean() != null) {
             if (AppCache.getUserBean().isMember() || AppCache.getUserBean().isBusiness()) {
                 //切换banner
                 Intent intent = new Intent(getHostActivity(), PickerActivity.class);
@@ -487,43 +376,6 @@ public class UserFragment extends BaseFragment<UserPresenter> implements IWXAPIE
         }
     }
 
-
-    private void showDialog(String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(get());
-        builder.setTitle("操作提示：");
-        builder.setMessage(message);
-        builder.setCancelable(true);
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                HashMap<String, String> map = new HashMap<>();
-                map.put("userid", AppCache.getUserBean().getUserid());
-                map.put("subuser", userBean.getUserid());
-                RetrofitClient.getInstance().getApiService().setUserSubRemove(map).enqueue(new Callback<Object>() {
-                    @Override
-                    public void onResponse(Call call, Response response) {
-                        tvSubscribe.setText(R.string.add_watch);
-                    }
-
-                    @Override
-                    public void onFailure(Call call, Throwable t) {
-
-                    }
-                });
-                dialog.dismiss();
-            }
-        });
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-
-        builder.show();
-
-    }
-
     @Override
     public BaseActivity getHostActivity() {
         return (BaseActivity) getActivity();
@@ -531,6 +383,7 @@ public class UserFragment extends BaseFragment<UserPresenter> implements IWXAPIE
 
     @Override
     public void setUserView(UserBean userBean) {
+        AppCache.setUserBean(userBean);
         Glide.with(get()).load(userBean.getHeadimgurl()).into(ivHeader);
         if (userBean.getVip() == 1) {
             iconVipLogo.setImageResource(R.drawable.icon_vip_enable);

@@ -26,6 +26,22 @@ public class UserIntroPresenter extends BasePresenter<IUserIntroView> {
         super(view);
     }
 
+    public void getUserInfo(String userid) {
+
+        apiService.getUser(userid).enqueue(new Callback<UserBean>() {
+            @Override
+            public void onResponse(Call<UserBean> call, Response<UserBean> response) {
+                if (response.body() != null) {
+                    mView.setUserIntoduce(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserBean> call, Throwable t) {
+                Toasty.error(mView.getAty(), t.getMessage()).show();
+            }
+        });
+    }
 
     public void queryLocation(final UserBean userBean) {
         apiService.getUserLocation(userBean.getUserid())

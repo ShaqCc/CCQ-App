@@ -1,6 +1,7 @@
 package com.ccq.app.ui.user.introduce;
 
 import com.ccq.app.base.BaseActivity;
+import com.ccq.app.entity.UserBean;
 import com.ccq.app.entity.UserLocationBean;
 
 import java.util.List;
@@ -23,4 +24,6 @@ public interface IUserIntroView {
     void setAddress(String address);
 
     void setImageList(UserImageBean data);
+
+    void setUserIntoduce(UserBean user);
 }

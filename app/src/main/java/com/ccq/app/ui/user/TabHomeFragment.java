@@ -40,7 +40,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static android.app.Activity.RESULT_OK;
 
 /****************************************
  * 功能说明:  我的--首页 页签
@@ -55,9 +54,9 @@ public class TabHomeFragment extends BaseFragment {
     @BindView(R.id.empty_layout)
     View emptyView;
     Unbinder unbinder;
-    private ApiService apiService;
+    private ApiService apiService = RetrofitClient.getInstance().getApiService();
     MyPublishListAdapter adapter;
-    UserBean userBean;
+    UserBean otherUser;
     List<Car> carList = new ArrayList<>();
 
     Car editCar;
@@ -76,8 +75,8 @@ public class TabHomeFragment extends BaseFragment {
 
     @Override
     protected void initView(View rootView) {
-        if (getArguments() != null)
-            isUserSelf = getArguments().getBoolean(KEY_IS_SELF, true);
+        isUserSelf = getArguments().getBoolean(KEY_IS_SELF);
+        otherUser = (UserBean) getArguments().getSerializable("bean");
         emptyView.setVisibility(View.GONE);
         LinearLayoutManager layoutmanager = new LinearLayoutManager(getActivity());
         //设置RecyclerView 布局
@@ -98,7 +97,7 @@ public class TabHomeFragment extends BaseFragment {
                 getCarLocation();
 
             }
-        }, isUserSelf);
+        }, true);
         myHomeRecycleview.setAdapter(adapter);
     }
 
@@ -176,10 +175,10 @@ public class TabHomeFragment extends BaseFragment {
                         removeCar();
                         break;
                     case 3:
-//                        if (userBean.getRefcount() >= 5) {
+//                        if (otherUser.getRefcount() >= 5) {
 //                            Toasty.warning(get(), "24小时内只能刷新5次！", Toast.LENGTH_LONG).show();
 //                        } else
-                            if (userBean.isBusiness() || userBean.isMember()) {
+                        if (otherUser.isBusiness() || otherUser.isMember()) {
                             refreshCar();
                         } else {
                             AlertDialog.Builder alertbuild = new AlertDialog.Builder(get());
@@ -214,8 +213,13 @@ public class TabHomeFragment extends BaseFragment {
      * 修改信息状态
      */
     private void changeStatu() {
-        apiService = RetrofitClient.getInstance().getApiService();
-        apiService.setCarStatus(userBean.getUserid(), String.valueOf(editCar.getId())).enqueue(new Callback<Object>() {
+        String id = null;
+        if (isUserSelf){
+            id = AppCache.getUserBean().getUserid();
+        }else {
+            id = otherUser.getUserid();
+        }
+        apiService.setCarStatus(id, String.valueOf(editCar.getId())).enqueue(new Callback<Object>() {
             @Override
             public void onResponse(Call<Object> call, Response<Object> response) {
                 Object obj = response.body();
@@ -240,24 +244,21 @@ public class TabHomeFragment extends BaseFragment {
      * 删除车辆信息
      */
     private void removeCar() {
-        apiService = RetrofitClient.getInstance().getApiService();
-        apiService.deleteCar(userBean.getUserid(), String.valueOf(editCar.getId())).enqueue(new Callback<Object>() {
+        String id = null;
+        if (isUserSelf){
+            id = AppCache.getUserBean().getUserid();
+        }else {
+            id = otherUser.getUserid();
+        }
+        apiService.deleteCar(id, String.valueOf(editCar.getId())).enqueue(new Callback<Object>() {
             @Override
             public void onResponse(Call<Object> call, Response<Object> response) {
-                Object obj = response.body();
-                if (obj != null) {
-                    com.google.gson.jpush.JsonObject returnData = new com.google.gson.jpush.JsonParser().parse(obj.toString()).getAsJsonObject();
-                    String mesg = returnData.get("message").getAsString();
-                    ToastUtils.show(get(), mesg);
-                    if ("0.0".equals(returnData.get("code").getAsString())) {
-                        initData();
-                    }
-                }
+                refreshCarList();
             }
 
             @Override
             public void onFailure(Call<Object> call, Throwable t) {
-
+                Toasty.info(get(), t.getMessage()).show();
             }
         });
     }
@@ -266,24 +267,22 @@ public class TabHomeFragment extends BaseFragment {
      * 刷新车辆信息
      */
     private void refreshCar() {
-        apiService = RetrofitClient.getInstance().getApiService();
-        apiService.refreshCarInfo(userBean.getUserid(), String.valueOf(editCar.getId())).enqueue(new Callback<Object>() {
+        String id = null;
+        if (isUserSelf){
+            id = AppCache.getUserBean().getUserid();
+        }else {
+            id = otherUser.getUserid();
+        }
+        apiService.refreshCarInfo(id, String.valueOf(editCar.getId())).enqueue(new Callback<Object>() {
             @Override
             public void onResponse(Call<Object> call, Response<Object> response) {
-                Object obj = response.body();
-                if (obj != null) {
-                    com.google.gson.jpush.JsonObject returnData = new com.google.gson.jpush.JsonParser().parse(obj.toString()).getAsJsonObject();
-                    String mesg = returnData.get("message").getAsString();
-                    if ("0.0".equals(returnData.get("code").getAsString())) {
-                        refreshUserInfo();
-                    }
-                    ToastUtils.show(get(), mesg);
-                }
+                refreshUserInfo();
+                refreshCarList();
             }
 
             @Override
             public void onFailure(Call<Object> call, Throwable t) {
-
+                Toasty.info(get(), t.getMessage()).show();
             }
         });
     }
@@ -299,11 +298,20 @@ public class TabHomeFragment extends BaseFragment {
 
     //刷新信息后需要重新获取用户的刷新次数
     private void refreshUserInfo() {
-        apiService.getUser(userBean.getUserid()).enqueue(new Callback<UserBean>() {
+        String id = null;
+        if (isUserSelf){
+            id = AppCache.getUserBean().getUserid();
+        }else {
+            id = otherUser.getUserid();
+        }
+        apiService.getUser(id).enqueue(new Callback<UserBean>() {
             @Override
             public void onResponse(Call<UserBean> call, @NonNull Response<UserBean> response) {
-                AppCache.setUserBean(response.body());
-                userBean = response.body();
+                if (isUserSelf) {
+                    AppCache.setUserBean(response.body());
+                } else {
+                    otherUser = response.body();
+                }
             }
 
             @Override
@@ -315,16 +323,16 @@ public class TabHomeFragment extends BaseFragment {
 
     @Override
     public void initData() {
-        userBean = (UserBean) get().getIntent().getSerializableExtra("bean");
-        if (userBean == null) {
-            userBean = AppCache.getUserBean();
-        }
-        if (userBean == null) {
-            return;
-        }
-        apiService = RetrofitClient.getInstance().getApiService();
+        refreshCarList();
+    }
+
+    private void refreshCarList() {
         HashMap<String, String> carMap = new HashMap<>();
-        carMap.put("userid", userBean.getUserid());
+        if (isUserSelf) {
+            carMap.put("userid", AppCache.getUserBean().getUserid());
+        } else {
+            carMap.put("userid", otherUser.getUserid());
+        }
         carMap.put("start", "0");
         carMap.put("limit", "100");
 
@@ -356,7 +364,6 @@ public class TabHomeFragment extends BaseFragment {
                 super.onError(t);
             }
         });
-
     }
 
 

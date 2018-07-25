@@ -75,8 +75,8 @@ public class EditMyIntroActivity extends Activity {
                     public void onResponse(Call<Object> call, Response<Object> response) {
                         Map<String,Object> map = (Map<String, Object>) response.body();
                         if(0.0== (Double)map.get("code")) {
+                            setResult(RESULT_OK);
                             finish();
-                            EventBus.getDefault().post(Constants.REFRESH_EVENT);
                         }
                         ToastUtils.show(EditMyIntroActivity.this, (String) map.get("message"));
                      }
