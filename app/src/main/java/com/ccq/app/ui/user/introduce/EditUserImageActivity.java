@@ -24,12 +24,22 @@ import com.ccq.app.weidget.Toasty;
 import com.dmcbig.mediapicker.PickerActivity;
 import com.dmcbig.mediapicker.PickerConfig;
 import com.dmcbig.mediapicker.entity.Media;
+import com.qiniu.android.jpush.utils.StringUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -89,7 +99,7 @@ public class EditUserImageActivity extends BaseActivity {
      */
     private void selectPic() {
         int size = 0;
-        if (imageBean != null && !imageBean.getData().isEmpty()) {
+        if (imageBean != null && imageBean.getData()!=null && !imageBean.getData().isEmpty()) {
             size = imageBean.getData().size();
         }
         size = 9 - size;
@@ -110,10 +120,13 @@ public class EditUserImageActivity extends BaseActivity {
         if (requestCode == REQUEST_ADD && resultCode == PickerConfig.RESULT_CODE) {
             select = data.getParcelableArrayListExtra(PickerConfig.EXTRA_RESULT);
             if (select != null && !select.isEmpty()) {
+
+                uploadImg();
+
                 //上传图片
-                for (int i = 0; i < select.size(); i++) {
-                    uplaodFile(select.remove(i).path);
-                }
+//                for (int i = 0; i < select.size(); i++) {
+//                    uplaodFile(select.remove(i).path);
+//                }
             }
         } else if (requestCode == REQUEST_UPDATE && resultCode == PickerConfig.RESULT_CODE) {
             ArrayList<Media> select = data.getParcelableArrayListExtra(PickerConfig.EXTRA_RESULT);
@@ -123,6 +136,94 @@ public class EditUserImageActivity extends BaseActivity {
             }
         }
     }
+
+    private void uploadImg(){
+        dialog = new ProgressDialog(this);
+        dialog.setMessage("图片上传中...");
+        dialog.show();
+
+        Observable.create(
+                new ObservableOnSubscribe<Boolean>() {
+                    @Override
+                    public void subscribe(final ObservableEmitter<Boolean> emitter) throws Exception {
+                        if (!emitter.isDisposed()) {
+                            try {
+                                //访问网络操作
+                                if (select != null && select.size() > 0) {
+                                    for (Media media : select) {
+                                       String imageid =  uploadImg(media.path);
+                                       if(imageid!=null){
+                                           bindImgToUser(imageid);
+                                       }
+                                    }
+                                }
+
+                                emitter.onComplete();
+
+                            } catch (IOException ioe) {
+                                emitter.onError(ioe);
+                            }
+
+                        }
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Boolean>() {
+
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        if (d.isDisposed()) {
+
+                        }
+                    }
+
+                    @Override
+                    public void onNext(Boolean boo) {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Toasty.error(CcqApp.getAppContext(), "图片上传失败").show();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        dismissDialog();
+                        Toasty.success(CcqApp.getAppContext(), "恭喜，保存成功！").show();
+                        updateImageList();
+                    }
+                });
+
+    }
+
+    private String uploadImg(String path) throws IOException {
+
+        File file = new File(path);
+        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        MultipartBody.Part body = MultipartBody.Part.createFormData("filename", file.getName(), requestFile);
+
+        Call<UploadImageResponse> result = apiService.uploadCommonImage(body);
+        Response<UploadImageResponse> response = result.execute();
+        if(response.body().getCode()==0){
+            return String.valueOf(response.body().getImageid());
+        }else{
+            Toasty.error(CcqApp.getAppContext(), response.body().getMessage()).show();
+        }
+        return null;
+    }
+
+    private void bindImgToUser(String imageid) throws IOException {
+
+        Call<Object> result = apiService.addUserImage(imageid ,AppCache.getUserBean().getUserid(), "0");
+        Response<Object> response = result.execute();
+        Map<String, Object> map = (Map<String, Object>) response.body();
+        if (!(0.0 == (Double) map.get("code"))) {
+            Toasty.error(CcqApp.getAppContext(),String.valueOf(map.get("message"))).show();
+        }
+    }
+
 
     /**
      * 修改用户图
@@ -182,47 +283,47 @@ public class EditUserImageActivity extends BaseActivity {
     }
 
 
-    private void uplaodFile(String path) {
-        dialog = new ProgressDialog(this);
-        dialog.setMessage("上传图片中...");
-        dialog.show();
-        File file = new File(path);
-        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-        MultipartBody.Part body = MultipartBody.Part.createFormData("filename", file.getName(), requestFile);
-        apiService.uploadCommonImage(body).enqueue(new Callback<UploadImageResponse>() {
-            @Override
-            public void onResponse(Call<UploadImageResponse> call, Response<UploadImageResponse> response) {
-                if (response.body() != null && response.body().getCode() == 0) {
-                    //保存
-                    apiService.addUserImage(String.valueOf(response.body().getImageid()), AppCache.getUserBean().getUserid(), "0")
-                            .enqueue(new Callback<Object>() {
-                                @Override
-                                public void onResponse(Call<Object> call, Response<Object> response) {
-                                    if (select==null || select.isEmpty()){
-                                        dismissDialog();
-                                        Toasty.success(CcqApp.getAppContext(), "恭喜，保存成功！").show();
-                                        updateImageList();
-                                    }
-                                }
-
-                                @Override
-                                public void onFailure(Call<Object> call, Throwable t) {
-                                    dismissDialog();
-                                    Toasty.error(CcqApp.getAppContext(), t.getMessage()).show();
-                                }
-                            });
-                } else {
-                    dismissDialog();
-                    Toasty.error(CcqApp.getAppContext(), "上传失败稍后再试").show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<UploadImageResponse> call, Throwable t) {
-                Toasty.error(CcqApp.getAppContext(), t.getMessage()).show();
-            }
-        });
-    }
+//    private void uplaodFile(String path) {
+//        dialog = new ProgressDialog(this);
+//        dialog.setMessage("上传图片中...");
+//        dialog.show();
+//        File file = new File(path);
+//        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+//        MultipartBody.Part body = MultipartBody.Part.createFormData("filename", file.getName(), requestFile);
+//        apiService.uploadCommonImage(body).enqueue(new Callback<UploadImageResponse>() {
+//            @Override
+//            public void onResponse(Call<UploadImageResponse> call, Response<UploadImageResponse> response) {
+//                if (response.body() != null && response.body().getCode() == 0) {
+//                    //保存
+//                    apiService.addUserImage(String.valueOf(response.body().getImageid()), AppCache.getUserBean().getUserid(), "0")
+//                            .enqueue(new Callback<Object>() {
+//                                @Override
+//                                public void onResponse(Call<Object> call, Response<Object> response) {
+//                                    if (select==null || select.isEmpty()){
+//                                        dismissDialog();
+//                                        Toasty.success(CcqApp.getAppContext(), "恭喜，保存成功！").show();
+//                                        updateImageList();
+//                                    }
+//                                }
+//
+//                                @Override
+//                                public void onFailure(Call<Object> call, Throwable t) {
+//                                    dismissDialog();
+//                                    Toasty.error(CcqApp.getAppContext(), t.getMessage()).show();
+//                                }
+//                            });
+//                } else {
+//                    dismissDialog();
+//                    Toasty.error(CcqApp.getAppContext(), "上传失败稍后再试").show();
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<UploadImageResponse> call, Throwable t) {
+//                Toasty.error(CcqApp.getAppContext(), t.getMessage()).show();
+//            }
+//        });
+//    }
 
     /**
      * 获取用户图片
